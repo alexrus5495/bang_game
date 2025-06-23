@@ -1,0 +1,159 @@
+{
+  "bang": {
+    "title": "BANG!"
+  },
+  "barrel": {
+    "title": "BARREL"
+  },
+  "beer": {
+    "title": "BEER"
+  },
+  "cat_balou": {
+    "title": "CAT BALOU"
+  },
+  "duel": {
+    "title": "DUEL",
+    "desc": "A target player discards a BANG!, then you, etc. First player failing to discard a BANG! loses 1 life point."
+  },
+  "dynamite": {
+    "title": "DYNAMITE",
+    "desc": "Lose 3 life points. Else pass the Dynamite on your left."
+  },
+  "gatling": {
+    "title": "GATLING"
+  },
+  "general_store": {
+    "title": "GENERAL STORE",
+    "desc": "Reveal as many cards as players. Each player draws one."
+  },
+  "indians": {
+    "title": "INDIANS!",
+    "desc": "All other players discard a BANG! or lose 1 life point."
+  },
+  "jail": {
+    "title": "JAIL",
+    "desc": "Discard the jail, play normally. Else discard the jail and skip your turn."
+  },
+  "missed": {
+    "title": "MISSED!"
+  },
+  "mustang": {
+    "title": "MUSTANG",
+    "desc": "Others view you at distance +1."
+  },
+  "panic": {
+    "title": "PANIC!"
+  },
+  "saloon": {
+    "title": "SALOON"
+  },
+  "scope": {
+    "title": "SCOPE",
+    "desc": "You view others at distance -1."
+  },
+  "stagecoach": {
+    "title": "STAGECOACH"
+  },
+  "wells_fargo": {
+    "title": "WELLS FARGO"
+  },
+  "carabine": {
+    "title": "REV.CARABINE"
+  },
+  "colt45": {
+    "title": "COLT 45"
+  },
+  "remington": {
+    "title": "REMINGTON"
+  },
+  "schofield": {
+    "title": "SCHOFIELD"
+  },
+  "volcanic": {
+    "title": "VOLCANIC",
+    "desc": "You can play any number of BANG!, but at distance 1."
+  },
+  "winchester": {
+    "title": "WINCHESTER"
+  },
+  "bart_cassidy": {
+    "title": "BART CASSIDY",
+    "desc": "Each time he is hit, he draws a card."
+  },
+  "black_jack": {
+    "title": "BLACK JACK",
+    "desc": "He shows the second card he draws. On Heart or Diamonds he draws one more card."
+  },
+  "calamity_janet": {
+    "title": "CALAMITY JANET",
+    "desc": "She can play BANG! cards as Missed! cards and vice versa."
+  },
+  "el_gringo": {
+    "title": "EL CRINGO",
+    "desc": "Each time he is hit by a player, he draws a card from the hand of that player."
+  },
+  "jesse_jones": {
+    "title": "JESSE JONES",
+    "desc": "He may draw his first card from the hand of a player."
+  },
+  "jourdonnais": {
+    "title": "JOURDONNAIS",
+    "desc": "Whenever he is the target of a BANG!, he may \"draw!\": on a Heart, he is missed."
+  },
+  "kit_carlson": {
+    "title": "KIT CARLSON",
+    "desc": "He looks at the top three cards of the deck and chooses the 2 to draw."
+  },
+  "lucky_duke": {
+    "title": "LUCKY DUKE",
+    "desc": "Each time he \"draws!\", he flips the top two cards and chooses one."
+  },
+  "paul_regret": {
+    "title": "PAUL REGRET",
+    "desc": "All players see him at a distance increased by 1."
+  },
+  "pedro_ramirez": {
+    "title": "PEDRO RAMIREZ",
+    "desc": "He may draw his first card from the discard pile."
+  },
+  "rose_doolan": {
+    "title": "ROSE DOOLAN",
+    "desc": "She sees all players at a distance decreased by 1."
+  },
+  "sid_ketchum": {
+    "title": "SID KETCHUM",
+    "desc": "He may discard 2 cards to regain one life point."
+  },
+  "slab_the_killer": {
+    "title": "SLAB THE KILLER",
+    "desc": "Player needs 2 Missed! cards to cancel his BANG! card."
+  },
+  "suzy_lafayette": {
+    "title": "SUZE LAFAYETTE",
+    "desc": "As soon as she has no cards in hand, she draws a card."
+  },
+  "vulture_sam": {
+    "title": "VULTURE SAM",
+    "desc": "Whenever a player is eliminated from play, he takes in hand all the cards of that player."
+  },
+  "willy_the_kid": {
+    "title": "WILLY THE KID",
+    "desc": "He can play any number of BANG! cards."
+  },
+  "sheriff": {
+    "title": "SHERIFF",
+    "desc": "Kill all the Outlaws and the Renegade!"
+  },
+  "outlaw": {
+    "title": "OUTLAW",
+    "desc": "Kill the Sheriff!"
+  },
+  "renegade": {
+    "title": "RENEGADE",
+    "desc": "Be the last one in play!"
+  },
+  "deputy": {
+    "title": "DEPUTY",
+    "desc": "Protect the Sheriff! Kill all the Outlaws and the Renegade!"
+  }
+}
