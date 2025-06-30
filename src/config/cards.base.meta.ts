@@ -1,4 +1,4 @@
-import type { Card, CharacterCard } from "../types";
+import type { PlayingCardMeta, CharacterCardMeta } from "../types";
 import {
   bangBase,
   barrelBase,
@@ -25,476 +25,556 @@ import {
 } from "./cards.base.bases";
 
 const REGULAR = {
-  bang_1: {
+  bang_01: {
     ...bangBase,
     value: { value: "7", suit: "clubs" },
+    cardInstanceId: "bang_01",
   },
-  bang_2: {
+  bang_02: {
     ...bangBase,
     image: "bang_2",
     value: { value: "9", suit: "diamonds" },
+    cardInstanceId: "bang_02",
   },
-  bang_3: {
+  bang_03: {
     ...bangBase,
     image: "bang_2",
     value: { value: "5", suit: "clubs" },
+    cardInstanceId: "bang_03",
   },
-  bang_4: {
+  bang_04: {
     ...bangBase,
     value: { value: "Q", suit: "hearts" },
+    cardInstanceId: "bang_04",
   },
-  bang_5: {
+  bang_05: {
     ...bangBase,
     image: "bang_2",
     value: { value: "Q", suit: "diamonds" },
+    cardInstanceId: "bang_05",
   },
-  bang_6: {
+  bang_06: {
     ...bangBase,
     image: "bang_2",
     value: { value: "6", suit: "diamonds" },
+    cardInstanceId: "bang_06",
   },
-  bang_7: {
+  bang_07: {
     ...bangBase,
     value: { value: "7", suit: "diamonds" },
+    cardInstanceId: "bang_07",
   },
-  bang_8: {
+  bang_08: {
     ...bangBase,
     image: "bang_2",
     value: { value: "9", suit: "clubs" },
+    cardInstanceId: "bang_08",
   },
-  bang_9: {
+  bang_09: {
     ...bangBase,
     image: "bang_2",
     value: { value: "8", suit: "diamonds" },
+    cardInstanceId: "bang_09",
   },
   bang_10: {
     ...bangBase,
     value: { value: "8", suit: "clubs" },
+    cardInstanceId: "bang_10",
   },
   bang_11: {
     ...bangBase,
     image: "bang_2",
     value: { value: "10", suit: "diamonds" },
+    cardInstanceId: "bang_11",
   },
   bang_12: {
     ...bangBase,
     image: "bang_2",
     value: { value: "5", suit: "diamonds" },
+    cardInstanceId: "bang_12",
   },
   bang_13: {
     ...bangBase,
     value: { value: "K", suit: "hearts" },
+    cardInstanceId: "bang_13",
   },
   bang_14: {
     ...bangBase,
     image: "bang_2",
     value: { value: "K", suit: "diamonds" },
+    cardInstanceId: "bang_14",
   },
   bang_15: {
     ...bangBase,
     image: "bang_2",
     value: { value: "6", suit: "clubs" },
+    cardInstanceId: "bang_15",
   },
   bang_16: {
     ...bangBase,
     value: { value: "3", suit: "diamonds" },
+    cardInstanceId: "bang_16",
   },
   bang_17: {
     ...bangBase,
     image: "bang_2",
     value: { value: "3", suit: "clubs" },
+    cardInstanceId: "bang_17",
   },
   bang_18: {
     ...bangBase,
     image: "bang_2",
     value: { value: "J", suit: "diamonds" },
+    cardInstanceId: "bang_18",
   },
   bang_19: {
     ...bangBase,
     value: { value: "2", suit: "clubs" },
+    cardInstanceId: "bang_19",
   },
   bang_20: {
     ...bangBase,
     image: "bang_2",
     value: { value: "A", suit: "diamonds" },
+    cardInstanceId: "bang_20",
   },
   bang_21: {
     ...bangBase,
     image: "bang_2",
     value: { value: "2", suit: "diamonds" },
+    cardInstanceId: "bang_21",
   },
   bang_22: {
     ...bangBase,
     value: { value: "A", suit: "hearts" },
+    cardInstanceId: "bang_22",
   },
   bang_23: {
     ...bangBase,
     image: "bang_2",
     value: { value: "A", suit: "spades" },
+    cardInstanceId: "bang_23",
   },
   bang_24: {
     ...bangBase,
     value: { value: "4", suit: "clubs" },
+    cardInstanceId: "bang_24",
   },
   bang_25: {
     ...bangBase,
     value: { value: "4", suit: "diamonds" },
+    cardInstanceId: "bang_25",
   },
-  barrel_1: {
+  barrel_01: {
     ...barrelBase,
     value: { value: "Q", suit: "spades" },
+    cardInstanceId: "barrel_01",
   },
-  barrel_2: {
+  barrel_02: {
     ...barrelBase,
     value: { value: "K", suit: "spades" },
+    cardInstanceId: "barrel_02",
   },
-  beer_1: {
+  beer_01: {
     ...beerBase,
     value: { value: "J", suit: "hearts" },
+    cardInstanceId: "beer_01",
   },
-  beer_2: {
+  beer_02: {
     ...beerBase,
     value: { value: "10", suit: "hearts" },
+    cardInstanceId: "beer_02",
   },
-  beer_3: {
+  beer_03: {
     ...beerBase,
     value: { value: "8", suit: "hearts" },
+    cardInstanceId: "beer_03",
   },
-  beer_4: {
+  beer_04: {
     ...beerBase,
     value: { value: "9", suit: "hearts" },
+    cardInstanceId: "beer_04",
   },
-  beer_5: {
+  beer_05: {
     ...beerBase,
     value: { value: "6", suit: "hearts" },
+    cardInstanceId: "beer_05",
   },
-  beer_6: {
+  beer_06: {
     ...beerBase,
     value: { value: "7", suit: "hearts" },
+    cardInstanceId: "beer_06",
   },
-  cat_balou_1: {
+  cat_balou_01: {
     ...cat_balouBase,
     value: { value: "K", suit: "hearts" },
+    cardInstanceId: "cat_balou_01",
   },
-  cat_baloue_2: {
+  cat_baloue_02: {
     ...cat_balouBase,
     value: { value: "J", suit: "diamonds" },
+    cardInstanceId: "cat_balou_02",
   },
-  cat_balou_3: {
+  cat_balou_03: {
     ...cat_balouBase,
     value: { value: "9", suit: "diamonds" },
+    cardInstanceId: "cat_balou_03",
   },
-  cat_baloue_4: {
+  cat_baloue_04: {
     ...cat_balouBase,
     value: { value: "10", suit: "diamonds" },
+    cardInstanceId: "cat_balou_04",
   },
-  duel_1: {
+  duel_01: {
     ...duelBase,
     value: { value: "8", suit: "clubs" },
+    cardInstanceId: "duel_01",
   },
-  duel_2: {
+  duel_02: {
     ...duelBase,
     value: { value: "J", suit: "spades" },
+    cardInstanceId: "duel_02",
   },
-  duel_3: {
+  duel_03: {
     ...duelBase,
     value: { value: "Q", suit: "diamonds" },
+    cardInstanceId: "duel_03",
   },
-  dynamite_1: {
+  dynamite_01: {
     ...dynamiteBase,
     value: { value: "2", suit: "hearts" },
+    cardInstanceId: "dynamite_01",
   },
-  gatling_1: {
+  gatling_01: {
     ...gatlingBase,
     value: { value: "10", suit: "hearts" },
+    cardInstanceId: "gatling_01",
   },
-  general_store_1: {
+  general_store_01: {
     ...general_storeBase,
     value: { value: "Q", suit: "spades" },
+    cardInstanceId: "general_store_01",
   },
-  general_store_2: {
+  general_store_02: {
     ...general_storeBase,
     value: { value: "9", suit: "clubs" },
+    cardInstanceId: "general_store_02",
   },
-  indians_1: {
+  indians_01: {
     ...indiansBase,
     value: { value: "A", suit: "diamonds" },
+    cardInstanceId: "indians_01",
   },
-  indians_2: {
+  indians_02: {
     ...indiansBase,
     value: { value: "K", suit: "diamonds" },
+    cardInstanceId: "indians_02",
   },
-  jail_1: {
+  jail_01: {
     ...jailBase,
     value: { value: "10", suit: "spades" },
+    cardInstanceId: "jail_01",
   },
-  jail_2: {
+  jail_02: {
     ...jailBase,
     value: { value: "J", suit: "spades" },
+    cardInstanceId: "jail_02",
   },
-  jail_3: {
+  jail_03: {
     ...jailBase,
     value: { value: "4", suit: "hearts" },
+    cardInstanceId: "jail_03",
   },
-  missed_1: {
+  missed_01: {
     ...missedBase,
     value: { value: "3", suit: "clubs" },
+    cardInstanceId: "missed_01",
   },
-  missed_2: {
+  missed_02: {
     ...missedBase,
     value: { value: "A", suit: "clubs" },
+    cardInstanceId: "missed_02",
   },
-  missed_3: {
+  missed_03: {
     ...missedBase,
     value: { value: "10", suit: "clubs" },
+    cardInstanceId: "missed_03",
   },
-  missed_4: {
+  missed_04: {
     ...missedBase,
     value: { value: "2", suit: "spades" },
+    cardInstanceId: "missed_04",
   },
-  missed_5: {
+  missed_05: {
     ...missedBase,
     value: { value: "4", suit: "spades" },
+    cardInstanceId: "missed_05",
   },
-  missed_6: {
+  missed_06: {
     ...missedBase,
     value: { value: "8", suit: "spades" },
+    cardInstanceId: "missed_06",
   },
-  missed_7: {
+  missed_07: {
     ...missedBase,
     value: { value: "3", suit: "spades" },
+    cardInstanceId: "missed_07",
   },
-  missed_8: {
+  missed_08: {
     ...missedBase,
     value: { value: "5", suit: "spades" },
+    cardInstanceId: "missed_08",
   },
-  missed_9: {
+  missed_09: {
     ...missedBase,
     value: { value: "7", suit: "spades" },
+    cardInstanceId: "missed_09",
   },
   missed_10: {
     ...missedBase,
     value: { value: "6", suit: "spades" },
+    cardInstanceId: "missed_10",
   },
   missed_11: {
     ...missedBase,
     value: { value: "Q", suit: "clubs" },
+    cardInstanceId: "missed_11",
   },
   missed_12: {
     ...missedBase,
     value: { value: "K", suit: "clubs" },
+    cardInstanceId: "missed_12",
   },
-  mustang_1: {
+  mustang_01: {
     ...mustangBase,
     value: { value: "9", suit: "hearts" },
+    cardInstanceId: "mustang_01",
   },
-  mustang_2: {
+  mustang_02: {
     ...mustangBase,
     value: { value: "8", suit: "hearts" },
+    cardInstanceId: "mustang_02",
   },
-  panic_1: {
+  panic_01: {
     ...panicBase,
     value: { value: "A", suit: "hearts" },
+    cardInstanceId: "panic_01",
   },
-  panic_2: {
+  panic_02: {
     ...panicBase,
     value: { value: "Q", suit: "hearts" },
+    cardInstanceId: "panic_02",
   },
-  panic_3: {
+  panic_03: {
     ...panicBase,
     value: { value: "8", suit: "diamonds" },
+    cardInstanceId: "panic_03",
   },
-  panic_4: {
+  panic_04: {
     ...panicBase,
     value: { value: "J", suit: "hearts" },
+    cardInstanceId: "panic_04",
   },
-  scope_1: {
+  scope_01: {
     ...scopeBase,
     value: { value: "A", suit: "spades" },
+    cardInstanceId: "scope_01",
   },
-  saloon_1: {
+  saloon_01: {
     ...saloonBase,
     value: { value: "5", suit: "hearts" },
+    cardInstanceId: "saloon_01",
   },
-  stagecoach_1: {
+  stagecoach_01: {
     ...stagecoachBase,
     value: { value: "9", suit: "spades" },
+    cardInstanceId: "stagecoach_01",
   },
-  stagecoach_2: {
+  stagecoach_02: {
     ...stagecoachBase,
     value: { value: "9", suit: "spades" },
+    cardInstanceId: "stagecoach_02",
   },
-  wells_fargo_1: {
+  wells_fargo_01: {
     ...wells_cargoBase,
     value: { value: "3", suit: "hearts" },
+    cardInstanceId: "wells_fargo_01",
   },
-} satisfies Record<string, Card>;
+} satisfies Record<string, PlayingCardMeta>;
 
 const WEAPONS = {
-  carabine_1: {
+  carabine_01: {
     ...carabineBase,
     value: { value: "A", suit: "clubs" },
+    cardInstanceId: "carabine_01",
   },
-  winchester_1: {
+  winchester_01: {
     ...winchesterBase,
     value: { value: "8", suit: "spades" },
+    cardInstanceId: "winchester_01",
   },
-  remington_1: {
+  remington_01: {
     ...remingtonBase,
     value: { value: "K", suit: "clubs" },
+    cardInstanceId: "remington_01",
   },
-  schofiled_1: {
+  schofiled_01: {
     ...schofieldBase,
     value: { value: "J", suit: "clubs" },
+    cardInstanceId: "schofiled_01",
   },
-  schofiled_2: {
+  schofiled_02: {
     ...schofieldBase,
     value: { value: "K", suit: "spades" },
+    cardInstanceId: "schofiled_02",
   },
-  schofiled_3: {
+  schofiled_03: {
     ...schofieldBase,
     value: { value: "Q", suit: "clubs" },
+    cardInstanceId: "schofiled_03",
   },
-  volcanic_1: {
+  volcanic_01: {
     ...volcanicBase,
     value: { value: "10", suit: "clubs" },
+    cardInstanceId: "volcanic_01",
   },
-  volcanic_2: {
+  volcanic_02: {
     ...volcanicBase,
     value: { value: "10", suit: "spades" },
+    cardInstanceId: "volcanic_02",
   },
-} satisfies Record<string, Card>;
+} satisfies Record<string, PlayingCardMeta>;
 
-export const CHARACTERS = {
+const CHARACTERS = {
   bart_cassidy: {
-    id: "bart_cassidy",
+    cardTypeId: "bart_cassidy",
     bullets: 4,
     image: "bart_cassidy",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "bart_cassidy" }]],
     pack: "base",
   },
   black_jack: {
-    id: "black_jack",
+    cardTypeId: "black_jack",
     bullets: 4,
     image: "black_jack",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "black_jack" }]],
     pack: "base",
   },
   calamity_janet: {
-    id: "calamity_janet",
+    cardTypeId: "calamity_janet",
     bullets: 4,
     image: "calamity_janet",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "calamity_janet" }]],
     pack: "base",
   },
   el_gringo: {
-    id: "el_gringo",
+    cardTypeId: "el_gringo",
     bullets: 3,
     image: "el_gringo",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "el_gringo" }]],
     pack: "base",
   },
   jesse_jones: {
-    id: "jesse_jones",
+    cardTypeId: "jesse_jones",
     bullets: 4,
     image: "jesse_jones",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "jesse_jones" }]],
     pack: "base",
   },
   jourdonnais: {
-    id: "jourdonnais",
+    cardTypeId: "jourdonnais",
     bullets: 4,
     image: "jourdonnais",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "jourdonnais" }]],
     pack: "base",
   },
   kit_carlson: {
-    id: "kit_carlson",
+    cardTypeId: "kit_carlson",
     bullets: 4,
     image: "kit_carlson",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "kit_carlson" }]],
     pack: "base",
   },
   lucky_duke: {
-    id: "lucky_duke",
+    cardTypeId: "lucky_duke",
     bullets: 4,
     image: "lucky_duke",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "lucky_duke" }]],
     pack: "base",
   },
   paul_regret: {
-    id: "paul_regret",
+    cardTypeId: "paul_regret",
     bullets: 3,
     image: "paul_regret",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "paul_regret" }]],
     pack: "base",
   },
   pedro_ramirez: {
-    id: "pedro_ramirez",
+    cardTypeId: "pedro_ramirez",
     bullets: 4,
     image: "pedro_ramirez",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "pedro_ramirez" }]],
     pack: "base",
   },
   rose_doolan: {
-    id: "rose_doolan",
+    cardTypeId: "rose_doolan",
     bullets: 4,
     image: "rose_doolan",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "rose_doolan" }]],
     pack: "base",
   },
   sid_ketchum: {
-    id: "sid_ketchum",
+    cardTypeId: "sid_ketchum",
     bullets: 4,
     image: "sid_ketchum",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "sid_ketchum" }]],
     pack: "base",
   },
   slab_the_killer: {
-    id: "slab_the_killer",
+    cardTypeId: "slab_the_killer",
     bullets: 4,
     image: "slab_the_killer",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "slab_the_killer" }]],
     pack: "base",
   },
   suzy_lafayette: {
-    id: "suzy_lafayette",
+    cardTypeId: "suzy_lafayette",
     bullets: 4,
     image: "suzy_lafayette",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "suzy_lafayette" }]],
     pack: "base",
   },
   vulture_sam: {
-    id: "vulture_sam",
+    cardTypeId: "vulture_sam",
     bullets: 4,
     image: "vulture_sam",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "vulture_sam" }]],
     pack: "base",
   },
   willy_the_kid: {
-    id: "willy_the_kid",
+    cardTypeId: "willy_the_kid",
     bullets: 4,
     image: "willy_the_kid",
     border: "green",
-    description: [[{ type: "text" }]],
+    description: [[{ type: "text", key: "willy_the_kid" }]],
     pack: "base",
   },
-} satisfies Record<string, CharacterCard>;
+} satisfies Record<string, CharacterCardMeta>;
 
 export const CARDS_BASE = {
   REGULAR,
