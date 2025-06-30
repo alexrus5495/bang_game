@@ -1,15 +1,17 @@
 import { useAppSelector } from "../hooks/useAppSelector";
+import { useMemo } from "react";
 import type { RootState } from "../store/index";
 
 export const useCardLocalization = (packId: string, cardId: string) => {
-  return useAppSelector((state: RootState) => {
-    const cardData =
-      state.locale.localizationData?.cards?.[packId]?.[cardId] || {};
+  const cardData = useAppSelector(
+    (state: RootState) =>
+      state.locale.localizationData?.cards?.[packId]?.[cardId],
+  );
 
-    console.log(state);
+  return useMemo(() => {
     return {
-      title: cardData.title || "fail",
-      desc: cardData.desc || "fail",
+      title: cardData?.title || "fail",
+      desc: cardData?.desc || "fail",
     };
-  });
+  }, [cardData?.title, cardData?.desc]);
 };
