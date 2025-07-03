@@ -1,6 +1,6 @@
 import React from "react";
-import { getImageComponent } from "../../lib/images";
-import type { CardDescription as CardDescriptionType } from "../../types";
+import { getImageComponent } from "../../../lib/images";
+import type { CardDescription as CardDescriptionType } from "../../../types";
 import { renderDescriptionBlock } from "./renderDescriptionBlock";
 
 export default function CardDescriptionComponent({
@@ -15,7 +15,6 @@ export default function CardDescriptionComponent({
   //Calculate line height:
   //(CONTAINER_HEIGHT - TOTAL_DIVIDERS_HEIGHT) / TOTAL_NUMBER_OF_LINES
   const lineHeight = `${Math.floor((135 - 6 * Math.max(0, totalLinesNumber - 1)) / totalLinesNumber)}px`;
-  if (totalLinesNumber === 2) console.log(lineHeight);
 
   const lineClasses = `flex items-center outline-red-500 justify-evenly`;
   const lineInlineStyle = { height: lineHeight };

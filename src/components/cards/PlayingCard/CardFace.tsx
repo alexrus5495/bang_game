@@ -1,11 +1,15 @@
-import { game } from "../../main";
-import { BORDER_COLORS } from "../../config/borders.config";
-import { useCardLocalization } from "../../hooks/useCardLocalization";
-import { Title, Border, Image, Description, TooltipIcon, RankAndSuit } from ".";
-
-interface CardProps {
-  cardId: (typeof game.deck)[number];
-}
+import { game } from "../../../main";
+import { BORDER_COLORS } from "../../../config/borders.config";
+import { useCardLocalization } from "../../../hooks/useCardLocalization";
+import type { CardProps } from "../types";
+import {
+  Title,
+  Border,
+  Image,
+  Description,
+  TooltipIcon,
+  RankAndSuit,
+} from "../shared/";
 
 export default function CardFace({ cardId }: CardProps) {
   const {
@@ -27,8 +31,7 @@ export default function CardFace({ cardId }: CardProps) {
     <div
       className="
         h-[500px] 
-        w-auto
-        aspect-[2/3]
+        w-[330px]
         relative"
     >
       <Border borderColor={borderColor} />

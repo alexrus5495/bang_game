@@ -1,4 +1,4 @@
-import { getImageComponent } from "../../lib/images";
+import { getImageComponent } from "../../../lib/images";
 
 export default function CardImageComponent({
   cardImage,

@@ -1,5 +1,5 @@
-import type { RankAndSuit } from "../../types";
-import { getImageComponent } from "../../lib/images";
+import type { RankAndSuit } from "../../../types";
+import { getImageComponent } from "../../../lib/images";
 
 export default function RankAndSuit({
   rankAndSuit,

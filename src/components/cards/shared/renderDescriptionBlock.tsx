@@ -1,5 +1,5 @@
 import { TextBlock, SymbolBlock } from "./DescriptionBlocks.tsx";
-import type { DescriptionContentBlock } from "../../types";
+import type { DescriptionContentBlock } from "../../../types.ts";
 import type { ReactElement } from "react";
 
 export function renderDescriptionBlock(
