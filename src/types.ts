@@ -37,3 +37,5 @@ export interface CharacterCardMeta {
   description: CardDescription;
   pack: (typeof CARDPACKS)[number];
 }
+
+export type DeckType = "main" | "char";

@@ -1,12 +1,12 @@
 export const deck = [];
 import { CARDPACKS } from "../config/cardpacks";
-import type { PlayingCardMeta } from "../types";
+import type { PlayingCardMeta, DeckType, CharacterCardMeta } from "../types";
 
 export class Deck {
   public deck: string[];
-  public meta: Record<string, PlayingCardMeta>;
+  public meta: Record<string, PlayingCardMeta | CharacterCardMeta>;
 
-  //NOTE: Constructor is private because async function is needed to dynamically import all needed json files.
+  //NOTE: The constructor is private because async function is needed to dynamically import all needed json files.
   //To create the deck *await Deck.create()* is used instead.
   //The logic behind creating the deck:
   //1. For every item in CARDPACKS config file the corresponding *meta file is dynamically imported
@@ -15,22 +15,25 @@ export class Deck {
   //and *deck* property that contains just ids of every card from enabled packs.
   private constructor() {
     this.deck = [];
-    this.meta = {} as Record<string, PlayingCardMeta>;
+    this.meta = {} as Record<string, PlayingCardMeta | CharacterCardMeta>;
   }
 
-  public static async create(): Promise<Deck> {
+  /** Returns an instanse of Deck class.
+   * @param deckType "char" to create Deck with characters cards or "main" to create regular deck.
+   **/
+  public static async create(deckType: DeckType): Promise<Deck> {
     const deck = new Deck();
-    await deck.loadPacks();
+    await deck.loadPacks(deckType);
     return deck;
   }
 
-  private async loadPacks() {
+  private async loadPacks(deckType: DeckType) {
     for (const pack of CARDPACKS) {
-      await this.addPack(pack);
+      await this.addPack(pack, deckType);
     }
   }
 
-  private async addPack(packName: string) {
+  private async addPack(packName: string, deckType: DeckType) {
     const packData = await this.importPack(packName);
 
     if (!packData) {
@@ -38,10 +41,10 @@ export class Deck {
       return;
     }
 
-    const { REGULAR, WEAPONS } = packData;
-
-    this.addCards(REGULAR);
-    this.addCards(WEAPONS);
+    if (deckType === "main") {
+      this.addCards(packData.REGULAR);
+      this.addCards(packData.WEAPONS);
+    } else this.addCards(packData.CHARACTERS);
   }
 
   private async importPack(packName: string) {
@@ -59,7 +62,7 @@ export class Deck {
     }
   }
 
-  private addCards(cards: PlayingCardMeta | undefined) {
+  private addCards(cards: PlayingCardMeta | CharacterCardMeta | undefined) {
     if (!cards) return;
 
     for (const [cardId, cardData] of Object.entries(cards)) {
