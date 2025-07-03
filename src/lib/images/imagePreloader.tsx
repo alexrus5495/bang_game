@@ -7,7 +7,7 @@ export async function preloadImages(): Promise<ImageResources> {
   const resources: ImageResources = {};
 
   for (const pack of CARDPACKS) {
-    const packModule = await import(`../../assets/images/${pack}/manifest`);
+    const packModule = await import(`../../assets/images/${pack}/manifest.ts`);
     const packManifest = (await packModule.default) as ImageManifest;
 
     for (const sectionContent of Object.values(packManifest)) {
