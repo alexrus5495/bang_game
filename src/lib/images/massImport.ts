@@ -1,8 +1,10 @@
-//NOTE: This function takes modules from 'import.meta.glob' and creates
-//an objects with relative paths to the elements inside them.
-
 type ViteGlobImport = Record<string, { default: string }>;
 
+/**
+ * This function takes the result of 'import.meta.glob' and returns
+ * an object with relative paths to the elements inside them.
+ *
+ **/
 export function createObjectsFromMassImport(
   modules: ViteGlobImport,
 ): Record<string, string> {
