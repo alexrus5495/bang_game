@@ -1,1 +1,45 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: "OldTowneLT";
+  src: url("./assets/fonts/old_towne_lt.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Palatino";
+  src: url("./assets/fonts/palatino.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Gabriela";
+  src: url("./assets/fonts/gabriela.ttf") format("truetype");
+}
+
+@layer base {
+  :root {
+    --font-oldtowne: "OldTowneLT", serif;
+    --font-palatino: "Palatino", serif;
+    --font-gabriela: "Gabriela", serif;
+  }
+  html {
+    font-family: var(--font-oldtowne);
+  }
+}
+
+@layer utilities {
+  .font-oldtowne {
+    font-family: var(--font-oldtowne);
+  }
+
+  .font-palatino {
+    font-family: var(--font-palatino);
+  }
+
+  .font-gabriela {
+    font-family: var(--font-gabriela);
+  }
+
+  .text-stroke-white {
+    -webkit-text-stroke: 0.9px white;
+  }
+}

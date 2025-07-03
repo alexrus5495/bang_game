@@ -1,46 +1,38 @@
-import { BORDER_STYLES } from "./config/borders.config";
+import { BORDER_COLORS } from "./config/borders.config";
 import type { CARDPACKS } from "./config/cardpacks";
-import { IMAGES } from "./config/images.manifest";
 
 type Suit = "clubs" | "diamonds" | "hearts" | "spades";
 
-export interface CardValue {
-  value: string;
+export interface RankAndSuit {
+  rank: string;
   suit: Suit;
 }
 
-//NOTE: BorderStyles are read as keys inside ./config/borders.config.ts
-// BORDER_STYLES object to allow easier expantion in the future.
-export type BorderStyle = keyof typeof BORDER_STYLES;
+export type BorderStyle = keyof typeof BORDER_COLORS;
 
-type AllImageKeys<T> = {
-  [Category in keyof T]: keyof T[Category];
-}[keyof T] &
-  string;
-
-type ImageName = AllImageKeys<typeof IMAGES>;
-
-type DescriptionContentBlock =
-  | { type: "text" }
+export type DescriptionContentBlock =
+  | { type: "text"; key: string }
+  | { type: "divider"; key: string }
   | { type: "symbol"; key: string };
 
 type DescriptionLine = DescriptionContentBlock[];
-type CardDescription = DescriptionLine[];
+export type CardDescription = DescriptionLine[];
 
-export interface Card {
-  id: string;
-  value: CardValue | null;
-  image: ImageName;
+export interface PlayingCardMeta {
+  cardTypeId: string;
+  cardInstanceId: string;
+  rankAndSuit: RankAndSuit | null;
+  image: string;
   border: BorderStyle;
   description: CardDescription;
   tooltipIcon: boolean;
   pack: (typeof CARDPACKS)[number];
 }
 
-export interface CharacterCard {
-  id: string;
+export interface CharacterCardMeta {
+  cardTypeId: string;
   bullets: number;
-  image: ImageName;
+  image: string;
   border: BorderStyle;
   description: CardDescription;
   pack: (typeof CARDPACKS)[number];
