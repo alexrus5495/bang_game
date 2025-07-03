@@ -1,8 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
-type CardScalerProps = {
-  children: React.ReactNode;
-};
+import type { CardScalerProps } from "../types";
 
 export default function CardScaler({ children }: CardScalerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
