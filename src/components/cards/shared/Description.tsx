@@ -16,7 +16,7 @@ export default function CardDescriptionComponent({
   //(CONTAINER_HEIGHT - TOTAL_DIVIDERS_HEIGHT) / TOTAL_NUMBER_OF_LINES
   const lineHeight = `${Math.floor((135 - 6 * Math.max(0, totalLinesNumber - 1)) / totalLinesNumber)}px`;
 
-  const lineClasses = `flex items-center outline-red-500 justify-evenly`;
+  const lineClasses = `flex items-center justify-evenly`;
   const lineInlineStyle = { height: lineHeight };
 
   return (
