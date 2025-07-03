@@ -23,7 +23,7 @@
     "title": "GATLING"
   },
   "general_store": {
-    "title": "GENERAL STORE",
+    "title": "GEN. STORE",
     "desc": "Reveal as many cards as players. Each player draws one."
   },
   "indians": {
@@ -129,7 +129,7 @@
     "desc": "Player needs 2 Missed! cards to cancel his BANG! card."
   },
   "suzy_lafayette": {
-    "title": "SUZE LAFAYETTE",
+    "title": "SUZY LAFAYETTE",
     "desc": "As soon as she has no cards in hand, she draws a card."
   },
   "vulture_sam": {
