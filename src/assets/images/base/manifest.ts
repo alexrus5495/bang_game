@@ -28,7 +28,7 @@ const weapons = import.meta.glob("./weapons/*.{png,svg,webp}", {
   eager: true,
 }) as Record<string, { default: string }>;
 
-export const IMAGES_BASE = {
+const IMAGES_BASE = {
   CARDBACKS: createObjectsFromMassImport(cardbacks),
   BORDERS: createObjectsFromMassImport(borders),
   CHARACTERS: createObjectsFromMassImport(characters),
