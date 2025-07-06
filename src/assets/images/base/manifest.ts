@@ -1,10 +1,14 @@
 import { createObjectsFromMassImport } from "../../../lib/images/massImport";
 
-const cardbacks = import.meta.glob("./cardbacks/*.{png,svg,webp}", {
+const borders = import.meta.glob("./borders/*.{png,svg,webp}", {
   eager: true,
 }) as Record<string, { default: string }>;
 
-const borders = import.meta.glob("./borders/*.{png,svg,webp}", {
+const misc = import.meta.glob("./misc/*.{png,svg,webp}", {
+  eager: true,
+}) as Record<string, { default: string }>;
+
+const cardbacks = import.meta.glob("./cardbacks/*.{png,svg,webp}", {
   eager: true,
 }) as Record<string, { default: string }>;
 
@@ -29,9 +33,10 @@ const weapons = import.meta.glob("./weapons/*.{png,svg,webp}", {
 }) as Record<string, { default: string }>;
 
 const IMAGES_BASE = {
-  CARDBACKS: createObjectsFromMassImport(cardbacks),
   BORDERS: createObjectsFromMassImport(borders),
+  CARDBACKS: createObjectsFromMassImport(cardbacks),
   CHARACTERS: createObjectsFromMassImport(characters),
+  MISC: createObjectsFromMassImport(misc),
   REGULAR: createObjectsFromMassImport(regular),
   ROLES: createObjectsFromMassImport(roles),
   SYMBOLS: createObjectsFromMassImport(symbols),
