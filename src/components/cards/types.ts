@@ -1,7 +1,6 @@
-import { game } from "../../main";
-
 export interface CardProps {
-  cardId: (typeof game.deck)[number];
+  cardId: string;
+  cardType: "playing" | "character" | "role";
 }
 
 export type CardScalerProps = {

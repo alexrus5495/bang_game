@@ -14,13 +14,15 @@ export default function CardDescriptionComponent({
 
   //Calculate line height:
   //(CONTAINER_HEIGHT - TOTAL_DIVIDERS_HEIGHT) / TOTAL_NUMBER_OF_LINES
-  const lineHeight = `${Math.floor((135 - 6 * Math.max(0, totalLinesNumber - 1)) / totalLinesNumber)}px`;
+  const lineHeight = `${Math.floor((175 - 8 * Math.max(0, totalLinesNumber - 1)) / totalLinesNumber)}px`;
 
   const lineClasses = `flex items-center justify-evenly`;
   const lineInlineStyle = { height: lineHeight };
 
   return (
-    <div className={`h-[135px] w-full flex flex-col`}>
+    <div
+      className={`h-[175px] mt-[5px] w-full pl-[10px] pr-[10px] flex flex-col`}
+    >
       {description.map((line, lineIndex) => (
         <React.Fragment key={`line-${lineIndex}`}>
           <div style={lineInlineStyle} className={lineClasses}>
@@ -38,7 +40,7 @@ export default function CardDescriptionComponent({
           {/* Render divider after each line except the last one*/}
           {lineIndex !== description.length - 1 &&
             getImageComponent("divider", {
-              className: "h-[6px] m-auto",
+              className: "h-[8px] m-auto",
             })}
         </React.Fragment>
       ))}

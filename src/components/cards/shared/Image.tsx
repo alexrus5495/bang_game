@@ -7,7 +7,9 @@ export default function CardImageComponent({
 }) {
   return (
     <>
-      {getImageComponent(cardImage, { className: "w-[230px] m-auto border" })}
+      {getImageComponent(cardImage, {
+        className: "w-[355px] border h-auto m-auto",
+      })}
     </>
   );
 }

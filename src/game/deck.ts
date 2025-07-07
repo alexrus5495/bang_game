@@ -19,7 +19,8 @@ export class Deck {
   }
 
   /** Returns an instanse of Deck class.
-   * @param deckType "char" to create Deck with characters cards or "main" to create regular deck.
+   * @param deckType "char" - creates a Deck with character cards, "main" - creates
+   * a Deck with playing cards, "role" - creates a Deck with role cards.
    **/
   public static async create(deckType: DeckType): Promise<Deck> {
     const deck = new Deck();
@@ -44,7 +45,9 @@ export class Deck {
     if (deckType === "main") {
       this.addCards(packData.REGULAR);
       this.addCards(packData.WEAPONS);
-    } else this.addCards(packData.CHARACTERS);
+    } else if (deckType === "char") {
+      this.addCards(packData.CHARACTERS);
+    } else this.addCards(packData.ROLES);
   }
 
   private async importPack(packName: string) {

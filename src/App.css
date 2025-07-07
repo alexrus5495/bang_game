@@ -20,9 +20,11 @@
     --font-oldtowne: "OldTowneLT", serif;
     --font-palatino: "Palatino", serif;
     --font-gabriela: "Gabriela", serif;
+    --black1: #252325;
   }
   html {
     font-family: var(--font-oldtowne);
+    color: var(--black1);
   }
 }
 
@@ -41,5 +43,30 @@
 
   .text-stroke-white {
     -webkit-text-stroke: 0.9px white;
+  }
+
+  .mask-border-none {
+    mask: url(../src/assets/images/base/misc/_mask_border_none.svg);
+  }
+
+  .mask-border-base {
+    mask: url(../src/assets/images/base/misc/_mask_border_base.svg);
+  }
+
+  .mask-bulletHoles {
+    mask: url(../src/assets/images/base/misc/_mask_bullet_holes.svg);
+  }
+
+  .mask-weathered {
+    mask: url(../src/assets/images/base/misc/_mask_weathered.png) 0 0/ 190px
+      90px;
+  }
+
+  .bg-gradient-custom-1 {
+    background: radial-gradient(
+      circle,
+      rgba(255, 250, 245, 1) 20%,
+      rgba(230, 194, 165, 1) 90%
+    );
   }
 }

@@ -12,11 +12,11 @@ export default function RankAndSuit({
     w-auto
     absolute
     flex
-    bottom-[10px]
-    left-4`;
+    -bottom-[20px]
+    -left-[13px]`;
   const rankClasses =
-    "font-gabriela text-[35px] leading-none text-stroke-white font-bold";
-  const suitClasses = "h-[30px] m-auto";
+    "font-gabriela text-[50px] leading-none text-stroke-white font-bold";
+  const suitClasses = "h-[46px] m-auto";
 
   return (
     <div className={containerClasses}>

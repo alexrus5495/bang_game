@@ -14,10 +14,9 @@ export function TextBlock({
     <p
       className="
         font-palatino
-        text-[21px]
-        leading-none
+        text-[29px]
+        leading-[35px]
         text-center
-        italic
       "
     >
       {text}
@@ -32,16 +31,21 @@ export function SymbolBlock({
   symbolKey: string;
   totalLinesNumber: number;
 }) {
-  let mt, mb;
+  let dynamicClasses = "";
+
+  //Basic tweaks
   if (totalLinesNumber === 1) {
-    mt = "pt-[35px]";
-    mb = "pb-[35px]";
-  } else {
-    mt = "pt-[10px]";
-    mb = "pb-[10px]";
+    dynamicClasses = "pt-[25px] pb-[25px]";
   }
 
-  const symbolClasses = `h-full ${mt} ${mb}`;
+  //Card specific tweaks
+  if (totalLinesNumber !== 1 && symbolKey === "heal") {
+    dynamicClasses = `${dynamicClasses} scale-[1.2]`;
+  } else if (totalLinesNumber === 1 && symbolKey === "all") {
+    dynamicClasses = `${dynamicClasses} scale-[0.8]`;
+  }
+
+  const symbolClasses = `h-full ${dynamicClasses}`;
 
   return (
     <>

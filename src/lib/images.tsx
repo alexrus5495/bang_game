@@ -19,10 +19,8 @@ export function getImageComponent(
 
   //Special rules for specific images
   let extraProps;
-  if (imageId === "miss") {
-    extraProps = { className: "-rotate-25" };
-  } else if (imageId === "equals") {
-    extraProps = { className: "pl-0 pr-0" };
+  if (imageId === "equals") {
+    extraProps = { className: "pl-3 pr-0" };
   }
 
   //Integrating special rules
@@ -39,7 +37,6 @@ export function getImageComponent(
   } else {
     const imgOptions = {
       ...options,
-      ...extraProps,
       className: combinedClassName,
     } as React.ImgHTMLAttributes<HTMLImageElement> &
       RegularImageComponentCustomProps;

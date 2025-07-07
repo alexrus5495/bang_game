@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { CardScalerProps } from "../types";
+import { CARD_CONTAINER_HEIGHT, CARD_CONTAINER_WIDTH } from "./constants";
 
 export default function CardScaler({ children }: CardScalerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -14,8 +15,8 @@ export default function CardScaler({ children }: CardScalerProps) {
       const container = containerRef.current;
       if (!container) return;
 
-      //Calculate scale factor: FINAL_HEIGHT / CARD_FACE_HEIGHT
-      const newScale = container.clientHeight / 500;
+      //Calculate scale factor
+      const newScale = container.clientHeight / CARD_CONTAINER_HEIGHT;
 
       setScale(newScale);
     };
@@ -32,7 +33,7 @@ export default function CardScaler({ children }: CardScalerProps) {
     <div
       ref={containerRef}
       className="h-full flex items-center justify-center"
-      style={{ width: `${330 * scale}px` }}
+      style={{ width: `${CARD_CONTAINER_WIDTH * scale}px` }}
     >
       <div className="origin-center" style={{ transform: `scale(${scale})` }}>
         {children}

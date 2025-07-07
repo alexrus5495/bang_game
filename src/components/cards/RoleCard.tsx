@@ -1,10 +1,10 @@
 import CardFace from "./shared/CardFace";
 import CardScaler from "./shared/CardScaler";
 
-export default function PlayingCard({ cardId }: { cardId: string }) {
+export default function RoleCard({ cardId }: { cardId: string }) {
   return (
     <CardScaler>
-      <CardFace cardId={cardId} cardType={"playing"} />
+      <CardFace cardId={cardId} cardType={"role"} />
     </CardScaler>
   );
 }

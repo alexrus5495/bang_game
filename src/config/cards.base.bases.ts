@@ -4,7 +4,9 @@ export const bangBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
   {
     cardTypeId: "bang",
     image: "bang_1",
-    border: "yellow",
+    borderColor: "yellow",
+    borderType: "base",
+    decorations: ["bullet_holes"],
     description: [
       [
         { type: "symbol", key: "bang" },
@@ -21,7 +23,9 @@ export const barrelBase: Omit<
 > = {
   cardTypeId: "barrel",
   image: "barrel",
-  border: "blue",
+  borderColor: "blue",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [
     [
       { type: "symbol", key: "range_hearts" },
@@ -37,7 +41,9 @@ export const beerBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
   {
     cardTypeId: "beer",
     image: "beer",
-    border: "yellow",
+    borderColor: "yellow",
+    borderType: "base",
+    decorations: ["bullet_holes"],
     description: [[{ type: "symbol", key: "heal" }]],
     tooltipIcon: false,
     pack: "base",
@@ -49,7 +55,9 @@ export const cat_balouBase: Omit<
 > = {
   cardTypeId: "cat_balou",
   image: "cat_balou",
-  border: "yellow",
+  borderColor: "yellow",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [
     [
       { type: "symbol", key: "discard" },
@@ -64,7 +72,9 @@ export const duelBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
   {
     cardTypeId: "duel",
     image: "duel",
-    border: "yellow",
+    borderColor: "yellow",
+    borderType: "base",
+    decorations: ["bullet_holes"],
     description: [[{ type: "text", key: "duel" }]],
     tooltipIcon: true,
     pack: "base",
@@ -76,7 +86,9 @@ export const dynamiteBase: Omit<
 > = {
   cardTypeId: "dynamite",
   image: "dynamite",
-  border: "blue",
+  borderColor: "blue",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [
     [
       { type: "symbol", key: "range_spades_2-9" },
@@ -94,7 +106,9 @@ export const gatlingBase: Omit<
 > = {
   cardTypeId: "gatling",
   image: "gatling",
-  border: "yellow",
+  borderColor: "yellow",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [
     [
       { type: "symbol", key: "bang" },
@@ -111,7 +125,9 @@ export const general_storeBase: Omit<
 > = {
   cardTypeId: "general_store",
   image: "general_store",
-  border: "yellow",
+  borderColor: "yellow",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [[{ type: "text", key: "general_store" }]],
   tooltipIcon: true,
   pack: "base",
@@ -123,7 +139,9 @@ export const indiansBase: Omit<
 > = {
   cardTypeId: "indians",
   image: "indians",
-  border: "yellow",
+  borderColor: "yellow",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [[{ type: "text", key: "indians" }]],
   tooltipIcon: true,
   pack: "base",
@@ -133,7 +151,9 @@ export const jailBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
   {
     cardTypeId: "jail",
     image: "jail",
-    border: "blue",
+    borderColor: "blue",
+    borderType: "base",
+    decorations: ["bullet_holes"],
     description: [
       [
         { type: "symbol", key: "range_hearts" },
@@ -151,7 +171,9 @@ export const missedBase: Omit<
 > = {
   cardTypeId: "missed",
   image: "missed",
-  border: "yellow",
+  borderColor: "yellow",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [[{ type: "symbol", key: "miss" }]],
   tooltipIcon: false,
   pack: "base",
@@ -163,7 +185,9 @@ export const mustangBase: Omit<
 > = {
   cardTypeId: "mustang",
   image: "mustang",
-  border: "blue",
+  borderColor: "blue",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [[{ type: "text", key: "mustang" }]],
   tooltipIcon: false,
   pack: "base",
@@ -175,7 +199,9 @@ export const panicBase: Omit<
 > = {
   cardTypeId: "panic",
   image: "panic",
-  border: "yellow",
+  borderColor: "yellow",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [
     [
       { type: "symbol", key: "draw" },
@@ -192,7 +218,9 @@ export const saloonBase: Omit<
 > = {
   cardTypeId: "saloon",
   image: "saloon",
-  border: "yellow",
+  borderColor: "yellow",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [
     [
       { type: "symbol", key: "heal" },
@@ -210,7 +238,9 @@ export const scopeBase: Omit<
 > = {
   cardTypeId: "scope",
   image: "scope",
-  border: "blue",
+  borderColor: "blue",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [[{ type: "text", key: "scope" }]],
   tooltipIcon: false,
   pack: "base",
@@ -222,7 +252,9 @@ export const stagecoachBase: Omit<
 > = {
   cardTypeId: "stagecoach",
   image: "stagecoach",
-  border: "yellow",
+  borderColor: "yellow",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [
     [
       { type: "symbol", key: "draw" },
@@ -239,7 +271,9 @@ export const wells_cargoBase: Omit<
 > = {
   cardTypeId: "wells_fargo",
   image: "wells_fargo",
-  border: "yellow",
+  borderColor: "yellow",
+  borderType: "base",
+  decorations: ["bullet_holes"],
   description: [
     [
       { type: "symbol", key: "draw" },
@@ -257,7 +291,9 @@ export const carabineBase: Omit<
 > = {
   cardTypeId: "carabine",
   image: "carabine",
-  border: "blue",
+  borderColor: "blue",
+  borderType: "base",
+  decorations: [],
   description: [[{ type: "symbol", key: "four" }]],
   tooltipIcon: false,
   pack: "base",
@@ -269,7 +305,9 @@ export const remingtonBase: Omit<
 > = {
   cardTypeId: "remington",
   image: "remington",
-  border: "blue",
+  borderColor: "blue",
+  borderType: "base",
+  decorations: [],
   description: [[{ type: "symbol", key: "three" }]],
   tooltipIcon: false,
   pack: "base",
@@ -281,7 +319,9 @@ export const winchesterBase: Omit<
 > = {
   cardTypeId: "winchester",
   image: "winchester",
-  border: "blue",
+  borderColor: "blue",
+  borderType: "base",
+  decorations: [],
   description: [[{ type: "symbol", key: "five" }]],
   tooltipIcon: false,
   pack: "base",
@@ -293,7 +333,9 @@ export const schofieldBase: Omit<
 > = {
   cardTypeId: "schofield",
   image: "schofield",
-  border: "blue",
+  borderColor: "blue",
+  borderType: "base",
+  decorations: [],
   description: [[{ type: "symbol", key: "two" }]],
   tooltipIcon: false,
   pack: "base",
@@ -305,7 +347,9 @@ export const volcanicBase: Omit<
 > = {
   cardTypeId: "volcanic",
   image: "volcanic",
-  border: "blue",
+  borderColor: "blue",
+  borderType: "base",
+  decorations: [],
   description: [[{ type: "text", key: "volcanic" }]],
   tooltipIcon: true,
   pack: "base",

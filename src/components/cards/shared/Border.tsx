@@ -1,16 +1,30 @@
-import { getImageComponent } from "../../../lib/images";
+import { BORDER_COLORS } from "../../../config/borders.config";
+import type { BorderColor, BorderType } from "../../../types";
+import BorderMask from "./BorderMask";
+import { CARD_CONTAINER_BORDER_RADIUS } from "./constants";
 
-export default function BorderComponent({
+export default function Border({
+  borderType,
   borderColor,
 }: {
-  borderColor: string;
-}): React.ReactElement {
+  borderType: BorderType;
+  borderColor: BorderColor;
+}) {
+  const backgroundColor =
+    borderColor !== "none" ? BORDER_COLORS[borderColor].color : "";
+
+  const gradientClass = borderColor !== "none" ? "" : "bg-gradient-custom-1";
+
   return (
     <>
-      {getImageComponent("border_1", {
-        color: borderColor,
-        className: "w-full h-full absolute rounded-[25px]",
-      })}
+      <BorderMask borderType={borderType} />
+      <div
+        className={`h-full w-full ${gradientClass}`}
+        style={{
+          borderRadius: `${CARD_CONTAINER_BORDER_RADIUS}px`,
+          backgroundColor: backgroundColor,
+        }}
+      ></div>
     </>
   );
 }
