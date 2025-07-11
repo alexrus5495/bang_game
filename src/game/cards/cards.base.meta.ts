@@ -2,7 +2,7 @@ import type {
   PlayingCardMeta,
   CharacterCardMeta,
   RoleCardMeta,
-} from "../types";
+} from "../../types";
 import {
   bangBase,
   barrelBase,

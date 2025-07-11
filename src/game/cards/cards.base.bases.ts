@@ -1,4 +1,4 @@
-import type { PlayingCardMeta } from "../types";
+import type { PlayingCardMeta } from "../../types";
 
 export const bangBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
   {
@@ -15,6 +15,11 @@ export const bangBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
     ],
     tooltipIcon: false,
     pack: "base",
+    effect: {
+      target: "one",
+      range: "inherit",
+      isEquipment: false,
+    },
   };
 
 export const barrelBase: Omit<
@@ -35,6 +40,11 @@ export const barrelBase: Omit<
   ],
   tooltipIcon: false,
   pack: "base",
+  effect: {
+    target: "self",
+    range: "none",
+    isEquipment: true,
+  },
 };
 
 export const beerBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
@@ -47,6 +57,11 @@ export const beerBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
     description: [[{ type: "symbol", key: "heal" }]],
     tooltipIcon: false,
     pack: "base",
+    effect: {
+      target: "self",
+      range: "none",
+      isEquipment: false,
+    },
   };
 
 export const cat_balouBase: Omit<
@@ -66,6 +81,7 @@ export const cat_balouBase: Omit<
   ],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "one", range: "none", isEquipment: false },
 };
 
 export const duelBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
@@ -78,6 +94,7 @@ export const duelBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
     description: [[{ type: "text", key: "duel" }]],
     tooltipIcon: true,
     pack: "base",
+    effect: { target: "one", range: "none", isEquipment: false },
   };
 
 export const dynamiteBase: Omit<
@@ -98,6 +115,7 @@ export const dynamiteBase: Omit<
   ],
   tooltipIcon: true,
   pack: "base",
+  effect: { target: "self", range: "none", isEquipment: true },
 };
 
 export const gatlingBase: Omit<
@@ -117,6 +135,7 @@ export const gatlingBase: Omit<
   ],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "many", range: "none", isEquipment: false },
 };
 
 export const general_storeBase: Omit<
@@ -131,6 +150,7 @@ export const general_storeBase: Omit<
   description: [[{ type: "text", key: "general_store" }]],
   tooltipIcon: true,
   pack: "base",
+  effect: { target: "all", range: "none", isEquipment: false },
 };
 
 export const indiansBase: Omit<
@@ -145,6 +165,7 @@ export const indiansBase: Omit<
   description: [[{ type: "text", key: "indians" }]],
   tooltipIcon: true,
   pack: "base",
+  effect: { target: "many", range: "none", isEquipment: false },
 };
 
 export const jailBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
@@ -163,6 +184,11 @@ export const jailBase: Omit<PlayingCardMeta, "rankAndSuit" | "cardInstanceId"> =
     ],
     tooltipIcon: true,
     pack: "base",
+    effect: {
+      target: "one",
+      range: "none",
+      isEquipment: true,
+    },
   };
 
 export const missedBase: Omit<
@@ -177,6 +203,7 @@ export const missedBase: Omit<
   description: [[{ type: "symbol", key: "miss" }]],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "self", range: "none", isEquipment: false },
 };
 
 export const mustangBase: Omit<
@@ -191,6 +218,7 @@ export const mustangBase: Omit<
   description: [[{ type: "text", key: "mustang" }]],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "self", range: "none", isEquipment: true },
 };
 
 export const panicBase: Omit<
@@ -210,6 +238,7 @@ export const panicBase: Omit<
   ],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "self", range: 1, isEquipment: false },
 };
 
 export const saloonBase: Omit<
@@ -230,6 +259,7 @@ export const saloonBase: Omit<
   ],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "all", range: "none", isEquipment: false },
 };
 
 export const scopeBase: Omit<
@@ -244,6 +274,7 @@ export const scopeBase: Omit<
   description: [[{ type: "text", key: "scope" }]],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "self", range: "none", isEquipment: true },
 };
 
 export const stagecoachBase: Omit<
@@ -263,6 +294,7 @@ export const stagecoachBase: Omit<
   ],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "self", range: "none", isEquipment: false },
 };
 
 export const wells_cargoBase: Omit<
@@ -283,6 +315,7 @@ export const wells_cargoBase: Omit<
   ],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "self", range: "none", isEquipment: false },
 };
 
 export const carabineBase: Omit<
@@ -297,6 +330,7 @@ export const carabineBase: Omit<
   description: [[{ type: "symbol", key: "four" }]],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "self", range: "none", isEquipment: true },
 };
 
 export const remingtonBase: Omit<
@@ -311,6 +345,7 @@ export const remingtonBase: Omit<
   description: [[{ type: "symbol", key: "three" }]],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "self", range: "none", isEquipment: true },
 };
 
 export const winchesterBase: Omit<
@@ -325,6 +360,7 @@ export const winchesterBase: Omit<
   description: [[{ type: "symbol", key: "five" }]],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "self", range: "none", isEquipment: true },
 };
 
 export const schofieldBase: Omit<
@@ -339,6 +375,7 @@ export const schofieldBase: Omit<
   description: [[{ type: "symbol", key: "two" }]],
   tooltipIcon: false,
   pack: "base",
+  effect: { target: "self", range: "none", isEquipment: true },
 };
 
 export const volcanicBase: Omit<
@@ -353,4 +390,5 @@ export const volcanicBase: Omit<
   description: [[{ type: "text", key: "volcanic" }]],
   tooltipIcon: true,
   pack: "base",
+  effect: { target: "self", range: "none", isEquipment: true },
 };
