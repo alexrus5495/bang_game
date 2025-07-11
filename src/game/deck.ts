@@ -52,7 +52,7 @@ export class Deck {
 
   private async importPack(packName: string) {
     try {
-      const pack = await import(`../config/cards.${packName}.meta.ts`);
+      const pack = await import(`./cards/cards.${packName}.meta.ts`);
       return pack[`CARDS_${packName.toUpperCase()}`];
     } catch (e) {
       throw new Error(
@@ -85,5 +85,11 @@ export class Deck {
       [result[i], result[j]] = [result[j], result[i]];
     }
     this.deck = result;
+  }
+
+  public get isDeckEmpty() {
+    if (this.deck[0] === undefined) {
+      return true;
+    } else return false;
   }
 }

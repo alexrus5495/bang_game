@@ -3,6 +3,7 @@ import type { CARDPACKS } from "./config/cardpacks";
 import type { CARD_DECORATIONS } from "./config/decorations.config";
 
 type Suit = "clubs" | "diamonds" | "hearts" | "spades";
+export type Role = "sheriff" | "deputy" | "outlaw" | "renegade";
 
 export interface RankAndSuit {
   rank: string;
@@ -22,6 +23,12 @@ export type DescriptionContentBlock =
 type DescriptionLine = DescriptionContentBlock[];
 export type CardDescription = DescriptionLine[];
 
+type CardEffectType = {
+  target: "self" | "many" | "one" | "all";
+  range: "none" | "inherit" | number;
+  isEquipment: boolean;
+};
+
 export interface PlayingCardMeta {
   cardTypeId: string;
   cardInstanceId: string;
@@ -33,6 +40,7 @@ export interface PlayingCardMeta {
   description: CardDescription;
   tooltipIcon: boolean;
   pack: (typeof CARDPACKS)[number];
+  effect: CardEffectType;
 }
 
 export interface CharacterCardMeta {
