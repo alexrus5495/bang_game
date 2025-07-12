@@ -51,6 +51,10 @@ export class CardController {
     return options;
   }
 
+  discardCard(card: string) {
+    this.state.discardPile.push(card);
+  }
+
   newDeckFromDiscardPile() {
     this.state._deck.deck = this.state.discardPile;
     this.state._deck.shuffle();

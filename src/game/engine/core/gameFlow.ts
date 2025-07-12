@@ -24,12 +24,11 @@ export class GameFlow {
 
   startGame() {
     console.log("Game has started!");
-
-    this.initiatePlayersTurn(this.SC.playerCtrl.currentPlayer);
+    this.initiatePlayersTurn(this.SC.player.getCurrentPlayer());
   }
 
   private initiatePlayersTurn(currentPlayer: number) {
-    const player = this.SC.playerCtrl.getPlayer(currentPlayer);
+    const player = this.SC.player.getPlayer(currentPlayer);
     console.log(`Player (${player.nickname}) turn has started!`);
 
     this.initiateDrawingPhase(player);
@@ -41,7 +40,7 @@ export class GameFlow {
     //TODO: add exceptions for some chars.
     const cardsToDraw = 2;
 
-    this.SC.drawToHand(player, cardsToDraw);
+    this.SC.cards.drawToHand(player, cardsToDraw);
 
     console.log(`Player (${player.nickname}) has drawn ${cardsToDraw} cards.`);
     console.log(`Cards in hand now: ${player.hand.length}`);
@@ -57,7 +56,7 @@ export class GameFlow {
 
   private initiatePlayingPhase(player: Player) {
     console.log("PHASE 2 - PLAYING CARDS");
-    this.SC.playerCtrl.resetBangCounter(player);
+    this.SC.player.resetBangCounter(player);
   }
 
   private endPlayingPhase(player: Player) {
@@ -89,14 +88,14 @@ export class GameFlow {
   private passTurn() {
     console.log(`Passing turn...`);
 
-    const newPlayerIndex = this.SC.playerCtrl.getNewCurrentPlayer(
-      this.SC.playerCtrl.currentPlayer,
+    const newPlayerIndex = this.SC.player.getNewCurrentPlayer(
+      this.SC.player.getCurrentPlayer(),
     );
 
-    this.SC.playerCtrl.setCurrentPlayer(newPlayerIndex);
+    this.SC.player.setCurrentPlayer(newPlayerIndex);
 
     console.log(
-      `New current player: Player ${newPlayerIndex}(${this.SC.playerCtrl.getPlayer(newPlayerIndex).nickname})`,
+      `New current player: Player ${newPlayerIndex}(${this.SC.player.getPlayer(newPlayerIndex).nickname})`,
     );
 
     this.initiatePlayersTurn(newPlayerIndex);
@@ -107,9 +106,9 @@ export class GameFlow {
     playerIndex: number,
     targetPlayerIndex?: number,
   ) {
-    const player = this.SC.playerCtrl.getPlayer(playerIndex);
+    const player = this.SC.player.getPlayer(playerIndex);
     const targetPlayer = targetPlayerIndex
-      ? this.SC.playerCtrl.getPlayer(targetPlayerIndex)
+      ? this.SC.player.getPlayer(targetPlayerIndex)
       : undefined;
 
     if (targetPlayer && targetPlayer.flags.isEliminated) {
@@ -131,7 +130,7 @@ export class GameFlow {
       cardId = this.validator.tryCalamityJanetCardSwap(cardId, player);
 
     this.triggerCardEffect(cardId, player, targetPlayer);
-    this.SC.playerCtrl.discardFromHand(cardIndex, player);
+    this.SC.cards.discartFromHand(cardIndex, player);
   }
 
   private triggerCardEffect(

@@ -1,68 +1,53 @@
+import type { PromiseManager } from "./promiseManager";
+import type { TimerManager } from "./timerManager";
+
 export interface RuntimePromise {
   promise: Promise<boolean> | undefined;
   resolve: ((result: boolean) => void) | undefined;
 }
 
 export class Runtime {
-  private promises: Record<string, RuntimePromise>;
-  private timers: Record<string, number | undefined>;
+  private promiseMngr: PromiseManager;
+  private timerMngr: TimerManager;
 
-  constructor() {
-    this.promises = {};
-    this.timers = {};
+  constructor(promiseMngr: PromiseManager, timerMngr: TimerManager) {
+    this.promiseMngr = promiseMngr;
+    this.timerMngr = timerMngr;
   }
 
-  public setRuntimePromise(
+  setRuntimePromise(
     name: string,
     autoResolveTimer?: number,
     autoResolveValue: boolean = false,
   ) {
-    this._cleanupRuntimePromise(name);
-
-    this.promises[name].promise = new Promise<boolean>((resolve) => {
-      this.promises[name].resolve = resolve;
-    });
+    this.promiseMngr.setRuntimePromise(name);
 
     if (autoResolveTimer) {
-      this.cleanupRuntimeTimer(name);
-      this.setRuntimeTimer(
+      this.timerMngr.cleanupRuntimeTimer(name);
+      this.timerMngr.setRuntimeTimer(
         name,
-        () => this.resolveRuntimePromise(name, autoResolveValue),
+        () => this.promiseMngr.resolveRuntimePromise(name, autoResolveValue),
         autoResolveTimer,
       );
     }
   }
 
-  public resolveRuntimePromise(name: string, result: boolean) {
-    const promiseObj = this.promises[name];
-    if (promiseObj?.resolve) {
-      promiseObj.resolve(result);
-      this._cleanupRuntimePromise(name);
-    }
+  resolveRuntimePromise(name: string, result: boolean) {
+    this.promiseMngr.resolveRuntimePromise(name, result);
   }
 
-  private _cleanupRuntimePromise(name: string) {
-    this.promises[name] = {
-      promise: undefined,
-      resolve: undefined,
-    };
+  setRuntimeTimer(name: string, handler: () => void, timeout: number) {
+    this.timerMngr.setRuntimeTimer(name, handler, timeout);
   }
 
-  public getRuntimePromise(name: string) {
-    return this.promises[name].promise;
+  cleanupRuntimeTimer(name: string) {
+    this.timerMngr.cleanupRuntimeTimer(name);
   }
 
-  public setRuntimeTimer(name: string, handler: () => void, timeout: number) {
-    this.timers[name] = setTimeout(() => {
-      handler();
-      this.timers[name] = undefined;
-    }, timeout);
-  }
+  getRuntimePromise(name: string) {
+    const promise = this.promiseMngr.promises[name].promise;
 
-  public cleanupRuntimeTimer(name: string) {
-    if (name in this.timers) {
-      clearTimeout(this.timers[name]);
-      this.timers[name] = undefined;
-    }
+    if (promise) return promise;
+    else throw new Error(`Failed to get promise: ${name}`);
   }
 }

@@ -7,6 +7,6 @@ export class InteractionController {
     this.SC = stateController;
   }
   onPlayerPickChar(player: Player, option: 0 | 1) {
-    this.SC.playerCtrl.setPlayerChar(player, option);
+    this.SC.player.setChar(player, option);
   }
 }

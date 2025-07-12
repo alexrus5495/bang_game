@@ -1,5 +1,6 @@
 import type { GameStateController } from "../state/gameStateController";
 import type { Runtime } from "../runtime/runtime";
+import { promiseKeys } from "../runtime/runtimeKeys";
 
 export class MatchPreparer {
   SC: GameStateController;
@@ -16,25 +17,28 @@ export class MatchPreparer {
   }
 
   async assingPlayers() {
-    this.runtime.setRuntimePromise("allPlayersAssigned", 60000, false);
+    this.runtime.setRuntimePromise(
+      promiseKeys.allPlayersAssigned,
+      60000,
+      false,
+    );
 
-    const allPlayersAssignedSuccessfully =
-      await this.runtime.getRuntimePromise("allPlayersAssigned");
+    const allPlayersAssignedSuccessfully = this.runtime.getRuntimePromise(
+      promiseKeys.allPlayersAssigned,
+    );
 
     if (!allPlayersAssignedSuccessfully)
       throw new Error("Players failed to connect in time");
   }
 
-  async dealAllCards() {
-    this.SC.dealRoleCards();
-    this.SC.dealCharCards();
-    await this.waitForCharSelection();
-    this.SC.dealPlayingCards();
+  private async waitForCharSelection() {
+    await this.runtime.getRuntimePromise(promiseKeys.charSelection);
   }
 
-  private async waitForCharSelection() {
-    //NOTE: something probably wrong here, possibly need to refactor logic
-    //to consider (true/false) resolve.
-    await this.runtime.getRuntimePromise("charSelection");
+  async dealAllCards() {
+    this.SC.deal.roleCards();
+    this.SC.deal.charCards();
+    await this.waitForCharSelection();
+    this.SC.deal.playingCards();
   }
 }

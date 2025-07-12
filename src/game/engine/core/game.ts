@@ -5,6 +5,8 @@ import { GameFlow } from "./gameFlow";
 import { GameStateController } from "../state/gameStateController";
 import { MatchPreparer } from "./matchPreparer";
 import { InteractionController } from "../interactionController";
+import { PromiseManager } from "../runtime/promiseManager";
+import { TimerManager } from "../runtime/timerManager";
 
 export class Game {
   private runtime: Runtime;
@@ -15,7 +17,7 @@ export class Game {
   flow: GameFlow;
 
   public constructor(gameState: GameState) {
-    this.runtime = new Runtime();
+    this.runtime = new Runtime(new PromiseManager(), new TimerManager());
     this.state = gameState;
     this.validator = new GameStateValidator(this.state);
     this.SC = new GameStateController(this.state, this.validator, this.runtime);
