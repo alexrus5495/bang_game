@@ -1,5 +1,5 @@
-import type { GameStateController } from "./gameStateController";
-import type { Runtime } from "./runtime";
+import type { GameStateController } from "../state/gameStateController";
+import type { Runtime } from "../runtime/runtime";
 
 export class MatchPreparer {
   SC: GameStateController;

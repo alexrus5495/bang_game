@@ -1,6 +1,10 @@
 export const deck = [];
-import { CARDPACKS } from "../config/cardpacks";
-import type { PlayingCardMeta, DeckType, CharacterCardMeta } from "../types";
+import { CARDPACKS } from "../../../config/cardpacks";
+import type {
+  PlayingCardMeta,
+  DeckType,
+  CharacterCardMeta,
+} from "../../../types";
 
 export class Deck {
   public deck: string[];
@@ -52,7 +56,7 @@ export class Deck {
 
   private async importPack(packName: string) {
     try {
-      const pack = await import(`./cards/cards.${packName}.meta.ts`);
+      const pack = await import(`../../cards/cards.${packName}.meta.ts`);
       return pack[`CARDS_${packName.toUpperCase()}`];
     } catch (e) {
       throw new Error(

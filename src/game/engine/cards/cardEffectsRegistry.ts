@@ -1,6 +1,6 @@
-import { CARDPACKS } from "../config/cardpacks";
-import type { Game } from "./game";
-import type { Player } from "./player";
+import { CARDPACKS } from "../../../config/cardpacks";
+import type { Game } from "../core/game";
+import type { Player } from "../player/player";
 
 type EffectWithTarget = (
   game: Game,

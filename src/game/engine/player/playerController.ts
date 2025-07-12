@@ -1,10 +1,10 @@
-import type { Role } from "../types";
-import type { GameState } from "./gameState";
-import type { GameStateValidator } from "./gameStateValidator";
+import type { Role } from "../../../types";
+import type { GameState } from "../state/gameState";
+import type { GameStateValidator } from "../validation/gameStateValidator";
 import type { Player } from "./player";
-import type { Runtime } from "./runtime";
+import type { Runtime } from "../runtime/runtime";
 
-export class GameStateController {
+export class PlayerController {
   state: GameState;
   validator: GameStateValidator;
   runtime: Runtime;
@@ -22,9 +22,14 @@ export class GameStateController {
   get currentPlayer() {
     return this.state.currentPlayer;
   }
-  //
-  //Player manipulation
-  //
+
+  doForEachPlayer(callback: (player: Player, index: number) => void) {
+    this.state.players.forEach((player, index) => callback(player, index));
+  }
+
+  getMaxHealth(player: Player) {
+    return player.stats.health.max;
+  }
 
   assingPlayerToAnEmptySlot(nickname: string) {
     for (let i = 0; i <= this.state.players.length - 1; i++) {
@@ -40,6 +45,10 @@ export class GameStateController {
       this.shufflePlayers();
       this.runtime.resolveRuntimePromise("allPlayersAssigned", true);
     }
+  }
+
+  assignRole(player: Player, roleCardId: string) {
+    player.assignRole(roleCardId);
   }
 
   savePlayerByRole(player: Player, role: string) {
@@ -60,6 +69,10 @@ export class GameStateController {
     if (this.validator.isAllCharsAssigned) {
       this.runtime.resolveRuntimePromise("charSelection", true);
     }
+  }
+
+  setCharOptions(player: Player, options: { id: string; bullets: number }[]) {
+    player._charOptions = options;
   }
 
   setCurrentPlayer(index: number) {
@@ -107,89 +120,5 @@ export class GameStateController {
 
   resetBangCounter(player: Player) {
     player.stats.bangCardsPlayed = 0;
-  }
-
-  //
-  //Card manipulation
-  //
-
-  dealRoleCards() {
-    this.state.players.forEach((player, index) => {
-      const roleCardId = this.state.roleDeck.shift();
-
-      if (roleCardId === undefined) {
-        throw new Error("Error when getting role card from the deck.");
-      }
-
-      player.assignRole(roleCardId);
-
-      //Save player's index in corresponding role array
-      this.savePlayerByRole(player, roleCardId);
-
-      //Set the current player to the one who got dealt the sheriff card.
-      if (roleCardId === "sheriff") this.setCurrentPlayer(index);
-    });
-  }
-
-  dealCharCards() {
-    this.state.players.forEach((player, index) => {
-      const optionA_id = this.state.charDeck.shift();
-      const optionB_id = this.state.charDeck.shift();
-
-      if (optionA_id === undefined || optionB_id === undefined) {
-        throw new Error("Error when getting char card from the deck.");
-      }
-
-      const optionA = {
-        id: optionA_id,
-        bullets: this.state.charDeckMeta[optionA_id].bullets,
-      };
-
-      const optionB = {
-        id: optionB_id,
-        bullets: this.state.charDeckMeta[optionB_id].bullets,
-      };
-
-      player._charOptions = [optionA, optionB];
-
-      //Set timer to auto pick character after 1 minute.
-      this.runtime.setRuntimeTimer(
-        `player${index}_charSelection`,
-        () => {
-          this.setPlayerChar(player, 0);
-        },
-        60000,
-      );
-    });
-
-    this.runtime.setRuntimePromise(`charSelection`);
-  }
-
-  dealPlayingCards() {
-    this.state.players.forEach((player) => {
-      const cardsToDeal = player.stats.health.max;
-
-      player.hand = this.state.deck.splice(0, cardsToDeal);
-    });
-  }
-
-  newDeckFromDiscardPile() {
-    this.state._deck.deck = this.state.discardPile;
-    this.state._deck.shuffle();
-    this.state.discardPile = [];
-  }
-
-  drawCards(cardsToDraw: number) {
-    const drawnCards = [];
-
-    for (let i = 1; i <= cardsToDraw; i++) {
-      if (this.validator.isDeckEmpty) this.newDeckFromDiscardPile();
-
-      drawnCards.push(this.state.deck.shift() as string);
-
-      if (this.validator.isDeckEmpty) this.newDeckFromDiscardPile();
-    }
-
-    return drawnCards;
   }
 }

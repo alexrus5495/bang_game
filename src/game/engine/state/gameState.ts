@@ -2,9 +2,9 @@ import type {
   CharacterCardMeta,
   PlayingCardMeta,
   RoleCardMeta,
-} from "../types";
-import type { Deck } from "./deck";
-import type { Player } from "./player";
+} from "../../../types";
+import type { Deck } from "../cards/deck";
+import type { Player } from "../player/player";
 
 export class GameState {
   _deck: Deck;

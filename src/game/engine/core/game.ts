@@ -1,10 +1,10 @@
-import { Runtime } from "./runtime";
-import { GameState } from "./gameState";
-import { GameStateValidator } from "./gameStateValidator";
+import { Runtime } from "../runtime/runtime";
+import { GameState } from "../state/gameState";
+import { GameStateValidator } from "../validation/gameStateValidator";
 import { GameFlow } from "./gameFlow";
-import { GameStateController } from "./gameStateController";
+import { GameStateController } from "../state/gameStateController";
 import { MatchPreparer } from "./matchPreparer";
-import { InteractionController } from "./interactionController";
+import { InteractionController } from "../interactionController";
 
 export class Game {
   private runtime: Runtime;

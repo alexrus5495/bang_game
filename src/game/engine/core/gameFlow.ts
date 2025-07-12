@@ -1,7 +1,7 @@
-import type { GameStateController } from "./gameStateController";
-import type { GameStateValidator } from "./gameStateValidator";
+import type { GameStateController } from "../state/gameStateController";
+import type { GameStateValidator } from "../validation/gameStateValidator";
 import { MatchPreparer } from "./matchPreparer";
-import type { Player } from "./player";
+import type { Player } from "../player/player";
 
 export class GameFlow {
   private SC: GameStateController;
@@ -22,17 +22,15 @@ export class GameFlow {
     this.startGame();
   }
 
-  private startGame() {
+  startGame() {
     console.log("Game has started!");
 
-    this.initiatePlayersTurn(this.SC.currentPlayer);
+    this.initiatePlayersTurn(this.SC.playerCtrl.currentPlayer);
   }
 
   private initiatePlayersTurn(currentPlayer: number) {
-    const player = this.SC.getPlayer(currentPlayer);
-    console.log(
-      `Player ${this.SC.getPlayersIndex(player)} (${player.nickname}) turn has started!`,
-    );
+    const player = this.SC.playerCtrl.getPlayer(currentPlayer);
+    console.log(`Player (${player.nickname}) turn has started!`);
 
     this.initiateDrawingPhase(player);
   }
@@ -41,15 +39,11 @@ export class GameFlow {
     console.log("PHASE 1 - DRAWING CARDS.");
 
     //TODO: add exceptions for some chars.
+    const cardsToDraw = 2;
 
-    const drawnCards = this.SC.drawCards(2);
+    this.SC.drawToHand(player, cardsToDraw);
 
-    this.SC.addCardsToTheHand(player, drawnCards);
-
-    console.log(
-      `Player ${this.SC.getPlayersIndex(player)} (${player.nickname}) has drawn ${drawnCards.length} cards.`,
-    );
-
+    console.log(`Player (${player.nickname}) has drawn ${cardsToDraw} cards.`);
     console.log(`Cards in hand now: ${player.hand.length}`);
 
     this.endDrawingPhase(player);
@@ -63,7 +57,7 @@ export class GameFlow {
 
   private initiatePlayingPhase(player: Player) {
     console.log("PHASE 2 - PLAYING CARDS");
-    this.SC.resetBangCounter(player);
+    this.SC.playerCtrl.resetBangCounter(player);
   }
 
   private endPlayingPhase(player: Player) {
@@ -87,9 +81,7 @@ export class GameFlow {
   }
 
   public endPlayersTurn(player: Player) {
-    console.log(
-      `End of Player ${this.SC.getPlayersIndex(player)} (${player.nickname}) turn`,
-    );
+    console.log(`End of Player (${player.nickname}) turn`);
 
     this.passTurn();
   }
@@ -97,12 +89,14 @@ export class GameFlow {
   private passTurn() {
     console.log(`Passing turn...`);
 
-    const newPlayerIndex = this.SC.getNewCurrentPlayer(this.SC.currentPlayer);
+    const newPlayerIndex = this.SC.playerCtrl.getNewCurrentPlayer(
+      this.SC.playerCtrl.currentPlayer,
+    );
 
-    this.SC.setCurrentPlayer(newPlayerIndex);
+    this.SC.playerCtrl.setCurrentPlayer(newPlayerIndex);
 
     console.log(
-      `New current player: Player ${newPlayerIndex}(${this.SC.getPlayer(newPlayerIndex).nickname})`,
+      `New current player: Player ${newPlayerIndex}(${this.SC.playerCtrl.getPlayer(newPlayerIndex).nickname})`,
     );
 
     this.initiatePlayersTurn(newPlayerIndex);
@@ -113,9 +107,9 @@ export class GameFlow {
     playerIndex: number,
     targetPlayerIndex?: number,
   ) {
-    const player = this.SC.getPlayer(playerIndex);
+    const player = this.SC.playerCtrl.getPlayer(playerIndex);
     const targetPlayer = targetPlayerIndex
-      ? this.SC.getPlayer(targetPlayerIndex)
+      ? this.SC.playerCtrl.getPlayer(targetPlayerIndex)
       : undefined;
 
     if (targetPlayer && targetPlayer.flags.isEliminated) {
@@ -137,7 +131,7 @@ export class GameFlow {
       cardId = this.validator.tryCalamityJanetCardSwap(cardId, player);
 
     this.triggerCardEffect(cardId, player, targetPlayer);
-    this.SC.discardFromHand(cardIndex, player);
+    this.SC.playerCtrl.discardFromHand(cardIndex, player);
   }
 
   private triggerCardEffect(

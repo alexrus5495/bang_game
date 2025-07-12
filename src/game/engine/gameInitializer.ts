@@ -1,8 +1,8 @@
-import type { DeckType } from "../types";
-import { Deck } from "./deck";
-import { Game } from "./game";
-import { GameState } from "./gameState";
-import { Player } from "./player";
+import type { DeckType } from "../../types";
+import { Deck } from "./cards/deck";
+import { Game } from "./core/game";
+import { GameState } from "./state/gameState";
+import { Player } from "./player/player";
 
 export async function initializeGame(playerCount: number) {
   const gameState = await createGameState(playerCount);

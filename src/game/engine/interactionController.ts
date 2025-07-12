@@ -1,5 +1,5 @@
-import type { GameStateController } from "./gameStateController";
-import type { Player } from "./player";
+import type { GameStateController } from "./state/gameStateController";
+import type { Player } from "./player/player";
 
 export class InteractionController {
   SC: GameStateController;
@@ -7,6 +7,6 @@ export class InteractionController {
     this.SC = stateController;
   }
   onPlayerPickChar(player: Player, option: 0 | 1) {
-    this.SC.setPlayerChar(player, option);
+    this.SC.playerCtrl.setPlayerChar(player, option);
   }
 }

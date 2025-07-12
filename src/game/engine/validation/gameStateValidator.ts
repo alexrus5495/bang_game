@@ -1,5 +1,5 @@
-import type { GameState } from "./gameState";
-import type { Player } from "./player";
+import type { GameState } from "../state/gameState";
+import type { Player } from "../player/player";
 
 export class GameStateValidator {
   private state: GameState;
