@@ -651,7 +651,7 @@ const ROLES = {
   },
 } satisfies Record<string, RoleCardMeta>;
 
-export const CARDS_BASE = {
+export default {
   REGULAR,
   WEAPONS,
   CHARACTERS,

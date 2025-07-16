@@ -1,9 +1,10 @@
 import type { Role } from "../../../types";
 import type { GameState } from "../state/gameState";
-import type { GameStateValidator } from "../validation/gameStateValidator";
+import type { GameStateValidator } from "../state/gameStateValidator";
 import type { Player } from "./player";
 import type { Runtime } from "../runtime/runtime";
 import { promiseKeys } from "../runtime/runtimeKeys";
+import { WEAPON_LIST } from "../cards/weaponList";
 
 export class PlayerController {
   state: GameState;
@@ -28,6 +29,10 @@ export class PlayerController {
     player.hand.push(...cards);
   }
 
+  addCardToEquipment(player: Player, card: string) {
+    player.equipment.push(card);
+  }
+
   assignToAnEmptySlot(nickname: string) {
     for (let i = 0; i <= this.state.players.length - 1; i++) {
       const player = this.state.players[i];
@@ -49,25 +54,84 @@ export class PlayerController {
   }
 
   doForEachPlayer(callback: (player: Player, index: number) => void) {
-    this.state.players.forEach((player, index) => callback(player, index));
+    const activePlayers = this.getActivePlayers();
+    activePlayers.forEach((player, index) => callback(player, index));
   }
 
-  getCardFromHand(cardIndex: number, player: Player) {
+  async doAsyncForAllOtherPlayers(
+    excludedPlayer: Player,
+    callback: (player: Player, index: number) => Promise<void>,
+  ) {
+    const activePlayers = this.getActivePlayers();
+    const promises = activePlayers
+      .map((player, index) => {
+        if (player === excludedPlayer) return null;
+        return callback(player, index);
+      })
+      .filter(Boolean) as Promise<void>[];
+    await Promise.all(promises);
+  }
+
+  removeCardFromHand(cardIndex: number, player: Player) {
     if (cardIndex < 0 || cardIndex >= player.hand.length)
       throw new Error("Invalid index");
 
-    const [discardedCard] = player.hand.splice(cardIndex, 1);
-    return discardedCard;
+    const [card] = player.hand.splice(cardIndex, 1);
+    return card;
+  }
+
+  removeWholeHand(player: Player) {
+    const hand = player.hand;
+    player.hand = [];
+    return hand;
+  }
+
+  removeAllEquipment(player: Player) {
+    const equipment = player.equipment;
+    player.equipment = [];
+    return equipment;
+  }
+
+  removeEquipmentCard(cardIndex: number, player: Player) {
+    if (cardIndex < 0 || cardIndex >= player.equipment.length)
+      throw new Error("Invalid index");
+
+    const [card] = player.equipment.splice(cardIndex, 1);
+    return card;
+  }
+
+  getActivePlayers() {
+    return this.state.players.filter((player) => !player.flags.isEliminated);
   }
 
   getMaxHealth(player: Player) {
     return player.stats.health.max;
   }
 
+  getNextPlayerFrom(player: Player) {
+    if (player.flags.isEliminated)
+      throw new Error(
+        "Calling getNextPlayerFrom with a player that have isEliminated flag",
+      );
+
+    if (this.validator.playersActive < 2) {
+      throw new Error(
+        "Trying to find next player with less than two active players left",
+      );
+    }
+
+    const activePlayers = this.getActivePlayers();
+    const relativeIndex = activePlayers.indexOf(player);
+
+    const nextIndex = (relativeIndex + 1) % activePlayers.length;
+
+    return activePlayers[nextIndex];
+  }
+
   getNewCurrentPlayer(prevPlayer: number): number {
     if (this.validator.playersActive < 2) {
       throw new Error(
-        "Trying to pass turn with less then two active players left",
+        "Trying to pass turn with less than two active players left",
       );
     }
 
@@ -87,15 +151,19 @@ export class PlayerController {
     }
   }
 
+  getPlayersByRole(role: Role) {
+    return this.state.getPlayersByRole(role);
+  }
+
   getPlayersIndex(player: Player) {
     return this.state.players.indexOf(player);
   }
 
-  savePlayerByRole(player: Player, role: string) {
-    this.state.roles[role as Role].push(player);
+  savePlayerByRole(player: Player, role: Role) {
+    this.state.roles[role].push(player);
   }
 
-  private shufflePlayers() {
+  shufflePlayers() {
     const result = [...this.state.players];
     for (let i = result.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -121,5 +189,49 @@ export class PlayerController {
 
   resetBangCounter(player: Player) {
     player.stats.bangCardsPlayed = 0;
+  }
+
+  heal(player: Player, amount: number) {
+    const currentHealth = player.stats.health.current;
+    const maxHealth = player.stats.health.max;
+
+    let newHealth = currentHealth + amount;
+    if (newHealth > maxHealth) newHealth = maxHealth;
+
+    player.stats.health.current = newHealth;
+  }
+
+  _doesHaveEquipmentCard(player: Player, cardPrefix: string) {
+    const cardRegex = new RegExp(`^${cardPrefix}_\\d+$`);
+    return player.equipment.some((item) => cardRegex.test(item));
+  }
+
+  _findEquipmentCardIndex(player: Player, cardPrefix: string) {
+    const foundCard = player.equipment.find((item) =>
+      item.startsWith(cardPrefix + "_"),
+    );
+
+    if (foundCard) {
+      return player.equipment.indexOf(foundCard);
+    }
+
+    return undefined;
+  }
+
+  _findWeapon(player: Player) {
+    /** @returns index of a weapon card in Player's equipment if Player has any
+     * @returns undefined if Player has no weapon cards
+     **/
+    for (const weapon of WEAPON_LIST) {
+      const weaponName = weapon[0];
+      const foundCard = player.equipment.find((item) =>
+        item.startsWith(weaponName + "_"),
+      );
+
+      if (foundCard) {
+        return player.equipment.indexOf(foundCard);
+      }
+    }
+    return undefined;
   }
 }

@@ -6,9 +6,11 @@ export class TimerManager {
   }
 
   public setRuntimeTimer(name: string, handler: () => void, timeout: number) {
-    this.timers[name] = setTimeout(() => {
+    this.cleanupRuntimeTimer(name);
+
+    this.timers[name] = window.setTimeout(() => {
       handler();
-      this.timers[name] = undefined;
+      this.cleanupRuntimeTimer(name);
     }, timeout);
   }
 

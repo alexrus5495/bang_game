@@ -331,6 +331,7 @@ export const carabineBase: Omit<
   tooltipIcon: false,
   pack: "base",
   effect: { target: "self", range: "none", isEquipment: true },
+  _range: 4,
 };
 
 export const remingtonBase: Omit<
@@ -346,6 +347,7 @@ export const remingtonBase: Omit<
   tooltipIcon: false,
   pack: "base",
   effect: { target: "self", range: "none", isEquipment: true },
+  _range: 3,
 };
 
 export const winchesterBase: Omit<
@@ -361,6 +363,7 @@ export const winchesterBase: Omit<
   tooltipIcon: false,
   pack: "base",
   effect: { target: "self", range: "none", isEquipment: true },
+  _range: 5,
 };
 
 export const schofieldBase: Omit<
@@ -376,6 +379,7 @@ export const schofieldBase: Omit<
   tooltipIcon: false,
   pack: "base",
   effect: { target: "self", range: "none", isEquipment: true },
+  _range: 2,
 };
 
 export const volcanicBase: Omit<
@@ -391,4 +395,5 @@ export const volcanicBase: Omit<
   tooltipIcon: true,
   pack: "base",
   effect: { target: "self", range: "none", isEquipment: true },
+  _range: 1,
 };

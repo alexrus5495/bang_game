@@ -1,5 +1,6 @@
 import type { GameState } from "../state/gameState";
 import type { Player } from "../player/player";
+import type { Role } from "../../../types";
 
 export class GameStateValidator {
   private state: GameState;
@@ -108,7 +109,7 @@ export class GameStateValidator {
     }
 
     //After this check the range is either "none" (string) or a number
-    const cardRange = range === "inherit" ? player.stats.range : range;
+    const cardRange = range === "inherit" ? player.range : range;
 
     if (typeof cardRange !== "number") {
       return true;
@@ -182,6 +183,9 @@ export class GameStateValidator {
       return false;
     }
 
+    //Block any card other than "bang" for players under duel
+    if (player.flags.isLimitedToBang) return cardId === "bang";
+
     //Block any card other than "missed" for players under sight.
     if (player.flags.isUnderSight) return cardId === "missed";
 
@@ -212,7 +216,61 @@ export class GameStateValidator {
     }
   }
 
-  public checkWinConditions() {
-    //Check if renegade
+  public isGameWon() {
+    const isSheriffDead = this.isGroupEliminated("sheriff");
+    const areOutlawsDead = this.isGroupEliminated("outlaw");
+    const isRenegadeDead = this.isGroupEliminated("renegade");
+    const areDeputiesDead = this.isGroupEliminated("deputy");
+
+    //Check if renegade won
+    if (isSheriffDead && areOutlawsDead && areDeputiesDead) {
+      return "renegade";
+    }
+
+    //Check if outlaws won
+    if (isSheriffDead && !areOutlawsDead) {
+      return "outlaws";
+    }
+
+    //Check if sheriff won
+    if (!isSheriffDead && areOutlawsDead && isRenegadeDead) {
+      return "sheriff";
+    }
+
+    return false;
+  }
+
+  isGroupEliminated(role: Role) {
+    const group = this.state.getPlayersByRole(role);
+
+    group.forEach((player) => {
+      if (!player.flags.isEliminated) {
+        return false;
+      }
+    });
+
+    return true;
+  }
+
+  isPenaltyForSheriff(eliminatedPlayer: Player, killer: Player) {
+    const killerIsSheriff = killer.role === "sheriff";
+    const killedIsDeputy = eliminatedPlayer.role === "deputy";
+
+    return killerIsSheriff && killedIsDeputy;
+  }
+
+  isRewardForOutlaw(eliminatedPlayer: Player) {
+    return eliminatedPlayer.role === "outlaw";
+  }
+
+  getHealingAmount(player: Player) {
+    //NOTE: JUST A PLUG. Special rules will go here.
+
+    let amount;
+    if (player.char) {
+      amount = 1;
+    }
+
+    return amount;
   }
 }

@@ -4,6 +4,7 @@ import type { TimerManager } from "./timerManager";
 export interface RuntimePromise {
   promise: Promise<boolean> | undefined;
   resolve: ((result: boolean) => void) | undefined;
+  counters?: Record<string, number>;
 }
 
 export class Runtime {
@@ -19,8 +20,9 @@ export class Runtime {
     name: string,
     autoResolveTimer?: number,
     autoResolveValue: boolean = false,
+    counters?: Record<string, number>,
   ) {
-    this.promiseMngr.setRuntimePromise(name);
+    this.promiseMngr.setRuntimePromise(name, counters);
 
     if (autoResolveTimer) {
       this.timerMngr.cleanupRuntimeTimer(name);
@@ -33,7 +35,10 @@ export class Runtime {
   }
 
   resolveRuntimePromise(name: string, result: boolean) {
-    this.promiseMngr.resolveRuntimePromise(name, result);
+    const promise = this.getRuntimePromise(name);
+    if (promise) {
+      this.promiseMngr.resolveRuntimePromise(name, result);
+    } else throw new Error("Failed to find a promise");
   }
 
   setRuntimeTimer(name: string, handler: () => void, timeout: number) {
@@ -45,9 +50,8 @@ export class Runtime {
   }
 
   getRuntimePromise(name: string) {
-    const promise = this.promiseMngr.promises[name].promise;
+    const promise = this.promiseMngr.promises[name];
 
-    if (promise) return promise;
-    else throw new Error(`Failed to get promise: ${name}`);
+    return promise;
   }
 }

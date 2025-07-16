@@ -1,3 +1,5 @@
+import { WEAPON_LIST } from "../cards/weaponList";
+
 export class Player {
   public nickname: string;
   public role: string;
@@ -10,10 +12,10 @@ export class Player {
     isCharReady: boolean;
     isEliminated: boolean;
     isUnderSight: boolean;
+    isLimitedToBang: false | "duel" | "indians";
   };
   public stats: {
     health: { current: number; max: number };
-    range: number;
     bangCardsPlayed: number;
     bangCardsPlayedLimit: number;
   };
@@ -31,6 +33,7 @@ export class Player {
       isCharReady: false,
       isEliminated: false,
       isUnderSight: false,
+      isLimitedToBang: false,
     };
     this.stats = {
       bangCardsPlayed: 0,
@@ -39,9 +42,11 @@ export class Player {
         current: 0,
         max: 0,
       },
-      range: 1,
     };
     this._charOptions = [];
+  }
+  get range() {
+    return this.calculateRange();
   }
 
   public assingPlayer(nickname: string) {
@@ -73,5 +78,14 @@ export class Player {
     if (newHealth < 0) newHealth = 0;
 
     if (newHealth === 0) this.flags.isEliminated = true;
+  }
+
+  private calculateRange() {
+    //Find weapon card
+    for (const card of this.equipment) {
+      const cardId = card.split("_")[0];
+      if (WEAPON_LIST.has(cardId)) return WEAPON_LIST.get(cardId);
+    }
+    return 1;
   }
 }

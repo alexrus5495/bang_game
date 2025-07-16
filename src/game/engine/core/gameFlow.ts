@@ -1,141 +1,37 @@
-import type { GameStateController } from "../state/gameStateController";
-import type { GameStateValidator } from "../validation/gameStateValidator";
 import { MatchPreparer } from "./matchPreparer";
-import type { Player } from "../player/player";
+import type { PhaseContoller } from "./phaseContoller";
+import type { CardEffectsDispatcher } from "../cards/cardEffectsDispatcher";
 
 export class GameFlow {
-  private SC: GameStateController;
-  private validator: GameStateValidator;
   matchPreparer: MatchPreparer;
+  private phaseCtrl: PhaseContoller;
+  private CEF: CardEffectsDispatcher;
   constructor(
-    stateController: GameStateController,
-    validator: GameStateValidator,
     matchPreparer: MatchPreparer,
+    phaseController: PhaseContoller,
+    cardEffectsDispatcher: CardEffectsDispatcher,
   ) {
-    this.SC = stateController;
-    this.validator = validator;
     this.matchPreparer = matchPreparer;
+    this.phaseCtrl = phaseController;
+    this.CEF = cardEffectsDispatcher;
   }
 
-  async prepareGame() {
+  public readonly phase = {
+    prepareGame: () => this.prepareGame(),
+    startGame: () => this.phaseCtrl.startGame(),
+    gameOver: (winner: string) => this.phaseCtrl.gameOver(winner),
+  };
+
+  public readonly card = {
+    tryToPlayCard: (
+      cardIndex: number,
+      playerIndex: number,
+      targetPlayerIndex?: number,
+    ) => this.CEF.tryToPlayCard(cardIndex, playerIndex, targetPlayerIndex),
+  };
+
+  private async prepareGame() {
     await this.matchPreparer.prepare();
-    this.startGame();
+    this.phaseCtrl.startGame();
   }
-
-  startGame() {
-    console.log("Game has started!");
-    this.initiatePlayersTurn(this.SC.player.getCurrentPlayer());
-  }
-
-  private initiatePlayersTurn(currentPlayer: number) {
-    const player = this.SC.player.getPlayer(currentPlayer);
-    console.log(`Player (${player.nickname}) turn has started!`);
-
-    this.initiateDrawingPhase(player);
-  }
-
-  private initiateDrawingPhase(player: Player) {
-    console.log("PHASE 1 - DRAWING CARDS.");
-
-    //TODO: add exceptions for some chars.
-    const cardsToDraw = 2;
-
-    this.SC.cards.drawToHand(player, cardsToDraw);
-
-    console.log(`Player (${player.nickname}) has drawn ${cardsToDraw} cards.`);
-    console.log(`Cards in hand now: ${player.hand.length}`);
-
-    this.endDrawingPhase(player);
-  }
-
-  private endDrawingPhase(player: Player) {
-    console.log("End of drawing phase");
-
-    this.initiatePlayingPhase(player);
-  }
-
-  private initiatePlayingPhase(player: Player) {
-    console.log("PHASE 2 - PLAYING CARDS");
-    this.SC.player.resetBangCounter(player);
-  }
-
-  private endPlayingPhase(player: Player) {
-    console.log("End of playing phase");
-
-    this.initiateDiscardingPhase(player);
-  }
-
-  private initiateDiscardingPhase(player: Player) {
-    console.log("PHASE 3 - DISCARDING CARDS");
-  }
-
-  private endDiscardingPhase(player: Player) {
-    if (!this.validator.canEndDiscardingPhase(player)) {
-      console.log("Player must discard extra cards before ending turn");
-    } else {
-      console.log("End of discarding phase");
-
-      this.endPlayersTurn(player);
-    }
-  }
-
-  public endPlayersTurn(player: Player) {
-    console.log(`End of Player (${player.nickname}) turn`);
-
-    this.passTurn();
-  }
-
-  private passTurn() {
-    console.log(`Passing turn...`);
-
-    const newPlayerIndex = this.SC.player.getNewCurrentPlayer(
-      this.SC.player.getCurrentPlayer(),
-    );
-
-    this.SC.player.setCurrentPlayer(newPlayerIndex);
-
-    console.log(
-      `New current player: Player ${newPlayerIndex}(${this.SC.player.getPlayer(newPlayerIndex).nickname})`,
-    );
-
-    this.initiatePlayersTurn(newPlayerIndex);
-  }
-
-  public tryToPlayCard(
-    cardIndex: number,
-    playerIndex: number,
-    targetPlayerIndex?: number,
-  ) {
-    const player = this.SC.player.getPlayer(playerIndex);
-    const targetPlayer = targetPlayerIndex
-      ? this.SC.player.getPlayer(targetPlayerIndex)
-      : undefined;
-
-    if (targetPlayer && targetPlayer.flags.isEliminated) {
-      console.log(`Can't play a card against eliminated player.`);
-      return;
-    }
-
-    if (this.validator.isCardAllowedToPlay(cardIndex, player, targetPlayer)) {
-      this.playCard(cardIndex, player, targetPlayer);
-    } else {
-      console.log(`Card is not allowed to play!`);
-    }
-  }
-
-  private playCard(cardIndex: number, player: Player, targetPlayer?: Player) {
-    let cardId = player.hand[cardIndex];
-
-    if (player.char === "calamity_janet")
-      cardId = this.validator.tryCalamityJanetCardSwap(cardId, player);
-
-    this.triggerCardEffect(cardId, player, targetPlayer);
-    this.SC.cards.discartFromHand(cardIndex, player);
-  }
-
-  private triggerCardEffect(
-    cardId: string,
-    player: Player,
-    targetPlayer?: Player,
-  ) {}
 }

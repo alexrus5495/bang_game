@@ -2,13 +2,18 @@ import { CARDPACKS } from "../../../config/cardpacks";
 import type { Game } from "../core/game";
 import type { Player } from "../player/player";
 
-type EffectWithTarget = (
+export type EffectWithTarget = (
   game: Game,
   player: Player,
   targetPlayer: Player,
+  cardId: string, // A plug to make a type length === 4 (to differentiate from EffectWithoutTarget)
 ) => void;
 
-type EffectWithoutTarget = (game: Game, player: Player) => void;
+export type EffectWithoutTarget = (
+  game: Game,
+  player: Player,
+  cardId: string,
+) => void;
 
 export type CardEffectRegistry = Record<
   string,

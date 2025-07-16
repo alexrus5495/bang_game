@@ -1,6 +1,6 @@
 import type { CharacterCardMeta, PlayingCardMeta } from "../../../types";
 import type { GameState } from "../state/gameState";
-import type { GameStateValidator } from "../validation/gameStateValidator";
+import type { GameStateValidator } from "../state/gameStateValidator";
 import type { Runtime } from "../runtime/runtime";
 
 export class CardController {
