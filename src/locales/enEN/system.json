@@ -1,3 +1,18 @@
 {
-  "test": "test1"
+  "create_lobby": "CREATE LOBBY",
+  "join_lobby": "JOIN LOBBY",
+  "search": "SEARCH",
+  "credits": "CREDITS",
+  "enter_lobby_id": "ENTER LOBBY ID",
+  "enter_as": "ENTER AS",
+  "join": "JOIN",
+  "back": "BACK",
+  "name": "NAME",
+  "password": "PASSWORD",
+  "private": "PRIVATE",
+  "your_name": "YOUR NAME",
+  "done": "DONE",
+  "seats": "SEATS",
+  "human": "HUMAN",
+  "ai": "AI"
 }

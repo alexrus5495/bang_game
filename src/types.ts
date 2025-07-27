@@ -32,7 +32,7 @@ type CardEffectType = {
 export interface PlayingCardMeta {
   cardTypeId: string;
   cardInstanceId: string;
-  rankAndSuit: RankAndSuit | null;
+  rankAndSuit: RankAndSuit;
   image: string;
   borderColor: BorderColor;
   borderType: BorderType;
@@ -41,6 +41,7 @@ export interface PlayingCardMeta {
   tooltipIcon: boolean;
   pack: (typeof CARDPACKS)[number];
   effect: CardEffectType;
+  _range?: number;
 }
 
 export interface CharacterCardMeta {
