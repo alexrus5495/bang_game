@@ -1,0 +1,151 @@
+import { motion, useAnimation } from "motion/react";
+import { useEffect } from "react";
+
+export default function Logo() {
+  const logoControls = useAnimation();
+  const shadowControls = useAnimation();
+
+  useEffect(() => {
+    animateStartUp(logoControls, shadowControls);
+  });
+
+  function handleClickLogo() {
+    stopAnimation(logoControls, shadowControls);
+    animateSwing(logoControls, shadowControls);
+    setTimeout(() => {
+      animateStartUp(logoControls, shadowControls);
+    }, 4000);
+  }
+
+  return (
+    <>
+      <motion.img
+        initial={{ scale: 5, opacity: 0 }}
+        animate={shadowControls}
+        src="../../public/title_shadow.png"
+        className="h-[23%] w-auto absolute z-1 top-[2%] left-[29.8%] select-none"
+        draggable="false"
+        alt=""
+        style={{
+          originX: 0.2,
+          originY: 0.2,
+          cursor: "pointer",
+        }}
+      />
+      <motion.img
+        initial={{ scale: 3, opacity: 0 }}
+        animate={logoControls}
+        onClick={handleClickLogo}
+        src="../../public/title-text.png"
+        className="h-[22%] w-auto absolute z-2 top-[2%] left-[30%] select-none"
+        draggable="false"
+        alt=""
+        style={{
+          originX: 0.2,
+          originY: 0.2,
+          cursor: "pointer",
+        }}
+      />
+    </>
+  );
+}
+
+function animateStartUp(
+  logoControls: ReturnType<typeof useAnimation>,
+  shadowControls: ReturnType<typeof useAnimation>,
+) {
+  logoControls.start({
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5, delay: 0.3 },
+  });
+
+  shadowControls.start({
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5, delay: 0.3 },
+  });
+
+  setTimeout(() => {
+    logoControls.start({
+      y: [0, -10, 0],
+      scale: [1, 1.1, 1],
+      transition: {
+        duration: 4,
+        repeat: Infinity,
+        repeatType: "reverse",
+        ease: "easeInOut",
+      },
+    });
+
+    shadowControls.start({
+      y: [0, -10, 0],
+      scale: [1, 1.15, 1],
+      transition: {
+        duration: 4,
+        repeat: Infinity,
+        repeatType: "reverse",
+        ease: "easeInOut",
+      },
+    });
+  }, 800);
+}
+
+function stopAnimation(
+  logoControls: ReturnType<typeof useAnimation>,
+  shadowControls: ReturnType<typeof useAnimation>,
+) {
+  logoControls.stop();
+  shadowControls.stop();
+}
+
+function animateSwing(
+  logoControls: ReturnType<typeof useAnimation>,
+  shadowControls: ReturnType<typeof useAnimation>,
+) {
+  logoControls.start({
+    rotate: [0, 110, 30, 90, 50, 90],
+    transition: {
+      duration: 2,
+      ease: "easeInOut",
+      repeatType: "mirror",
+    },
+  });
+
+  shadowControls.start({
+    rotate: [0, 110, 30, 90, 50, 90],
+    transition: {
+      duration: 2,
+      ease: "easeInOut",
+      repeatType: "mirror",
+    },
+  });
+
+  setTimeout(() => {
+    logoControls.start({
+      translateY: "200vh",
+      transition: {
+        duration: 1,
+      },
+    });
+
+    shadowControls.start({
+      translateY: "200vh",
+      transition: {
+        duration: 1,
+      },
+    });
+  }, 2000);
+
+  setTimeout(() => {
+    logoControls.set({
+      rotate: 0,
+      translateY: 0,
+    });
+
+    shadowControls.set({
+      rotate: 0,
+      translateY: 0,
+    });
+  }, 4000);
+}

@@ -1,0 +1,40 @@
+import { motion, useAnimation } from "motion/react";
+
+export default function AnimatedStar() {
+  const starControls = useAnimation();
+
+  function handleClickStar() {
+    animateSpin(starControls);
+  }
+
+  function animateSpin(starControls: ReturnType<typeof useAnimation>) {
+    starControls.start({
+      rotate: 3640,
+      transition: {
+        duration: 3,
+        repeatType: "loop",
+        ease: "easeOut",
+      },
+    });
+    starControls.set({ rotate: 40 });
+  }
+  return (
+    <motion.img
+      initial={{ rotate: 40 }}
+      animate={starControls}
+      src="../../public/sheriff-star.png"
+      className={`
+          h-[23%] 
+          absolute 
+          bottom-[5%] 
+          right-[3%] 
+          cursor-pointer 
+          z-1 
+          select-none
+        `}
+      draggable="false"
+      alt=""
+      onClick={handleClickStar}
+    />
+  );
+}
