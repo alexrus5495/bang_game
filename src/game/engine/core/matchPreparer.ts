@@ -32,7 +32,7 @@ export class MatchPreparer {
   }
 
   private async waitForCharSelection() {
-    await this.runtime.getRuntimePromise(promiseKeys.charSelection);
+    await this.runtime.getRuntimePromise(promiseKeys.charSelection).promise;
   }
 
   async dealAllCards() {
