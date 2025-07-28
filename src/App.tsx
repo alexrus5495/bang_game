@@ -8,10 +8,11 @@ import { motion, AnimatePresence } from "motion/react";
 import CreateLobby from "./pages/createLobby";
 import { sizeAdaptive } from "./cssFunctions";
 import { useSocket } from "./hooks/useSocket";
+import SearchLobby from "./pages/searchLobby";
 
 export default function App() {
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const [currentPage, setCurrentPage] = useState("createLobby");
+  const [currentPage, setCurrentPage] = useState("searchLobby");
   const dispatch = useAppDispatch();
   const { isConnected, socketId } = useSocket();
 
@@ -59,6 +60,18 @@ export default function App() {
             exit={{ translateX: "100vw" }}
           >
             <CreateLobby setCurrentPage={setCurrentPage} />
+          </motion.div>
+        )}
+
+        {currentPage === "searchLobby" && (
+          <motion.div
+            className="h-[100%] w-[100%] flex items-center justify-center"
+            initial={{ translateX: "100vw" }}
+            animate={{ translateX: 0 }}
+            transition={{ duration: 0.2 }}
+            exit={{ translateX: "100vw" }}
+          >
+            <SearchLobby setCurrentPage={setCurrentPage} />
           </motion.div>
         )}
       </AnimatePresence>
