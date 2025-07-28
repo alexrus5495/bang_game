@@ -25,8 +25,12 @@ export default function MainMenu_navigation_Home({
           handler={() => setMenuState("join")}
         />
       </li>
+
       <li>
-        <Button text={locale["search"]} handler={() => console.log("PLUG")} />
+        <Button
+          text={locale["search_lobby"]}
+          handler={() => setCurrentPage("searchLobby")}
+        />
       </li>
       <li>
         <Button text={locale["credits"]} handler={() => console.log("PLUG")} />

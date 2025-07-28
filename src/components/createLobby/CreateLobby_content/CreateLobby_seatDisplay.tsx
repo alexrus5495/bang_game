@@ -13,11 +13,19 @@ export default function CreateLobby_seatDisplay({
   const setSeatType = (seatIndex: number, type: "human" | "ai") => {
     const seat = lobbyConfig.seats[seatIndex];
     if (seat.type === type) return;
+    const newSeats = [...lobbyConfig.seats];
 
     const newType = seat.type === "human" ? "ai" : "human";
-
-    const newSeats = [...lobbyConfig.seats];
     newSeats[seatIndex].type = newType;
+
+    if (newType === "human") {
+      newSeats[seatIndex].status = "open";
+      newSeats[seatIndex].playerId = "";
+    } else {
+      newSeats[seatIndex].status = "occupied";
+      newSeats[seatIndex].playerId = undefined;
+    }
+
     const newLobbyConfig = { ...lobbyConfig, seats: newSeats };
 
     setLobbyConfig(newLobbyConfig);

@@ -27,9 +27,13 @@ export default function SeatController({
 
     const newNumber = lobbyConfig.numberOfSeats + 1;
     const newSeats = lobbyConfig.seats;
+    const prevId = lobbyConfig.seats.length - 1;
     newSeats.push({
-      color: PLAYER_COLORS[newNumber],
+      id: prevId + 1,
       type: "human",
+      color: PLAYER_COLORS[prevId + 1],
+      status: "open",
+      playerId: "",
     });
 
     updateNumberOfSeats(newNumber, newSeats);

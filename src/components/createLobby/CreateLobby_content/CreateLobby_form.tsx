@@ -56,7 +56,7 @@ export default function CreateLobby_form({
         text={locale.password}
         state={lobbyConfig.password}
         handler={updatePassword}
-        isDisabled={lobbyConfig.isPrivate}
+        isDisabled={!lobbyConfig.isPrivate}
       />
 
       <FormTextInput

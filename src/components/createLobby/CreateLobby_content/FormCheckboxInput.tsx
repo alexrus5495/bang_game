@@ -31,14 +31,14 @@ export default function FormCheckboxInput({
         type="checkbox"
         name={inputName}
         id={inputName}
-        value={state ? "checked" : "unchecked"}
-        className="accent-[var(--RED)] outline cursor-pointer"
+        checked={state}
+        className="accent-[var(--RED)] outline cur"
         style={{
           outlineWidth: sizeAdaptive(300),
           height: sizeAdaptive(CHECKBOX_SCALE_FACTOR),
           width: sizeAdaptive(CHECKBOX_SCALE_FACTOR),
         }}
-        onClick={() => handler()}
+        onChange={() => handler()}
         whileTap={{ scale: 0.8 }}
       />
     </div>

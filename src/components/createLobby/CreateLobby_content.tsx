@@ -6,6 +6,7 @@ import SeatController from "./CreateLobby_content/SeatController";
 import CreateLobby_form from "./CreateLobby_content/CreateLobby_form";
 import CreateLobby_seatDisplay from "./CreateLobby_content/CreateLobby_seatDisplay";
 import { PLAYER_COLORS } from "../../config/player.colors";
+import { useSocket } from "../../hooks/useSocket";
 
 export type LobbyConfig = {
   lobbyName: string;
@@ -17,8 +18,11 @@ export type LobbyConfig = {
 };
 
 export type LobbySeat = {
-  color: string;
+  id: number;
   type: "human" | "ai";
+  color: string;
+  status: "open" | "reserver" | "occupied";
+  playerId?: string;
 };
 
 export default function CreateLobby_content({
@@ -31,18 +35,48 @@ export default function CreateLobby_content({
   const blankLobbyConfig: LobbyConfig = {
     lobbyName: "",
     playerName: "",
-    isPrivate: true,
+    isPrivate: false,
     password: "",
     numberOfSeats: 4,
     seats: [
-      { color: PLAYER_COLORS[0], type: "human" },
-      { color: PLAYER_COLORS[1], type: "human" },
-      { color: PLAYER_COLORS[2], type: "human" },
-      { color: PLAYER_COLORS[3], type: "human" },
+      {
+        id: 0,
+        type: "human",
+        color: PLAYER_COLORS[0],
+        status: "open",
+        playerId: "",
+      },
+      {
+        id: 1,
+        type: "human",
+        color: PLAYER_COLORS[1],
+        status: "open",
+        playerId: "",
+      },
+      {
+        id: 2,
+        type: "human",
+        color: PLAYER_COLORS[2],
+        status: "open",
+        playerId: "",
+      },
+      {
+        id: 3,
+        type: "human",
+        color: PLAYER_COLORS[3],
+        status: "open",
+        playerId: "",
+      },
     ],
   } as const;
 
   const [lobbyConfig, setLobbyConfig] = useState<LobbyConfig>(blankLobbyConfig);
+  const { socket } = useSocket();
+
+  const handleSubmit = () => {
+    socket.emit("CREATE_LOBBY", lobbyConfig);
+    console.log("Send lobby data");
+  };
 
   return (
     <>
@@ -91,7 +125,7 @@ export default function CreateLobby_content({
             <Button
               text={locale.done}
               className="self-center"
-              handler={() => console.log("BLANK")}
+              handler={() => handleSubmit()}
               style={{
                 fontSize: sizeAdaptive(16),
                 paddingTop: sizeAdaptive(50),
