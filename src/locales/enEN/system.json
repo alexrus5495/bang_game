@@ -1,7 +1,7 @@
 {
   "create_lobby": "CREATE LOBBY",
   "join_lobby": "JOIN LOBBY",
-  "search": "SEARCH",
+  "search_lobby": "SEARCH",
   "credits": "CREDITS",
   "enter_lobby_id": "ENTER LOBBY ID",
   "enter_as": "ENTER AS",
