@@ -1,8 +1,8 @@
 import { PLAYER_COLORS } from "../../../config/player.colors";
-import { sizeAdaptive } from "../../../cssFunctions";
+import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
-import type { LobbyConfig, LobbySeat } from "../CreateLobby_content";
 import { motion } from "motion/react";
+import type { LobbyConfig, LobbySeat } from "../../../types";
 
 export default function SeatController({
   lobbyConfig,
@@ -70,7 +70,7 @@ export default function SeatController({
           type="button"
           className="h-[45%] aspect-square"
           style={{
-            backgroundImage: `url("../../../public/minus.png")`,
+            backgroundImage: `url("./minus.png")`,
             backgroundSize: "contain",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
@@ -98,7 +98,7 @@ export default function SeatController({
           type="button"
           className="h-[45%] aspect-square"
           style={{
-            backgroundImage: `url("../../../public/plus.png")`,
+            backgroundImage: `url("./plus.png")`,
             backgroundSize: "contain",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",

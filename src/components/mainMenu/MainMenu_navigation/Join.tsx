@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { motion } from "motion/react";
-import { sizeAdaptive } from "../../../cssFunctions";
 import Button from "../../shared/Button";
+import Join_idForm from "./Join_idForm";
+import Join_passwordForm from "./Join_passwordForm";
 
 export default function MainMenu_navigation_Join({
   setMenuState,
@@ -11,78 +13,66 @@ export default function MainMenu_navigation_Join({
 }) {
   const [playerName, setPlayerName] = useState("");
   const [lobbyId, setLobbyId] = useState("");
+  const [currentForm, setCurrentForm] = useState<"idForm" | "passwordForm">(
+    "idForm",
+  );
 
   const locale = useSystemLocalization() as Record<string, string>;
 
-  function handleSubmit() {}
-
-  const TEXT_SCALE_FACTOR_1 = 13;
-  const TEXT_SCALE_FACTOR_2 = 20;
-  const TEXT_SCALE_FACTOR_3 = 16;
-
   return (
-    <>
+    <div className="h-full w-full">
       <h2
-        style={{ fontSize: sizeAdaptive(TEXT_SCALE_FACTOR_1) }}
-        className={"custom-text-highlighted"}
+        style={{ fontSize: sizeAdaptive(13) }}
+        className={"custom-text-highlighted h-[15%]"}
       >
         {locale["join_lobby"]}
       </h2>
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col justify-center items-center"
-        style={{ gap: sizeAdaptive(20) }}
-      >
-        <motion.input
-          type="text"
-          value={lobbyId}
-          onChange={(e) => setLobbyId(e.target.value)}
-          className="w-[80%] outline [color:var(--BLACK)] pl-[1vw]"
-          style={{
-            fontSize: sizeAdaptive(TEXT_SCALE_FACTOR_2),
-            marginTop: "5%",
-            outlineWidth: sizeAdaptive(150),
-            outlineColor: "var(--BLACK)",
-          }}
-          placeholder={`${locale["enter_lobby_id"]}...`}
-          whileFocus={{ scale: 1.05 }}
-        />
+      {currentForm === "idForm" && (
+        <motion.div
+          key={"idForm"}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { duration: 0.3 } }}
+        >
+          <Join_idForm
+            lobbyId={lobbyId}
+            playerName={playerName}
+            setLobbyId={setLobbyId}
+            setPlayerName={setPlayerName}
+            setCurrentForm={setCurrentForm}
+          />
+        </motion.div>
+      )}
 
-        <motion.input
-          type="text"
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          className="w-[80%] outline [color:var(--BLACK)] pl-[1vw]"
-          style={{
-            fontSize: sizeAdaptive(TEXT_SCALE_FACTOR_2),
-            outlineWidth: sizeAdaptive(150),
-            outlineColor: "var(--BLACK)",
-          }}
-          placeholder={`${locale["enter_as"]}...`}
-          whileFocus={{ scale: 1.05 }}
-        />
-
-        <Button
-          text={locale.join}
-          style={{
-            fontSize: sizeAdaptive(TEXT_SCALE_FACTOR_3),
-            marginTop: "-5%",
-          }}
-          handler={() => console.log("PLUG")}
-        />
-      </form>
+      {currentForm === "passwordForm" && (
+        <motion.div
+          key={"passwordForm"}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { duration: 0.3 } }}
+        >
+          <Join_passwordForm lobbyId={lobbyId} playerName={playerName} />
+        </motion.div>
+      )}
 
       <Button
+        className="h-[15%]"
         text={locale.back}
         style={{
-          fontSize: sizeAdaptive(TEXT_SCALE_FACTOR_3),
+          fontSize: sizeAdaptive(16),
           marginTop: "10%",
           justifySelf: "left",
           alignSelf: "start",
         }}
-        handler={() => setMenuState("home")}
+        handler={
+          currentForm === "passwordForm"
+            ? () => setCurrentForm("idForm")
+            : () => setMenuState("home")
+        }
       />
-    </>
+    </div>
   );
 }

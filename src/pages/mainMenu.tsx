@@ -3,11 +3,7 @@ import MainMenu_navigation from "../components/mainMenu/MainMenu_navigation";
 import Logo from "../components/mainMenu/Logo";
 import Poster from "../components/mainMenu/Poster";
 
-export default function MainMenu({
-  setCurrentPage,
-}: {
-  setCurrentPage: (page: string) => void;
-}) {
+export default function MainMenu() {
   return (
     <div
       className="absolute select-none"
@@ -16,7 +12,7 @@ export default function MainMenu({
       <Poster />
       <Logo />
       <MainMenu_background />
-      <MainMenu_navigation setCurrentPage={setCurrentPage} />
+      <MainMenu_navigation />
     </div>
   );
 }

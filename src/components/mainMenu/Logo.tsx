@@ -22,7 +22,7 @@ export default function Logo() {
       <motion.img
         initial={{ scale: 5, opacity: 0 }}
         animate={shadowControls}
-        src="../../public/title_shadow.png"
+        src="./title_shadow.png"
         className="h-[23%] w-auto absolute z-1 top-[2%] left-[29.8%] select-none"
         draggable="false"
         alt=""
@@ -36,7 +36,7 @@ export default function Logo() {
         initial={{ scale: 3, opacity: 0 }}
         animate={logoControls}
         onClick={handleClickLogo}
-        src="../../public/title-text.png"
+        src="./title-text.png"
         className="h-[22%] w-auto absolute z-2 top-[2%] left-[30%] select-none"
         draggable="false"
         alt=""

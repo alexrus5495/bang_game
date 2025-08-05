@@ -1,7 +1,7 @@
-import { sizeAdaptive } from "../../../cssFunctions";
+import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { motion } from "motion/react";
-import type { LobbySeat } from "../CreateLobby_content";
 import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import type { LobbySeat } from "../../../types";
 
 export default function SeatLine({
   seat,
@@ -37,8 +37,8 @@ export default function SeatLine({
         transition={{ duration: 0.15 }}
       ></motion.div>
       <div
-        className="h-full w-fit flex items-center"
-        style={{ gap: sizeAdaptive(50) }}
+        className="h-full flex items-center justify-center"
+        style={{ gap: sizeAdaptive(50), width: sizeAdaptive(3) }}
       >
         <motion.button
           type="button"

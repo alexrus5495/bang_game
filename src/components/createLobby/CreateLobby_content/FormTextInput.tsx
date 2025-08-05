@@ -1,4 +1,4 @@
-import { sizeAdaptive } from "../../../cssFunctions";
+import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { motion } from "motion/react";
 
 export default function FormTextInput({
@@ -7,17 +7,21 @@ export default function FormTextInput({
   text,
   state,
   isDisabled = false,
+  className,
+  style,
 }: {
   inputName: string;
   handler: (newValue: string) => void;
   text: string;
   state: string;
   isDisabled?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 }) {
   const TEXT_SCALE_FACTOR = 20;
 
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${className}`} style={style}>
       <label
         htmlFor={inputName}
         style={{
@@ -43,6 +47,7 @@ export default function FormTextInput({
           outlineColor: isDisabled ? "var(--BEIGE)" : "var(--BLACK)",
         }}
         whileFocus={{ scale: 1.05 }}
+        maxLength={15}
       />
     </div>
   );

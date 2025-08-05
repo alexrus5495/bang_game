@@ -1,7 +1,8 @@
 import type React from "react";
-import type { LobbyConfig } from "../CreateLobby_content";
+import type { LobbyConfig } from "../../../types";
 import SeatLine from "./SeatLine";
 import { motion, AnimatePresence } from "motion/react";
+import SeatLine_self from "./SeatLine_self";
 
 export default function CreateLobby_seatDisplay({
   lobbyConfig,
@@ -21,9 +22,11 @@ export default function CreateLobby_seatDisplay({
     if (newType === "human") {
       newSeats[seatIndex].status = "open";
       newSeats[seatIndex].playerId = "";
+      newSeats[seatIndex].playerName = "";
     } else {
       newSeats[seatIndex].status = "occupied";
       newSeats[seatIndex].playerId = undefined;
+      newSeats[seatIndex].playerName = undefined;
     }
 
     const newLobbyConfig = { ...lobbyConfig, seats: newSeats };
@@ -43,7 +46,12 @@ export default function CreateLobby_seatDisplay({
             transition={{ duration: 0.15 }}
             exit={{ opacity: 0 }}
           >
-            <SeatLine seat={item} index={index} setSeatType={setSeatType} />
+            {index === 0 && (
+              <SeatLine_self name={lobbyConfig.playerName} seat={item} />
+            )}
+            {index > 0 && (
+              <SeatLine seat={item} index={index} setSeatType={setSeatType} />
+            )}
           </motion.div>
         ))}
       </AnimatePresence>

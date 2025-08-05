@@ -48,6 +48,10 @@
     -webkit-text-stroke: 0.9px white;
   }
 
+  .text-stroke-black {
+    -webkit-text-stroke: 0.05vw var(--BLACK);
+  }
+
   .mask-border-none {
     mask: url(./assets/images/base/misc/_mask_border_none.svg);
   }
@@ -79,10 +83,15 @@
 
   .custom-text-highlighted {
     color: var(--RED);
-    -webkit-text-stroke: 0.15vw var(--BLACK);
+    -webkit-text-stroke: 0.1vw var(--BLACK);
   }
 
   .custom-color-black {
     color: var(--BLACK);
+  }
+
+  .custom-scrollbar {
+    scrollbar-color: var(--BLACK) #f3efe3;
+    scrollbar-width: auto;
   }
 }

@@ -1,4 +1,4 @@
-import { sizeAdaptive } from "../../../cssFunctions";
+import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { motion } from "motion/react";
 
 export default function FormCheckboxInput({

@@ -1,81 +1,42 @@
 import { useState } from "react";
-import { sizeAdaptive } from "../../cssFunctions";
+import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import { useSystemLocalization } from "../../hooks/useSystemLocalization";
 import Button from "../shared/Button";
 import SeatController from "./CreateLobby_content/SeatController";
 import CreateLobby_form from "./CreateLobby_content/CreateLobby_form";
 import CreateLobby_seatDisplay from "./CreateLobby_content/CreateLobby_seatDisplay";
-import { PLAYER_COLORS } from "../../config/player.colors";
 import { useSocket } from "../../hooks/useSocket";
+import type { LobbyConfig } from "../../types";
+import { setCurrentPage } from "../../store/slices/currentPageSlice";
+import { setCurrentLobby } from "../../store/slices/currentLobbySlice";
+import { useAppDispatch } from "../../hooks/useAppSelector";
+import { blankLobbyConfig } from "../../config/blankLobby.config";
+import { SocketEvents } from "../../lib/socketEvents";
 
-export type LobbyConfig = {
-  lobbyName: string;
-  playerName: string;
-  isPrivate: boolean;
-  password: string;
-  numberOfSeats: number;
-  seats: LobbySeat[];
-};
-
-export type LobbySeat = {
-  id: number;
-  type: "human" | "ai";
-  color: string;
-  status: "open" | "reserver" | "occupied";
-  playerId?: string;
-};
-
-export default function CreateLobby_content({
-  setCurrentPage,
-}: {
-  setCurrentPage: (page: string) => void;
-}) {
+export default function CreateLobby_content() {
   const locale = useSystemLocalization() as Record<string, string>;
-
-  const blankLobbyConfig: LobbyConfig = {
-    lobbyName: "",
-    playerName: "",
-    isPrivate: false,
-    password: "",
-    numberOfSeats: 4,
-    seats: [
-      {
-        id: 0,
-        type: "human",
-        color: PLAYER_COLORS[0],
-        status: "open",
-        playerId: "",
-      },
-      {
-        id: 1,
-        type: "human",
-        color: PLAYER_COLORS[1],
-        status: "open",
-        playerId: "",
-      },
-      {
-        id: 2,
-        type: "human",
-        color: PLAYER_COLORS[2],
-        status: "open",
-        playerId: "",
-      },
-      {
-        id: 3,
-        type: "human",
-        color: PLAYER_COLORS[3],
-        status: "open",
-        playerId: "",
-      },
-    ],
-  } as const;
-
+  const dispatch = useAppDispatch();
   const [lobbyConfig, setLobbyConfig] = useState<LobbyConfig>(blankLobbyConfig);
   const { socket } = useSocket();
 
-  const handleSubmit = () => {
-    socket.emit("CREATE_LOBBY", lobbyConfig);
-    console.log("Send lobby data");
+  const isFormReady =
+    lobbyConfig.lobbyName.length !== 0 &&
+    lobbyConfig.playerName.length !== 0 &&
+    (!lobbyConfig.isPrivate || lobbyConfig.password.length !== 0);
+
+  const handleSubmit = async () => {
+    if (!socket.id) {
+      return;
+    } else {
+      socket.emit(SocketEvents.CREATE_LOBBY, lobbyConfig);
+
+      const lobbyId: string = await new Promise((resolve) => {
+        socket.once(SocketEvents.LOBBY_CREATED, resolve);
+      });
+
+      dispatch(setCurrentLobby(lobbyId));
+      dispatch(setCurrentPage("lobby"));
+    }
   };
 
   return (
@@ -85,7 +46,7 @@ export default function CreateLobby_content({
           <Button
             text={locale.back}
             className={"absolute"}
-            handler={() => setCurrentPage("mainMenu")}
+            handler={() => dispatch(setCurrentPage("mainMenu"))}
             style={{ fontSize: sizeAdaptive(16), left: sizeAdaptive(18) }}
           />
 
@@ -125,11 +86,13 @@ export default function CreateLobby_content({
             <Button
               text={locale.done}
               className="self-center"
-              handler={() => handleSubmit()}
+              handler={handleSubmit}
               style={{
                 fontSize: sizeAdaptive(16),
                 paddingTop: sizeAdaptive(50),
+                color: isFormReady ? "var(--BLACK)" : "var(--BEIGE)",
               }}
+              disabled={!isFormReady}
             />
           </div>
         </form>

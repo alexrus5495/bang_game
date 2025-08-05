@@ -6,13 +6,15 @@ import { loadLocalization } from "./store/slices/localeSlice";
 import MainMenu from "./pages/mainMenu";
 import { motion, AnimatePresence } from "motion/react";
 import CreateLobby from "./pages/createLobby";
-import { sizeAdaptive } from "./cssFunctions";
+import { sizeAdaptive } from "./lib/css/cssFunctions";
 import { useSocket } from "./hooks/useSocket";
 import SearchLobby from "./pages/searchLobby";
+import Lobby from "./pages/lobby";
+import { useCurrentPageState } from "./hooks/useCurrentPageState";
 
 export default function App() {
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const [currentPage, setCurrentPage] = useState("searchLobby");
+  const currentPage = useCurrentPageState();
   const dispatch = useAppDispatch();
   const { isConnected, socketId } = useSocket();
 
@@ -47,31 +49,46 @@ export default function App() {
             transition={{ duration: 0.2 }}
             className="h-[100%] w-[100%] flex items-center justify-center"
           >
-            <MainMenu setCurrentPage={setCurrentPage} />
+            <MainMenu />
           </motion.div>
         )}
 
         {currentPage === "createLobby" && (
           <motion.div
+            key={"createLobby"}
             className="h-[100%] w-[100%] flex items-center justify-center"
             initial={{ translateX: "100vw" }}
             animate={{ translateX: 0 }}
             transition={{ duration: 0.2 }}
             exit={{ translateX: "100vw" }}
           >
-            <CreateLobby setCurrentPage={setCurrentPage} />
+            <CreateLobby />
           </motion.div>
         )}
 
         {currentPage === "searchLobby" && (
           <motion.div
+            key={"searchLobby"}
             className="h-[100%] w-[100%] flex items-center justify-center"
             initial={{ translateX: "100vw" }}
             animate={{ translateX: 0 }}
             transition={{ duration: 0.2 }}
             exit={{ translateX: "100vw" }}
           >
-            <SearchLobby setCurrentPage={setCurrentPage} />
+            <SearchLobby />
+          </motion.div>
+        )}
+
+        {currentPage === "lobby" && (
+          <motion.div
+            key={"lobby"}
+            className="h-[100%] w-[100%] flex items-center justify-center"
+            initial={{ translateX: "100vw" }}
+            animate={{ translateX: 0 }}
+            transition={{ duration: 0.2 }}
+            exit={{ translateX: "100vw" }}
+          >
+            <Lobby />
           </motion.div>
         )}
       </AnimatePresence>

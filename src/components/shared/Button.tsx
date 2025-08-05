@@ -9,20 +9,23 @@ export default function Button({
   className,
   handler,
   style,
+  disabled,
 }: {
   text: string;
   className?: string;
   handler: () => void;
   style?: React.CSSProperties;
+  disabled?: boolean;
 }) {
   return (
     <motion.button
       type="button"
-      className={`${className} cursor-pointer`}
+      className={`${className} ${!disabled ? "cursor-pointer" : ""}`}
       style={style}
       onClick={handler}
-      whileHover={BUTTON_WHILE_HOVER}
+      whileHover={!disabled ? BUTTON_WHILE_HOVER : ""}
       transition={BUTTON_TRANSITION}
+      disabled={disabled}
     >
       {text}
     </motion.button>

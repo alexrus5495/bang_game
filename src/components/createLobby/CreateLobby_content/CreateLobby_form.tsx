@@ -1,7 +1,7 @@
 import type React from "react";
-import { sizeAdaptive } from "../../../cssFunctions";
+import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
-import type { LobbyConfig } from "../CreateLobby_content";
+import type { LobbyConfig } from "../../../types";
 import FormCheckboxInput from "./FormCheckboxInput";
 import FormTextInput from "./FormTextInput";
 

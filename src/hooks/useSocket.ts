@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { socket } from "../lib/socket";
+import { SocketEvents } from "../lib/socketEvents";
 
 export function useSocket() {
   const [isConnected, setIsConnected] = useState(false);
@@ -17,16 +18,16 @@ export function useSocket() {
     }
 
     socket.connect();
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
+    socket.on(SocketEvents.connect, onConnect);
+    socket.on(SocketEvents.disconnect, onDisconnect);
 
     if (socket.connected) {
       onConnect();
     }
 
     return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
+      socket.off(SocketEvents.connect, onConnect);
+      socket.off(SocketEvents.disconnect, onDisconnect);
     };
   }, []);
 

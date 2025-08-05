@@ -22,7 +22,7 @@ export default function AnimatedStar() {
     <motion.img
       initial={{ rotate: 40 }}
       animate={starControls}
-      src="../../public/sheriff-star.png"
+      src="./sheriff-star.png"
       className={`
           h-[23%] 
           absolute 

@@ -66,3 +66,36 @@ export interface RoleCardMeta {
 }
 
 export type DeckType = "main" | "char" | "role";
+
+export type CurrentPage = "mainMenu" | "createLobby" | "searchLobby" | "lobby";
+export type CurrentLobbyId = string;
+
+export type LobbyPublicData = {
+  id: string;
+  name: string;
+  ownerName: string;
+  ownerId: string;
+  availableHumanSlots: string;
+  numberOfSeats: number;
+  seats: LobbySeat[];
+  isPrivate: boolean;
+};
+
+export type LobbyConfig = {
+  lobbyName: string;
+  playerName: string;
+  isPrivate: boolean;
+  password: string;
+  numberOfSeats: number;
+  seats: LobbySeat[];
+};
+
+export type LobbySeat = {
+  id: number;
+  type: "human" | "ai";
+  color: string;
+  status: "open" | "reserver" | "occupied";
+  playerId?: string;
+  playerName?: string;
+  isReady?: boolean;
+};
