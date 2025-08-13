@@ -29,6 +29,12 @@ type CardEffectType = {
   isEquipment: boolean;
 };
 
+export type CardsMetaData = {
+  deckMeta: Record<string, PlayingCardMeta>;
+  charDeckMeta: Record<string, CharacterCardMeta>;
+  roleDeckMeta: Record<string, RoleCardMeta>;
+};
+
 export interface PlayingCardMeta {
   cardTypeId: string;
   cardInstanceId: string;
@@ -67,7 +73,12 @@ export interface RoleCardMeta {
 
 export type DeckType = "main" | "char" | "role";
 
-export type CurrentPage = "mainMenu" | "createLobby" | "searchLobby" | "lobby";
+export type CurrentPage =
+  | "mainMenu"
+  | "createLobby"
+  | "searchLobby"
+  | "lobby"
+  | "table";
 export type CurrentLobbyId = string;
 
 export type LobbyPublicData = {
@@ -98,4 +109,31 @@ export type LobbySeat = {
   playerId?: string;
   playerName?: string;
   isReady?: boolean;
+};
+
+export type Player_PublicData = {
+  id: string | undefined;
+  isAI: boolean;
+  nickname: string;
+  color: string;
+  char: string;
+  role: string | undefined;
+  handLength: number;
+  equipment: string[];
+  isEliminated: boolean;
+  stats: {
+    health: { current: number; max: number };
+    bangCardsPlayed: number;
+    bangCardsPlayedLimit: number;
+  };
+};
+
+export type PlayersPublicData = Player_PublicData[];
+
+export type PublicData = {
+  id: string;
+  deckLength: number;
+  discardPileLength: number;
+  currentPlayer: number;
+  playersPublicData: PlayersPublicData;
 };
