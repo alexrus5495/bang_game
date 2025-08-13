@@ -9,6 +9,7 @@ export default function CardImageComponent({
     <>
       {getImageComponent(cardImage, {
         className: "w-[355px] border h-auto m-auto",
+        draggable: false,
       })}
     </>
   );

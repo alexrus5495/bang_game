@@ -13,7 +13,7 @@ export default function Bullets({ count }: { count: number }) {
     >
       {Array.from({ length: count }, (_, index) => (
         <div className="rotate-20" key={index}>
-          {getImageComponent("bullet_full")}
+          {getImageComponent("bullet_full", { draggable: false })}
         </div>
       ))}
     </div>

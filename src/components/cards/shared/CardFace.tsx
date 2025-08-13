@@ -1,4 +1,3 @@
-import { game } from "../../../main";
 import type { CardProps } from "../types";
 import type {
   BorderColor,
@@ -25,14 +24,19 @@ import {
   CARD_CONTAINER_WIDTH,
 } from "./constants";
 import { getImageComponent } from "../../../lib/images";
+import { useCardsMetaDataState } from "../../../hooks/useCardsMetaDataState";
 
 export default function CardFace({ cardId, cardType }: CardProps) {
+  const cardsMetaData = useCardsMetaDataState();
+
+  if (!cardsMetaData) return null;
+
   const cardData =
     cardType === "playing"
-      ? (game.deckMeta[cardId] as PlayingCardMeta)
+      ? (cardsMetaData.deckMeta[cardId] as PlayingCardMeta)
       : cardType === "character"
-        ? (game.charDeckMeta[cardId] as CharacterCardMeta)
-        : (game.roleDeckMeta[cardId] as RoleCardMeta);
+        ? (cardsMetaData.charDeckMeta[cardId] as CharacterCardMeta)
+        : (cardsMetaData.roleDeckMeta[cardId] as RoleCardMeta);
 
   const { cardTypeId, description, image, pack } = cardData;
 
