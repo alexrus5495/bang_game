@@ -20,6 +20,7 @@
     --font-oldtowne: "OldTowneLT", serif;
     --font-palatino: "Palatino", serif;
     --font-gabriela: "Gabriela", serif;
+    --WHITE: #f3efe3;
     --BLACK: #191719;
     --RED: #ca0000;
     --BEIGE: #cab59d;
@@ -30,7 +31,6 @@
     color: var(--BLACK);
   }
 }
-
 @layer utilities {
   .font-oldtowne {
     font-family: var(--font-oldtowne);
@@ -45,7 +45,7 @@
   }
 
   .text-stroke-white {
-    -webkit-text-stroke: 0.9px white;
+    -webkit-text-stroke: 0.9px var(--WHITE);
   }
 
   .text-stroke-black {
@@ -79,6 +79,11 @@
   .bg-woodenTexture {
     background-image: url(./assets/images/core/woodenTexture.jpg);
     background-size: 110%;
+  }
+
+  .bg-fabricTexture {
+    background-image: url(./assets/images/core/fabricTexture.jpg);
+    background-size: 100%;
   }
 
   .custom-text-highlighted {
