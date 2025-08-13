@@ -11,12 +11,29 @@ import { useSocket } from "./hooks/useSocket";
 import SearchLobby from "./pages/searchLobby";
 import Lobby from "./pages/lobby";
 import { useCurrentPageState } from "./hooks/useCurrentPageState";
+import Table from "./pages/table";
+import { SocketEvents } from "./lib/socketEvents";
+import { setCurrentPage } from "./store/slices/currentPageSlice";
 
 export default function App() {
-  const [isFirstRender, setIsFirstRender] = useState(true);
   const currentPage = useCurrentPageState();
   const dispatch = useAppDispatch();
   const { isConnected, socketId } = useSocket();
+
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    const handleTestGame = () => {
+      dispatch(setCurrentPage("table"));
+    };
+    socket.emit("TEST_GAME");
+    socket.once(SocketEvents.GAME_CREATED, handleTestGame);
+  }, [socket, dispatch]);
+
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [exitAnimationType, setExitAnimationType] = useState<"left" | "up">(
+    "left",
+  );
 
   useEffect(() => {
     dispatch(loadLocalization("enEN"));
@@ -86,9 +103,26 @@ export default function App() {
             initial={{ translateX: "100vw" }}
             animate={{ translateX: 0 }}
             transition={{ duration: 0.2 }}
-            exit={{ translateX: "100vw" }}
+            exit={
+              exitAnimationType === "left"
+                ? { translateX: "100vw" }
+                : { translateY: "100vh" }
+            }
           >
-            <Lobby />
+            <Lobby setExitAnimationType={setExitAnimationType} />
+          </motion.div>
+        )}
+
+        {currentPage === "table" && (
+          <motion.div
+            key={"table"}
+            className="h-[100%] w-[100%] flex items-center justify-center"
+            initial={{ translateY: "-100vh" }}
+            animate={{ translateY: 0 }}
+            transition={{ duration: 0.2 }}
+            exit={{ translateY: "100vh" }}
+          >
+            <Table />
           </motion.div>
         )}
       </AnimatePresence>
