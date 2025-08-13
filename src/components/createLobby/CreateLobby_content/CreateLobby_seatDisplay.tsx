@@ -39,17 +39,16 @@ export default function CreateLobby_seatDisplay({
       <AnimatePresence>
         {lobbyConfig.seats.map((item, index) => (
           <motion.div
-            key={index}
+            key={`lobbyname + ${index}`}
             className="h-[14.3%]"
             animate={{ opacity: 1 }}
             initial={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             exit={{ opacity: 0 }}
           >
-            {index === 0 && (
+            {index === 0 ? (
               <SeatLine_self name={lobbyConfig.playerName} seat={item} />
-            )}
-            {index > 0 && (
+            ) : (
               <SeatLine seat={item} index={index} setSeatType={setSeatType} />
             )}
           </motion.div>

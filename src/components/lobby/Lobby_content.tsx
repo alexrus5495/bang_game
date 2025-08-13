@@ -11,7 +11,11 @@ import SeatLine from "./SeatLine";
 import LobbyTitle from "./LobbyTitle";
 import { SocketEvents } from "../../lib/socketEvents";
 
-export default function Lobby_content() {
+export default function Lobby_content({
+  setExitAnimationType,
+}: {
+  setExitAnimationType: (type: "left" | "up") => void;
+}) {
   const locale = useSystemLocalization() as Record<string, string>;
   const [lobbyData, setLobbyData] = useState<LobbyPublicData | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -24,18 +28,25 @@ export default function Lobby_content() {
     socket.emit(SocketEvents.REQUEST_LOBBY_DATA, currentLobbyId);
 
     const handleLobbyUpdate = (data: LobbyPublicData) => {
-      console.log("state updated");
       setLobbyData(data);
+    };
+
+    const gameCreatedHandler = () => {
+      console.log("GAME CREATED");
+
+      dispatch(setCurrentPage("table"));
     };
 
     socket.on(SocketEvents.SEND_LOBBY_DATA, (data) => setLobbyData(data));
     socket.on(SocketEvents.LOBBY_UPDATE, (data) => setLobbyData(data));
+    socket.on(SocketEvents.GAME_CREATED, () => gameCreatedHandler());
 
     return () => {
       socket.emit(SocketEvents.EXIT_LOBBY, lobbyData?.id);
       socket.off(SocketEvents.LOBBY_UPDATE, handleLobbyUpdate);
+      socket.off(SocketEvents.GAME_CREATED, gameCreatedHandler);
     };
-  }, [socket, currentLobbyId, lobbyData?.id]);
+  }, [socket, currentLobbyId, lobbyData?.id, dispatch]);
 
   const handleExit = () => {
     socket.emit(SocketEvents.EXIT_LOBBY, lobbyData?.id);
@@ -73,7 +84,9 @@ export default function Lobby_content() {
   };
 
   const startGame = () => {
-    socket.emit("CREATE_GAME", currentLobbyId);
+    socket.emit(SocketEvents.CREATE_GAME, currentLobbyId);
+    console.log("SENT CREATE_GAME");
+    setExitAnimationType("up");
   };
 
   return (

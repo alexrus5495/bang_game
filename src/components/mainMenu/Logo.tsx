@@ -6,14 +6,20 @@ export default function Logo() {
   const shadowControls = useAnimation();
 
   useEffect(() => {
-    animateStartUp(logoControls, shadowControls);
-  });
+    const controller = new AbortController();
+
+    animateStartUp(logoControls, shadowControls, controller.signal);
+
+    return () => controller.abort();
+  }, [logoControls, shadowControls]);
 
   function handleClickLogo() {
+    const controller = new AbortController();
+
     stopAnimation(logoControls, shadowControls);
     animateSwing(logoControls, shadowControls);
     setTimeout(() => {
-      animateStartUp(logoControls, shadowControls);
+      animateStartUp(logoControls, shadowControls, controller.signal);
     }, 4000);
   }
 
@@ -53,7 +59,10 @@ export default function Logo() {
 function animateStartUp(
   logoControls: ReturnType<typeof useAnimation>,
   shadowControls: ReturnType<typeof useAnimation>,
+  signal?: AbortSignal,
 ) {
+  if (signal?.aborted) return;
+
   logoControls.start({
     opacity: 1,
     scale: 1,
@@ -66,7 +75,9 @@ function animateStartUp(
     transition: { duration: 0.5, delay: 0.3 },
   });
 
-  setTimeout(() => {
+  const timeout = setTimeout(() => {
+    if (signal?.aborted) return;
+
     logoControls.start({
       y: [0, -10, 0],
       scale: [1, 1.1, 1],
@@ -89,6 +100,12 @@ function animateStartUp(
       },
     });
   }, 800);
+
+  signal?.addEventListener("abort", () => {
+    clearTimeout(timeout);
+    logoControls.stop();
+    shadowControls.stop();
+  });
 }
 
 function stopAnimation(
@@ -102,7 +119,10 @@ function stopAnimation(
 function animateSwing(
   logoControls: ReturnType<typeof useAnimation>,
   shadowControls: ReturnType<typeof useAnimation>,
+  signal?: AbortSignal,
 ) {
+  if (signal?.aborted) return;
+
   logoControls.start({
     rotate: [0, 110, 30, 90, 50, 90],
     transition: {
@@ -121,7 +141,9 @@ function animateSwing(
     },
   });
 
-  setTimeout(() => {
+  const falltimeout = setTimeout(() => {
+    if (signal?.aborted) return;
+
     logoControls.start({
       translateY: "200vh",
       transition: {
@@ -137,7 +159,9 @@ function animateSwing(
     });
   }, 2000);
 
-  setTimeout(() => {
+  const resetTimeout = setTimeout(() => {
+    if (signal?.aborted) return;
+
     logoControls.set({
       rotate: 0,
       translateY: 0,
@@ -148,4 +172,14 @@ function animateSwing(
       translateY: 0,
     });
   }, 4000);
+
+  signal?.addEventListener("abort", () => {
+    clearTimeout(falltimeout);
+    clearTimeout(resetTimeout);
+    logoControls.stop();
+    shadowControls.stop();
+  });
+
+  logoControls.set({ rotate: 0, translateY: 0 });
+  shadowControls.set({ rotate: 0, translateY: 0 });
 }

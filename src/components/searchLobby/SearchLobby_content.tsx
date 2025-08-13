@@ -21,7 +21,11 @@ export default function SearchLobby_content() {
   useEffect(() => {
     socket.emit(SocketEvents.SUBSCRIBE_LOBBIES);
 
-    const handler = (data: LobbyPublicData[]) => setLobbies(data);
+    const handler = (data: LobbyPublicData[]) => {
+      console.log("GOT LOBBY UPDATE");
+
+      setLobbies(data);
+    };
     socket.on(SocketEvents.LOBBY_UPDATE, handler);
 
     return () => {

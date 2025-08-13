@@ -16,7 +16,9 @@ import { SocketEvents } from "../../lib/socketEvents";
 export default function CreateLobby_content() {
   const locale = useSystemLocalization() as Record<string, string>;
   const dispatch = useAppDispatch();
-  const [lobbyConfig, setLobbyConfig] = useState<LobbyConfig>(blankLobbyConfig);
+  const [lobbyConfig, setLobbyConfig] = useState<LobbyConfig>(() => ({
+    ...structuredClone(blankLobbyConfig),
+  }));
   const { socket } = useSocket();
 
   const isFormReady =
