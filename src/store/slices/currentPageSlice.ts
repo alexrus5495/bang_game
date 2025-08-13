@@ -5,7 +5,7 @@ export const currentPageSlice = createSlice({
   name: "currentPage",
   initialState: "mainMenu",
   reducers: {
-    setCurrentPage: (currentPage, action: PayloadAction<CurrentPage>) => {
+    setCurrentPage: (_state, action: PayloadAction<CurrentPage>) => {
       return action.payload;
     },
   },

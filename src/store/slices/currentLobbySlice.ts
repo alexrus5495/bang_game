@@ -5,7 +5,7 @@ export const currentLobbySlice = createSlice({
   name: "currentLobby",
   initialState: "",
   reducers: {
-    setCurrentLobby: (currentLobby, action: PayloadAction<CurrentLobbyId>) => {
+    setCurrentLobby: (_state, action: PayloadAction<CurrentLobbyId>) => {
       return action.payload;
     },
   },
