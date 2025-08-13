@@ -8,6 +8,17 @@ function createEvents<T extends readonly string[]>(
 }
 
 export const SocketEvents = createEvents([
+  "CREATE_GAME",
+  "SEND_CARDS_META",
+  "SEND_PUBLIC_DATA",
+  "REQUEST_ROLE",
+  "SEND_ROLE",
+  "SEND_TIMER_UPDATE",
+  "SELECT_CHAR",
+  "REQUEST_CHAR_OPTIONS",
+  "SEND_CHAR_OPTIONS",
+  "JOIN_GAME",
+  "GAME_CREATED",
   "ANSWER_TEST_PASSWORD",
   "ASK_FOR_LOBBY",
   "ANSWER_ASK_FOR_LOBBY",
