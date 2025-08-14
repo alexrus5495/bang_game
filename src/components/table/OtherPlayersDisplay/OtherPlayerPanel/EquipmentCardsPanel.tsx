@@ -21,7 +21,11 @@ export default function EquipmentCardsPanel({
     >
       {equippedCards &&
         equippedCards.map((card) => (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <motion.div
+            key={card}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
             <PlayingCard
               key={card}
               cardId={card}
