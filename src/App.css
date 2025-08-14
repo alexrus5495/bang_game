@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "OldTowneLT";
-  src: url("./assets/fonts/old_towne_lt.otf") format("opentype");
+  font-family: "OldTownLT";
+  src: url("./assets/fonts/old_town_lt.otf") format("opentype");
 }
 
 @font-face {
@@ -17,7 +17,7 @@
 
 @layer base {
   :root {
-    --font-oldtowne: "OldTowneLT", serif;
+    --font-oldtown: "OldTownLT", serif;
     --font-palatino: "Palatino", serif;
     --font-gabriela: "Gabriela", serif;
     --WHITE: #f3efe3;
@@ -27,13 +27,13 @@
     --GREEN: #34c759;
   }
   html {
-    font-family: var(--font-oldtowne);
+    font-family: var(--font-oldtown);
     color: var(--BLACK);
   }
 }
 @layer utilities {
-  .font-oldtowne {
-    font-family: var(--font-oldtowne);
+  .font-oldtown {
+    font-family: var(--font-oldtown);
   }
 
   .font-palatino {

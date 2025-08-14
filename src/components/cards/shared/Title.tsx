@@ -28,7 +28,7 @@ export default function CardTitleComponent({
       className="
         mt-[2px]
         mb-[10px]
-        font-oldtowne
+        font-oldtown
         text-center
         tracking-normal
         origin-center
