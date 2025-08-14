@@ -2,9 +2,8 @@ import Lobby_content from "../components/lobby/Lobby_content";
 import Background_big from "../components/shared/Background_big";
 import { useSocket } from "../hooks/useSocket";
 import { useEffect } from "react";
-import { useAppDispatch } from "../hooks/useAppSelector";
-import { setCurrentPage } from "../store/slices/currentPageSlice";
 import { SocketEvents } from "../lib/socketEvents";
+import { useCurrentPageState } from "../hooks/useCurrentPageState";
 
 export default function Lobby({
   setExitAnimationType,
@@ -12,14 +11,14 @@ export default function Lobby({
   setExitAnimationType: (type: "left" | "up") => void;
 }) {
   const { socket } = useSocket();
-  const dispatch = useAppDispatch();
+  const setCurrentPage = useCurrentPageState()[1];
 
   useEffect(() => {
     socket.on(SocketEvents.KICKED_OUT, handleKickedOut);
   });
 
   const handleKickedOut = () => {
-    dispatch(setCurrentPage("mainMenu"));
+    setCurrentPage("mainMenu");
   };
 
   return (

@@ -18,7 +18,7 @@ type CharOption = {
 export default function CharSelectPrompt() {
   const { socket } = useSocket();
   const locale = useSystemLocalization() as Record<string, string>;
-  const publicData = usePublicDataState();
+  const publicData = usePublicDataState()[0];
 
   const [role, setRole] = useState<string>("");
   const [remainingTime, setRemainingTime] = useState<number>(60);

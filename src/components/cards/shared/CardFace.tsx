@@ -27,7 +27,7 @@ import { getImageComponent } from "../../../lib/images";
 import { useCardsMetaDataState } from "../../../hooks/useCardsMetaDataState";
 
 export default function CardFace({ cardId, cardType }: CardProps) {
-  const cardsMetaData = useCardsMetaDataState();
+  const cardsMetaData = useCardsMetaDataState()[0];
 
   if (!cardsMetaData) return null;
 

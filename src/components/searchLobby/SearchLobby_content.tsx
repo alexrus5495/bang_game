@@ -6,17 +6,16 @@ import Button from "../shared/Button";
 import SearchLobby_lobbyTable from "./SearchLobby_content/SearchLobby_lobbyTable";
 import type { LobbyPublicData } from "../../types";
 import SearchLobby_lobbyDetails from "./SearchLobby_content/SearchLobby_lobbyDetails";
-import { setCurrentPage } from "../../store/slices/currentPageSlice";
-import { useAppDispatch } from "../../hooks/useAppSelector";
 import { SocketEvents } from "../../lib/socketEvents";
+import { useCurrentPageState } from "../../hooks/useCurrentPageState";
 
 export default function SearchLobby_content() {
   const locale = useSystemLocalization() as Record<string, string>;
   const [lobbies, setLobbies] = useState<LobbyPublicData[]>([]);
   const [selectedLobby, setSelectedLobby] = useState<string | null>(null);
   const [playerName, setPlayerName] = useState<string>("");
+  const setCurrentPage = useCurrentPageState()[1];
   const { socket } = useSocket();
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     socket.emit(SocketEvents.SUBSCRIBE_LOBBIES);
@@ -41,7 +40,7 @@ export default function SearchLobby_content() {
           <Button
             text={locale.back}
             className={"absolute"}
-            handler={() => dispatch(setCurrentPage("mainMenu"))}
+            handler={() => setCurrentPage("mainMenu")}
             style={{ fontSize: sizeAdaptive(16), left: sizeAdaptive(18) }}
           />
 

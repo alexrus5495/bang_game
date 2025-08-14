@@ -3,10 +3,9 @@ import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
 import type { LobbyPublicData, LobbySeat } from "../../../types";
 import Button from "../../shared/Button";
 import { useSocket } from "../../../hooks/useSocket";
-import { useAppDispatch } from "../../../hooks/useAppSelector";
-import { setCurrentPage } from "../../../store/slices/currentPageSlice";
-import { setCurrentLobby } from "../../../store/slices/currentLobbySlice";
 import { SocketEvents } from "../../../lib/socketEvents";
+import { useCurrentPageState } from "../../../hooks/useCurrentPageState";
+import { useCurrentLobbyState } from "../../../hooks/useCurrentLobbyState";
 
 export default function LobbyInfo_public({
   selectedLobbyData,
@@ -19,17 +18,18 @@ export default function LobbyInfo_public({
 }) {
   const locale = useSystemLocalization() as Record<string, string>;
   const { socket } = useSocket();
-  const dispatch = useAppDispatch();
+  const setCurrentPage = useCurrentPageState()[1];
+  const setCurrentLobby = useCurrentLobbyState()[1];
 
   const handleJoin = () => {
-    dispatch(setCurrentLobby(selectedLobbyData.id));
+    setCurrentLobby(selectedLobbyData.id);
 
     socket.emit(SocketEvents.JOIN_LOBBY, selectedLobbyData.id, {
       playerName: playerName,
       playerId: socket.id,
     });
 
-    dispatch(setCurrentPage("lobby"));
+    setCurrentPage("lobby");
   };
 
   return (

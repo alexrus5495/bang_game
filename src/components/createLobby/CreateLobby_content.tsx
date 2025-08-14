@@ -7,18 +7,19 @@ import CreateLobby_form from "./CreateLobby_content/CreateLobby_form";
 import CreateLobby_seatDisplay from "./CreateLobby_content/CreateLobby_seatDisplay";
 import { useSocket } from "../../hooks/useSocket";
 import type { LobbyConfig } from "../../types";
-import { setCurrentPage } from "../../store/slices/currentPageSlice";
-import { setCurrentLobby } from "../../store/slices/currentLobbySlice";
-import { useAppDispatch } from "../../hooks/useAppSelector";
 import { blankLobbyConfig } from "../../config/blankLobby.config";
 import { SocketEvents } from "../../lib/socketEvents";
+import { useCurrentPageState } from "../../hooks/useCurrentPageState";
+import { useCurrentLobbyState } from "../../hooks/useCurrentLobbyState";
 
 export default function CreateLobby_content() {
   const locale = useSystemLocalization() as Record<string, string>;
-  const dispatch = useAppDispatch();
+
   const [lobbyConfig, setLobbyConfig] = useState<LobbyConfig>(() => ({
     ...structuredClone(blankLobbyConfig),
   }));
+  const setCurrentPage = useCurrentPageState()[1];
+  const setCurrentLobby = useCurrentLobbyState()[1];
   const { socket } = useSocket();
 
   const isFormReady =
@@ -36,8 +37,8 @@ export default function CreateLobby_content() {
         socket.once(SocketEvents.LOBBY_CREATED, resolve);
       });
 
-      dispatch(setCurrentLobby(lobbyId));
-      dispatch(setCurrentPage("lobby"));
+      setCurrentLobby(lobbyId);
+      setCurrentPage("lobby");
     }
   };
 
@@ -48,7 +49,7 @@ export default function CreateLobby_content() {
           <Button
             text={locale.back}
             className={"absolute"}
-            handler={() => dispatch(setCurrentPage("mainMenu"))}
+            handler={() => setCurrentPage("mainMenu")}
             style={{ fontSize: sizeAdaptive(16), left: sizeAdaptive(18) }}
           />
 

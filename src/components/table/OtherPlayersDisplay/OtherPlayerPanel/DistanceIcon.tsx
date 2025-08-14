@@ -1,7 +1,16 @@
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
-import type { Player_PublicData } from "../../../../types";
+import type {
+  CardsMetaData,
+  Player_PublicData,
+  TooltipMessage,
+} from "../../../../types";
 import { usePublicDataState } from "../../../../hooks/usePublicDataState";
 import { processPlayersArray } from "../../../../lib/gameData/processPlayersArray";
+import { useEffect, useState } from "react";
+import { useSystemLocalization } from "../../../../hooks/useSystemLocalization";
+import Tooltip from "../../Tooltip";
+import { useTooltip } from "../../../../hooks/useTooltip";
+import { useCardsMetaDataState } from "../../../../hooks/useCardsMetaDataState";
 
 export default function DistanceIcon({
   playerData,
@@ -10,59 +19,123 @@ export default function DistanceIcon({
   playerData: Player_PublicData;
   clientId: string | undefined;
 }) {
-  const publicData = usePublicDataState();
+  const publicData = usePublicDataState()[0];
+  const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
 
-  const calculateDistance = () => {
-    if (!publicData?.playersPublicData || !clientId) return;
-    const playersArray = processPlayersArray(
-      publicData.playersPublicData,
-      clientId,
-    );
-    if (!playersArray) return;
+  const [distance, setDistance] = useState<number | undefined>(undefined);
+  const [tooltipContent, setTooltipContent] = useState<TooltipMessage[]>([]);
+  const {
+    position,
+    isVisible,
+    isPinned,
+    handlersNonPinable,
+    handlersPinable,
+    hasCardRef,
+  } = useTooltip();
+  const locale = useSystemLocalization() as Record<string, string>;
 
-    let distance = 0;
+  useEffect(() => {
+    const newTooltipContent: TooltipMessage[] = [];
 
-    for (const player of playersArray) {
-      if (player.id !== playerData.id) {
-        if (!player.isEliminated) distance++;
-      } else break;
-    }
+    const calculateDistance = () => {
+      if (!publicData?.playersPublicData || !clientId) return;
+      const playersArray = processPlayersArray(
+        publicData.playersPublicData,
+        clientId,
+      );
+      if (!playersArray) return;
 
-    const mustangCardRegex = new RegExp(`^mustang_\\d+$`);
-    if (playerData.equipment.some((item) => mustangCardRegex.test(item)))
-      distance++;
+      let distance = 0;
 
-    return distance;
-  };
+      for (const player of playersArray) {
+        if (player.id !== playerData.id) {
+          if (!player.isEliminated) distance++;
+        } else break;
+      }
 
-  const distance = calculateDistance();
+      newTooltipContent.push([
+        {
+          type: "plainText",
+          content: `${locale["tooltip_baseRange"]}: ${distance}`,
+        },
+      ]);
+
+      const mustangCard = playerData.equipment.find((item) =>
+        item.startsWith("mustang" + "_"),
+      );
+
+      if (mustangCard) {
+        distance++;
+
+        newTooltipContent.push([
+          { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
+          {
+            type: "playingCardRef",
+            content: cardsMeta.deckMeta[mustangCard],
+          },
+        ]);
+      }
+
+      if (playerData.char === "paul_regret") {
+        distance++;
+
+        newTooltipContent.push([
+          { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
+          {
+            type: "charCardRef",
+            content: cardsMeta.charDeckMeta["paul_regret"],
+          },
+        ]);
+      }
+
+      setDistance(distance);
+      setTooltipContent(newTooltipContent);
+    };
+
+    calculateDistance();
+  }, [playerData, clientId, publicData, locale, cardsMeta]);
 
   return (
-    <div className="h-full aspect-sqare">
+    <>
       <div
-        className="h-[100%] aspect-square border rounded-[50%] bg-[var(--BEIGE)] relative z-2"
-        style={{
-          borderWidth: sizeAdaptive(300),
-        }}
+        className="h-full aspect-sqare cursor-pointer"
+        {...(hasCardRef(tooltipContent) ? handlersPinable : handlersNonPinable)}
       >
-        {distance && (
-          <div
-            className="h-full w-full text-center"
-            style={{
-              fontSize: sizeAdaptive(25),
-              lineHeight: sizeAdaptive(25),
-            }}
-          >
-            {distance}
-          </div>
-        )}
+        <div
+          className="h-[100%] aspect-square border rounded-[50%] bg-[var(--BEIGE)] relative z-2"
+          style={{
+            borderWidth: sizeAdaptive(300),
+          }}
+        >
+          {distance && (
+            <div
+              className="h-full w-full text-center"
+              style={{
+                fontSize: sizeAdaptive(25),
+                lineHeight: sizeAdaptive(25),
+              }}
+            >
+              {distance}
+            </div>
+          )}
+        </div>
+        <img
+          src="./icon-distance.png"
+          alt=""
+          className="absolute top-[-60%] right-[12.5%] h-[70%] z-0"
+          draggable={false}
+        />
       </div>
-      <img
-        src="./icon-distance.png"
-        alt=""
-        className="absolute top-[-60%] right-[12.5%] h-[70%] z-0"
-        draggable={false}
-      />
-    </div>
+
+      {isVisible && tooltipContent && (
+        <Tooltip
+          title={`${locale.distance} = ${distance}`}
+          content={tooltipContent}
+          position={position}
+          hasCardRef={hasCardRef(tooltipContent)}
+          isPinned={isPinned}
+        />
+      )}
+    </>
   );
 }

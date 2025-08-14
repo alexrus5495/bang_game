@@ -3,27 +3,25 @@ import { useSocket } from "../hooks/useSocket";
 import { SocketEvents } from "../lib/socketEvents";
 import { useCurrentLobbyState } from "../hooks/useCurrentLobbyState";
 import type { CardsMetaData, PublicData } from "../types";
-import { useAppDispatch } from "../hooks/useAppSelector";
-import { setCardsMeta } from "../store/slices/cardsMetaSlice";
-import { setPublicData } from "../store/slices/publicDataSlice";
 import OtherPlayersDisplay from "../components/table/OtherPlayersDisplay";
 import { usePublicDataState } from "../hooks/usePublicDataState";
 import CharSelectPrompt from "../components/table/prompts/CharSelectPrompt";
 import CentralPanel from "../components/table/CentralPanel";
+import { useCardsMetaDataState } from "../hooks/useCardsMetaDataState";
 
 export default function Table() {
   const { socket } = useSocket();
-  const lobbyId = useCurrentLobbyState();
-  const publicData = usePublicDataState() as PublicData;
-  const dispatch = useAppDispatch();
+  const lobbyId = useCurrentLobbyState()[0];
+  const setCardsMeta = useCardsMetaDataState()[1];
+  const [publicData, setPublicData] = usePublicDataState();
 
   useEffect(() => {
     const onSendCardsMeta = (data: CardsMetaData) => {
-      dispatch(setCardsMeta(data));
+      setCardsMeta(data);
     };
 
     const onSendPublicData = (data: PublicData) => {
-      dispatch(setPublicData({ ...data, deckLength: 0 }));
+      setPublicData({ ...data, deckLength: 0 });
     };
 
     socket.emit(SocketEvents.JOIN_GAME, lobbyId);
@@ -34,7 +32,7 @@ export default function Table() {
       socket.off(SocketEvents.SEND_CARDS_META, onSendCardsMeta);
       socket.off(SocketEvents.SEND_PUBLIC_DATA, onSendPublicData);
     };
-  }, [socket, lobbyId, dispatch]);
+  }, [socket, lobbyId, setCardsMeta, setPublicData]);
 
   const player = publicData?.playersPublicData.find(
     (player) => player.id === socket.id,

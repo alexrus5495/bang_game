@@ -4,10 +4,9 @@ import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
 import Button from "../../shared/Button";
 import { useSocket } from "../../../hooks/useSocket";
 import { SocketEvents } from "../../../lib/socketEvents";
-import { useAppDispatch } from "../../../hooks/useAppSelector";
-import { setCurrentLobby } from "../../../store/slices/currentLobbySlice";
-import { setCurrentPage } from "../../../store/slices/currentPageSlice";
 import { useState } from "react";
+import { useCurrentPageState } from "../../../hooks/useCurrentPageState";
+import { useCurrentLobbyState } from "../../../hooks/useCurrentLobbyState";
 
 export default function Join_idForm({
   lobbyId,
@@ -25,7 +24,8 @@ export default function Join_idForm({
   const locale = useSystemLocalization() as Record<string, string>;
   const [showNoLobbyMsg, setShowNoLobbyMsg] = useState<boolean>(false);
   const { socket } = useSocket();
-  const dispatch = useAppDispatch();
+  const setCurrentPage = useCurrentPageState()[1];
+  const setCurrentLobby = useCurrentLobbyState()[1];
 
   const updateLobbyId = (newId: string) => {
     if (showNoLobbyMsg) setShowNoLobbyMsg(false);
@@ -61,8 +61,8 @@ export default function Join_idForm({
           playerName: playerName,
           playerId: socket.id,
         });
-        dispatch(setCurrentLobby(lobbyId));
-        dispatch(setCurrentPage("lobby"));
+        setCurrentLobby(lobbyId);
+        setCurrentPage("lobby");
 
         break;
     }

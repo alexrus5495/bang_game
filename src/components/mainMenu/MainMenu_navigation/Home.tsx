@@ -1,7 +1,6 @@
 import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
 import Button from "../../shared/Button";
-import { setCurrentPage } from "../../../store/slices/currentPageSlice";
-import { useAppDispatch } from "../../../hooks/useAppSelector";
+import { useCurrentPageState } from "../../../hooks/useCurrentPageState";
 
 export default function MainMenu_navigation_Home({
   setMenuState,
@@ -9,14 +8,14 @@ export default function MainMenu_navigation_Home({
   setMenuState: (state: string) => void;
 }) {
   const locale = useSystemLocalization() as Record<string, string>;
-  const dispatch = useAppDispatch();
+  const setCurrentPage = useCurrentPageState()[1];
 
   return (
     <>
       <li>
         <Button
           text={locale["create_lobby"]}
-          handler={() => dispatch(setCurrentPage("createLobby"))}
+          handler={() => setCurrentPage("createLobby")}
         />
       </li>
 
@@ -30,7 +29,7 @@ export default function MainMenu_navigation_Home({
       <li>
         <Button
           text={locale["search_lobby"]}
-          handler={() => dispatch(setCurrentPage("searchLobby"))}
+          handler={() => setCurrentPage("searchLobby")}
         />
       </li>
       <li>

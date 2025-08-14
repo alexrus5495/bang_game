@@ -8,7 +8,7 @@ import Layout_7 from "./OtherPlayersDisplay/Layout_7";
 
 export default function OtherPlayersDisplay() {
   const { socket } = useSocket();
-  const publicData = usePublicDataState();
+  const publicData = usePublicDataState()[0];
 
   if (!publicData) return null;
 

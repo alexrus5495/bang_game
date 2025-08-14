@@ -5,10 +5,9 @@ import { useState } from "react";
 import FormTextInput from "../../createLobby/CreateLobby_content/FormTextInput";
 import { useSocket } from "../../../hooks/useSocket";
 import type { LobbyPublicData } from "../../../types";
-import { useAppDispatch } from "../../../hooks/useAppSelector";
-import { setCurrentLobby } from "../../../store/slices/currentLobbySlice";
-import { setCurrentPage } from "../../../store/slices/currentPageSlice";
 import { SocketEvents } from "../../../lib/socketEvents";
+import { useCurrentLobbyState } from "../../../hooks/useCurrentLobbyState";
+import { useCurrentPageState } from "../../../hooks/useCurrentPageState";
 
 export default function LobbyInfo_private({
   selectedLobbyData,
@@ -23,7 +22,8 @@ export default function LobbyInfo_private({
     useState<boolean>(false);
 
   const { socket } = useSocket();
-  const dispatch = useAppDispatch();
+  const setCurrentLobby = useCurrentLobbyState()[1];
+  const setCurrentPage = useCurrentPageState()[1];
 
   const isNameSatisfies = () => {
     return playerName.length > 0 && playerName.length <= 15;
@@ -57,8 +57,8 @@ export default function LobbyInfo_private({
     });
 
     if (result) {
-      dispatch(setCurrentLobby(selectedLobbyData.id));
-      dispatch(setCurrentPage("lobby"));
+      setCurrentLobby(selectedLobbyData.id);
+      setCurrentPage("lobby");
     } else {
       setShowWrongPasswordMsg(true);
       setPassword("");

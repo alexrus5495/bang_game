@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "./normalize.css";
 import "./App.css";
-import { useAppDispatch } from "./hooks/useAppSelector";
 import { loadLocalization } from "./store/slices/localeSlice";
 import MainMenu from "./pages/mainMenu";
 import { motion, AnimatePresence } from "motion/react";
@@ -13,22 +12,22 @@ import Lobby from "./pages/lobby";
 import { useCurrentPageState } from "./hooks/useCurrentPageState";
 import Table from "./pages/table";
 import { SocketEvents } from "./lib/socketEvents";
-import { setCurrentPage } from "./store/slices/currentPageSlice";
+import { useAppDispatch } from "./hooks/useAppSelector";
 
 export default function App() {
-  const currentPage = useCurrentPageState();
-  const dispatch = useAppDispatch();
   const { isConnected, socketId } = useSocket();
+  const [currentPage, setCurrentPage] = useCurrentPageState();
+  const dispatch = useAppDispatch();
 
   const { socket } = useSocket();
 
   useEffect(() => {
     const handleTestGame = () => {
-      dispatch(setCurrentPage("table"));
+      setCurrentPage("table");
     };
     socket.emit("TEST_GAME");
     socket.once(SocketEvents.GAME_CREATED, handleTestGame);
-  }, [socket, dispatch]);
+  }, [socket, setCurrentPage]);
 
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [exitAnimationType, setExitAnimationType] = useState<"left" | "up">(
@@ -47,9 +46,9 @@ export default function App() {
     <div className="h-[100vh] w-[100vw] flex items-center bg-woodenTexture select-none absolute overflow-hidden">
       <div
         style={{
-          fontSize: sizeAdaptive(20),
+          fontSize: sizeAdaptive(30),
           left: 0,
-          top: 0,
+          bottom: 0,
           color: "white",
         }}
         className="absolute"

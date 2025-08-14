@@ -5,9 +5,8 @@ import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
 import Button from "../../shared/Button";
 import { useSocket } from "../../../hooks/useSocket";
 import { SocketEvents } from "../../../lib/socketEvents";
-import { useAppDispatch } from "../../../hooks/useAppSelector";
-import { setCurrentLobby } from "../../../store/slices/currentLobbySlice";
-import { setCurrentPage } from "../../../store/slices/currentPageSlice";
+import { useCurrentLobbyState } from "../../../hooks/useCurrentLobbyState";
+import { useCurrentPageState } from "../../../hooks/useCurrentPageState";
 
 export default function Join_passwordForm({
   lobbyId,
@@ -19,10 +18,12 @@ export default function Join_passwordForm({
   const [password, setPassword] = useState<string>("");
   const [showWrongPasswordMsg, setShowWrongPasswordMsg] =
     useState<boolean>(false);
+  const setCurrentLobby = useCurrentLobbyState()[1];
+  const setCurrentPage = useCurrentPageState()[1];
 
   const { socket } = useSocket();
-  const dispatch = useAppDispatch();
   const locale = useSystemLocalization() as Record<string, string>;
+
   const isFormReady = password.length > 0 && password.length <= 15;
 
   const updatePassword = (newPassword: string) => {
@@ -45,8 +46,8 @@ export default function Join_passwordForm({
     });
 
     if (result) {
-      dispatch(setCurrentLobby(lobbyId));
-      dispatch(setCurrentPage("lobby"));
+      setCurrentLobby(lobbyId);
+      setCurrentPage("lobby");
     } else {
       setShowWrongPasswordMsg(true);
       setPassword("");

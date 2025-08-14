@@ -10,7 +10,7 @@ import {
 import SkeletonCard from "../cards/SkeletonCard";
 
 export default function CentralPanel() {
-  const publicData = usePublicDataState();
+  const publicData = usePublicDataState()[0];
 
   return (
     <div

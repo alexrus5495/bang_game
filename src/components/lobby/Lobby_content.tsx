@@ -4,12 +4,11 @@ import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import Button from "../shared/Button";
 import type { LobbyPublicData } from "../../types";
 import { useSocket } from "../../hooks/useSocket";
-import { setCurrentPage } from "../../store/slices/currentPageSlice";
-import { useAppDispatch } from "../../hooks/useAppSelector";
 import { useCurrentLobbyState } from "../../hooks/useCurrentLobbyState";
 import SeatLine from "./SeatLine";
 import LobbyTitle from "./LobbyTitle";
 import { SocketEvents } from "../../lib/socketEvents";
+import { useCurrentPageState } from "../../hooks/useCurrentPageState";
 
 export default function Lobby_content({
   setExitAnimationType,
@@ -20,9 +19,9 @@ export default function Lobby_content({
   const [lobbyData, setLobbyData] = useState<LobbyPublicData | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
   const { socket } = useSocket();
-  const dispatch = useAppDispatch();
 
-  const currentLobbyId = useCurrentLobbyState();
+  const setCurrentPage = useCurrentPageState()[1];
+  const currentLobbyId = useCurrentLobbyState()[0];
 
   useEffect(() => {
     socket.emit(SocketEvents.REQUEST_LOBBY_DATA, currentLobbyId);
@@ -34,7 +33,7 @@ export default function Lobby_content({
     const gameCreatedHandler = () => {
       console.log("GAME CREATED");
 
-      dispatch(setCurrentPage("table"));
+      setCurrentPage("table");
     };
 
     socket.on(SocketEvents.SEND_LOBBY_DATA, (data) => setLobbyData(data));
@@ -46,12 +45,12 @@ export default function Lobby_content({
       socket.off(SocketEvents.LOBBY_UPDATE, handleLobbyUpdate);
       socket.off(SocketEvents.GAME_CREATED, gameCreatedHandler);
     };
-  }, [socket, currentLobbyId, lobbyData?.id, dispatch]);
+  }, [socket, currentLobbyId, lobbyData?.id, setCurrentPage]);
 
   const handleExit = () => {
     socket.emit(SocketEvents.EXIT_LOBBY, lobbyData?.id);
     socket.off(SocketEvents.LOBBY_UPDATE);
-    dispatch(setCurrentPage("mainMenu"));
+    setCurrentPage("mainMenu");
   };
 
   const arePlayersReady = () => {
