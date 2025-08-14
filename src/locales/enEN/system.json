@@ -47,5 +47,18 @@
   "botName7": "Laggy Larry",
   "botName8": "Pixel Pete",
   "botName9": "Binary Blues",
-  "charSelect_title": "SELECT CHARACTER"
+  "charSelect_title": "SELECT CHARACTER",
+  "tooltip_baseRange": "Base range",
+  "tooltip_handSize": "Cards in hand",
+  "tooltip_from": "from",
+  "tooltip_human": "Live player",
+  "tooltip_bot": "Bot",
+  "tooltip_holdToInspect": "Hold CTRL to inspect",
+  "sheriff": "Sheriff",
+  "deputy": "Deputy",
+  "renegade": "Renegade",
+  "outlaw": "Outlaw",
+  "distance": "Distance",
+  "range": "Range",
+  "role": "Role"
 }

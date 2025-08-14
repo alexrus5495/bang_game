@@ -4,6 +4,7 @@ import Bullets from "./Bullets";
 import DistanceIcon from "./DistanceIcon";
 import HandIcon from "./HandIcon";
 import PlayerTypeIcon from "./PlayerTypeIcon";
+import RangeIcon from "./RangeIcon";
 
 export default function InfoIcons({
   playerData,
@@ -28,6 +29,7 @@ export default function InfoIcons({
         style={{ gap: sizeAdaptive(250) }}
       >
         <PlayerTypeIcon playerData={playerData} />
+        <RangeIcon playerData={playerData} />
         <DistanceIcon playerData={playerData} clientId={clientId} />
         <HandIcon playerData={playerData} />
       </div>

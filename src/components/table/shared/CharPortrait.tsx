@@ -12,7 +12,7 @@ export default function CharPortrait({
   return (
     <>
       <div
-        className="h-full aspect-square rounded-[25%] bg-[var(--WHITE)] relative overflow-hidden outline"
+        className="h-full aspect-square rounded-[35%] bg-[var(--WHITE)] relative overflow-hidden outline"
         style={{
           borderColor: playerData.color,
           borderWidth: sizeAdaptive(180),

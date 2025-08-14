@@ -10,3 +10,5 @@ export const BUTTON_TRANSITION: Transition = {
   scale: { duration: 0.15, ease: "easeOut" },
   color: { duration: 0 },
 };
+
+export const TOOLTIP_OFFSET: number = 10;
