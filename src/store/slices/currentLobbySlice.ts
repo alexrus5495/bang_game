@@ -1,11 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { CurrentLobbyId } from "../../types";
 
 export const currentLobbySlice = createSlice({
   name: "currentLobby",
   initialState: "",
   reducers: {
-    setCurrentLobby: (_state, action: PayloadAction<CurrentLobbyId>) => {
+    setCurrentLobby: (_state, action: PayloadAction<string>) => {
       return action.payload;
     },
   },

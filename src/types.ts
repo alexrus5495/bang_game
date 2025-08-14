@@ -79,7 +79,6 @@ export type CurrentPage =
   | "searchLobby"
   | "lobby"
   | "table";
-export type CurrentLobbyId = string;
 
 export type LobbyPublicData = {
   id: string;
@@ -111,12 +110,18 @@ export type LobbySeat = {
   isReady?: boolean;
 };
 
+export type Player_WeaponData = {
+  card: string;
+  range: number;
+};
+
 export type Player_PublicData = {
   id: string | undefined;
   isAI: boolean;
   nickname: string;
   color: string;
   char: string;
+  weapon: Player_WeaponData;
   role: string | undefined;
   handLength: number;
   equipment: string[];
@@ -137,3 +142,10 @@ export type PublicData = {
   currentPlayer: number;
   playersPublicData: PlayersPublicData;
 };
+
+export type TooltipMessagePart = {
+  type: "plainText" | "playingCardRef" | "charCardRef" | "roleCardRef";
+  content: string | PlayingCardMeta | CharacterCardMeta | RoleCardMeta;
+};
+
+export type TooltipMessage = TooltipMessagePart[];

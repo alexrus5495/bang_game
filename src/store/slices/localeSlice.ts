@@ -27,7 +27,6 @@ const loadLocaleFiles = async (
 ): Promise<LocalizationData> => {
   //NOTE: All locale files would be added below
   const system = await import(`../../locales/${localeCode}/system.json`);
-
   const cards = await loadCardsLocales(localeCode);
 
   return {
