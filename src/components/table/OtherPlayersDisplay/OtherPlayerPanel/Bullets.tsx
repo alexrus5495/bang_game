@@ -17,11 +17,14 @@ export default function Bullets({
       style={{
         bottom: sizeAdaptive(130),
         gap: sizeAdaptive(300),
-        paddingLeft: sizeAdaptive(160),
       }}
     >
       {Array.from({ length: maxHealth }, (_, index) => (
-        <div className="h-full w-[8%]" key={index}>
+        <div
+          className="h-full w-[8%]"
+          key={index}
+          style={{ marginBottom: sizeAdaptive(35) }}
+        >
           {index <= currentHealth - 1
             ? getImageComponent("bullet_full_V", { draggable: false })
             : getImageComponent("bullet_empty_V", { draggable: false })}
