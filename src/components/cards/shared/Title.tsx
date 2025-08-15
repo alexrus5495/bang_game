@@ -52,6 +52,9 @@ function applySpecialRules(dynamicClasses: CSSProperties, cardTypeId: string) {
   ) {
     dynamicClasses.fontSize = "110px";
     dynamicClasses.transform = "scaleY(1.2)";
+  } else if (cardTypeId === "slab_the_killer") {
+    dynamicClasses.fontSize = "80px";
+    dynamicClasses.transform = "scaleY(1.1)";
   }
 
   return dynamicClasses;
