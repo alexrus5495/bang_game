@@ -43,7 +43,7 @@ export default function Tooltip({
   return (
     <motion.div
       ref={tooltipRef}
-      className="w-fit z-[999] bg-[var(--BEIGE)] flex flex-col border border-[var(--BLACK)]"
+      className="w-fit z-[999] flex flex-col border border-[var(--BLACK)]"
       style={{
         position: "fixed",
         left: coordinates.left,
@@ -53,9 +53,10 @@ export default function Tooltip({
         gap: sizeAdaptive(180),
         padding: sizeAdaptive(80),
         borderWidth: sizeAdaptive(200),
+        backgroundColor: "rgba(from var(--BEIGE) r g b / 80%",
       }}
       initial={{ opacity: 0 }}
-      animate={{ opacity: 0.9 }}
+      animate={{ opacity: 1 }}
       transition={{ delay: 0.4, duration: 0.3 }}
     >
       {hasCardRef && isPinned && (

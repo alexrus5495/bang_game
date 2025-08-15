@@ -1,7 +1,7 @@
 import { useSystemLocalization } from "../../../../hooks/useSystemLocalization";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
-import type { Player_PublicData } from "../../../../types";
+import type { Player_PublicData, TooltipMessage } from "../../../../types";
 import Tooltip from "../../Tooltip";
 
 export default function PlayerTypeIcon({
@@ -9,8 +9,17 @@ export default function PlayerTypeIcon({
 }: {
   playerData: Player_PublicData;
 }) {
-  const { position, isVisible, handlers } = useTooltip();
+  const { position, isVisible, handlersNonPinable } = useTooltip();
   const locale = useSystemLocalization() as Record<string, string>;
+
+  const tooltipContant: TooltipMessage[] = [
+    [
+      {
+        type: "plainText",
+        content: `${playerData.isAI ? locale["tooltip_bot"] : locale["tooltip_human"]}`,
+      },
+    ],
+  ];
 
   return (
     <>
@@ -19,7 +28,7 @@ export default function PlayerTypeIcon({
         style={{
           borderWidth: sizeAdaptive(300),
         }}
-        {...handlers}
+        {...handlersNonPinable}
       >
         {playerData.isAI ? (
           <img src="./icon-bot.png" draggable={false} />
@@ -30,11 +39,10 @@ export default function PlayerTypeIcon({
 
       {isVisible && (
         <Tooltip
-          title={
-            playerData.isAI ? locale["tooltip_bot"] : locale["tooltip_human"]
-          }
-          content={undefined}
+          title={locale.playerType}
+          content={tooltipContant}
           position={position}
+          hasCardRef={false}
         />
       )}
     </>

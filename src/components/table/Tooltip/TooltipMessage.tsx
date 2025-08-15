@@ -25,6 +25,7 @@ export default function TooltipMessageLine({
                   | CharacterCardMeta
                   | RoleCardMeta
               }
+              type={part.type}
               key={index}
             />
           );

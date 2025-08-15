@@ -5,8 +5,9 @@ export function checkBounds(
   mouseY: number,
   tooltipWidth: number,
   tooltipHeight: number,
+  offsetValue?: number,
 ) {
-  const OFFSET = TOOLTIP_OFFSET;
+  const OFFSET = offsetValue ? offsetValue : TOOLTIP_OFFSET;
 
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
