@@ -38,6 +38,8 @@ export default function CardFace({ cardId, cardType }: CardProps) {
         ? (cardsMetaData.charDeckMeta[cardId] as CharacterCardMeta)
         : (cardsMetaData.roleDeckMeta[cardId] as RoleCardMeta);
 
+  if (!cardData) return null;
+
   const { cardTypeId, description, image, pack } = cardData;
 
   const hasBulletHoles = cardData.decorations.includes("bullet_holes");
