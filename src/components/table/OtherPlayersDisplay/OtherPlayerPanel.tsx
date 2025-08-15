@@ -45,7 +45,7 @@ export default function OtherPlayerPanel({
         {playerData.role && <RoleIcon role={playerData.role} />}
       </div>
 
-      <div className="w-full h-[50%] border border-blue-300">
+      <div className="w-full h-[50%]">
         <EquipmentCardsPanel playerData={playerData} />
       </div>
     </div>
