@@ -81,7 +81,7 @@ export default function Tooltip({
       </div>
 
       <div
-        className="flex flex-col font-palatino"
+        className="flex flex-col font-palatino z-[999]"
         style={{ fontWeight: "bolder" }}
       >
         {content &&
@@ -94,7 +94,7 @@ export default function Tooltip({
 
       {hasCardRef && (
         <div
-          className="text-center italic font-palatino"
+          className="text-center italic font-palatino z-[999]"
           style={{ fontSize: sizeAdaptive(45), paddingTop: sizeAdaptive(50) }}
         >
           {locale["tooltip_holdToInspect"]}
