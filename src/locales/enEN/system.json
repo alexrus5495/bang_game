@@ -60,5 +60,7 @@
   "outlaw": "Outlaw",
   "distance": "Distance",
   "range": "Range",
-  "role": "Role"
+  "role": "Role",
+  "playerType": "Player type",
+  "character": "Character"
 }
