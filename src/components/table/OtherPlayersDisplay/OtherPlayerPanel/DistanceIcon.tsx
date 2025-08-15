@@ -11,16 +11,17 @@ import { useSystemLocalization } from "../../../../hooks/useSystemLocalization";
 import Tooltip from "../../Tooltip";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { useCardsMetaDataState } from "../../../../hooks/useCardsMetaDataState";
+import { useSocket } from "../../../../hooks/useSocket";
 
 export default function DistanceIcon({
   playerData,
-  clientId,
 }: {
   playerData: Player_PublicData;
-  clientId: string | undefined;
 }) {
   const publicData = usePublicDataState()[0];
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
+  const { socket } = useSocket();
+  const clientId = socket.id;
 
   const [distance, setDistance] = useState<number | undefined>(undefined);
   const [tooltipContent, setTooltipContent] = useState<TooltipMessage[]>([]);

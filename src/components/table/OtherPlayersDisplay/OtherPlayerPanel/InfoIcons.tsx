@@ -8,10 +8,8 @@ import RangeIcon from "./RangeIcon";
 
 export default function InfoIcons({
   playerData,
-  clientId,
 }: {
   playerData: Player_PublicData;
-  clientId: string | undefined;
 }) {
   return (
     <div
@@ -30,7 +28,7 @@ export default function InfoIcons({
       >
         <PlayerTypeIcon playerData={playerData} />
         <RangeIcon playerData={playerData} />
-        <DistanceIcon playerData={playerData} clientId={clientId} />
+        <DistanceIcon playerData={playerData} />
         <HandIcon playerData={playerData} />
       </div>
     </div>

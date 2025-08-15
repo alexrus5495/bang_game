@@ -8,10 +8,8 @@ import RoleIcon from "./OtherPlayerPanel/RoleIcon";
 
 export default function OtherPlayerPanel({
   playerData,
-  clientId,
 }: {
   playerData: Player_PublicData;
-  clientId: string | undefined;
 }) {
   const locale = useSystemLocalization() as Record<string, string>;
 
@@ -27,7 +25,7 @@ export default function OtherPlayerPanel({
             borderWidth: sizeAdaptive(300),
           }}
         >
-          <InfoIcons playerData={playerData} clientId={clientId} />
+          <InfoIcons playerData={playerData} />
           <div
             className="h-full w-full"
             style={{

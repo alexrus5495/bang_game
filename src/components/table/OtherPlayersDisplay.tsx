@@ -23,18 +23,10 @@ export default function OtherPlayersDisplay() {
 
   return (
     <div className="w-full h-full">
-      {numberOfPlayers === 4 && (
-        <Layout_4 playersData={players} clientId={socket.id} />
-      )}
-      {numberOfPlayers === 5 && (
-        <Layout_5 playersData={players} clientId={socket.id} />
-      )}
-      {numberOfPlayers === 6 && (
-        <Layout_6 playersData={players} clientId={socket.id} />
-      )}
-      {numberOfPlayers === 7 && (
-        <Layout_7 playersData={players} clientId={socket.id} />
-      )}
+      {numberOfPlayers === 4 && <Layout_4 playersData={players} />}
+      {numberOfPlayers === 5 && <Layout_5 playersData={players} />}
+      {numberOfPlayers === 6 && <Layout_6 playersData={players} />}
+      {numberOfPlayers === 7 && <Layout_7 playersData={players} />}
     </div>
   );
 }

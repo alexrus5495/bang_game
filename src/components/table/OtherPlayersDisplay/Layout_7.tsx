@@ -4,10 +4,8 @@ import OtherPlayerPanel from "./OtherPlayerPanel";
 
 export default function Layout_7({
   playersData,
-  clientId,
 }: {
   playersData: PlayersPublicData;
-  clientId: string | undefined;
 }) {
   return (
     <div
@@ -15,16 +13,16 @@ export default function Layout_7({
       style={{ paddingLeft: sizeAdaptive(80), paddingRight: sizeAdaptive(80) }}
     >
       <div className="w-full h-[33%] flex justify-between">
-        <OtherPlayerPanel playerData={playersData[3]} clientId={clientId} />
-        <OtherPlayerPanel playerData={playersData[4]} clientId={clientId} />
+        <OtherPlayerPanel playerData={playersData[3]} />
+        <OtherPlayerPanel playerData={playersData[4]} />
       </div>
       <div className="w-full h-[33%] flex justify-between">
-        <OtherPlayerPanel playerData={playersData[2]} clientId={clientId} />
-        <OtherPlayerPanel playerData={playersData[5]} clientId={clientId} />
+        <OtherPlayerPanel playerData={playersData[2]} />
+        <OtherPlayerPanel playerData={playersData[5]} />
       </div>
       <div className="w-full h-[33%] flex justify-between">
-        <OtherPlayerPanel playerData={playersData[1]} clientId={clientId} />
-        <OtherPlayerPanel playerData={playersData[6]} clientId={clientId} />
+        <OtherPlayerPanel playerData={playersData[1]} />
+        <OtherPlayerPanel playerData={playersData[6]} />
       </div>
     </div>
   );
