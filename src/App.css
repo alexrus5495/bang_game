@@ -25,6 +25,7 @@
     --RED: #ca0000;
     --BEIGE: #cab59d;
     --GREEN: #34c759;
+    --GOLD: #ffdd22;
   }
   html {
     font-family: var(--font-oldtown);
@@ -66,6 +67,15 @@
 
   .mask-weathered {
     mask: url(./assets/images/base/misc/_mask_weathered.png) 0 0/ 190px 90px;
+  }
+
+  .mask-weathered_2 {
+    mask: url(./assets/images/base/misc/_mask_weathered.png) 0 100px/ 200px
+      400px;
+  }
+
+  .mask-weathered_3 {
+    mask: url(./assets/images/base/misc/_mask_weathered.png) 50px 0/ 400px 800px;
   }
 
   .bg-gradient-custom-1 {

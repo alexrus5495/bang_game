@@ -7,7 +7,7 @@ import type {
   RoleCardMeta,
 } from "../../../types";
 import { useTooltip } from "../../../hooks/useTooltip";
-import InspectCardTooltip from "../InspectCardTooltip";
+import InspectCardTooltip from "./InspectCardTooltip";
 
 export default function TooltipMessageCardRef({
   meta,

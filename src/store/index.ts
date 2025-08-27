@@ -6,6 +6,7 @@ import currentPageReducer from "./slices/currentPageSlice";
 import currentLobbyReducer from "./slices/currentLobbySlice.ts";
 import cardsMetaSlice from "./slices/cardsMetaSlice.ts";
 import publicDataSlice from "./slices/publicDataSlice.ts";
+import cardCoordsSlice from "./slices/cardCoordsSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     currentLobbyId: currentLobbyReducer,
     cardsMetaData: cardsMetaSlice,
     publicData: publicDataSlice,
+    cardCoords: cardCoordsSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

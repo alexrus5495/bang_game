@@ -8,6 +8,8 @@ import { usePublicDataState } from "../hooks/usePublicDataState";
 import CharSelectPrompt from "../components/table/prompts/CharSelectPrompt";
 import CentralPanel from "../components/table/CentralPanel";
 import { useCardsMetaDataState } from "../hooks/useCardsMetaDataState";
+import PlayerArea from "../components/table/PlayerArea";
+import { sizeAdaptive } from "../lib/css/cssFunctions";
 
 export default function Table() {
   const { socket } = useSocket();
@@ -21,7 +23,7 @@ export default function Table() {
     };
 
     const onSendPublicData = (data: PublicData) => {
-      setPublicData({ ...data, deckLength: 0 });
+      setPublicData(data);
     };
 
     socket.emit(SocketEvents.JOIN_GAME, lobbyId);
@@ -47,13 +49,15 @@ export default function Table() {
         className="w-[100vw] absolute select-none flex flex-col justify-center items-center border border-white"
         style={{ height: "min(51vw, 100vh)", width: "min(100vw, 196vh)" }}
       >
-        <div className="w-full h-[60%]">
+        <div className="w-full h-[60%]" style={{ marginTop: sizeAdaptive(50) }}>
           <OtherPlayersDisplay />
         </div>
 
         <CentralPanel />
 
-        <div className="w-full h-[40%]"></div>
+        <div className="w-full h-[40%]">
+          <PlayerArea />
+        </div>
       </div>
     </>
   );

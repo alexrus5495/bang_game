@@ -1,8 +1,8 @@
-import { useSystemLocalization } from "../../../../hooks/useSystemLocalization";
-import { useTooltip } from "../../../../hooks/useTooltip";
-import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
-import type { Player_PublicData } from "../../../../types";
-import Tooltip from "../../Tooltip";
+import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useTooltip } from "../../../hooks/useTooltip";
+import { sizeAdaptive } from "../../../lib/css/cssFunctions";
+import type { Player_PublicData } from "../../../types";
+import Tooltip from "../Tooltip/Tooltip";
 
 export default function HandIcon({
   playerData,
@@ -24,13 +24,7 @@ export default function HandIcon({
             borderWidth: sizeAdaptive(300),
           }}
         >
-          <div
-            className="h-full w-full text-center"
-            style={{
-              fontSize: sizeAdaptive(25),
-              lineHeight: sizeAdaptive(25),
-            }}
-          >
+          <div className="h-full w-full text-center" style={{}}>
             {playerData.handLength}
           </div>
         </div>

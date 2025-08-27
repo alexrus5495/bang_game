@@ -4,7 +4,7 @@ import { useTooltip } from "../../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../../lib/images";
 import type { CardsMetaData, TooltipMessage } from "../../../../types";
-import Tooltip from "../../Tooltip";
+import Tooltip from "../../Tooltip/Tooltip";
 
 export default function RoleIcon({ role }: { role: string }) {
   const { position, isVisible, handlersPinable, isPinned } = useTooltip();
@@ -18,13 +18,11 @@ export default function RoleIcon({ role }: { role: string }) {
   return (
     <>
       <div
-        className="h-[50%] aspect-square rounded-[50%] bg-[var(--BEIGE)] absolute cursor-pointer"
+        className="rounded-[50%] bg-[var(--BEIGE)] cursor-pointer relative z-3"
         {...handlersPinable}
         style={{
           borderWidth: sizeAdaptive(300),
           padding: sizeAdaptive(300),
-          bottom: "-15%",
-          left: "13%",
         }}
       >
         {getImageComponent(role, { draggable: false })}

@@ -115,6 +115,11 @@ export type Player_WeaponData = {
   range: number;
 };
 
+export type ProcessedPlayerData = {
+  absoluteIndex: number;
+  playerData: Player_PublicData;
+};
+
 export type Player_PublicData = {
   id: string | undefined;
   isAI: boolean;
@@ -141,6 +146,7 @@ export type PublicData = {
   discardPileLength: number;
   currentPlayer: number;
   playersPublicData: PlayersPublicData;
+  clientHand: string[];
 };
 
 export type TooltipMessagePart = {
@@ -149,3 +155,11 @@ export type TooltipMessagePart = {
 };
 
 export type TooltipMessage = TooltipMessagePart[];
+
+export type CardCoords = {
+  topCard: {
+    x: number | null;
+    y: number | null;
+    height: number | null;
+  };
+};

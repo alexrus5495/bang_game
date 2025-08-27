@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CardBack from "./shared/CardBack";
 import CardFace from "./shared/CardFace";
 import CardScaler from "./shared/CardScaler";
@@ -8,13 +8,25 @@ export default function PlayingCard({
   cardId,
   initialIsFaceDown,
   initialIsInteractable,
+  flipDelay,
 }: {
   cardId: string | null;
   initialIsFaceDown: boolean;
   initialIsInteractable: boolean;
+  flipDelay?: number;
 }) {
   const [isFaceDown, setIsFaceDown] = useState(initialIsFaceDown);
   const [isInteractable, setIsInteractable] = useState(initialIsInteractable);
+
+  useEffect(() => {
+    if (flipDelay) {
+      const timer = setTimeout(() => {
+        setIsFaceDown(false);
+      }, flipDelay);
+
+      return () => clearTimeout(timer);
+    }
+  }, [flipDelay]);
 
   return (
     <div
@@ -24,6 +36,7 @@ export default function PlayingCard({
     >
       <motion.div
         className="h-full relative"
+        initial={{ rotateY: initialIsFaceDown ? 180 : 0 }}
         animate={{
           rotateY: isFaceDown ? 180 : 0,
         }}

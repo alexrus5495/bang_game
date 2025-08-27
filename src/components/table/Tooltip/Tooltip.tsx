@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { sizeAdaptive } from "../../lib/css/cssFunctions";
+import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { motion } from "motion/react";
-import type { TooltipMessage } from "../../types";
-import TooltipMessageLine from "./Tooltip/TooltipMessage";
-import { checkBounds } from "../../lib/utils/checkBounds";
-import { useSystemLocalization } from "../../hooks/useSystemLocalization";
+import type { TooltipMessage } from "../../../types";
+import TooltipMessageLine from "../Tooltip/TooltipMessage";
+import { checkBounds } from "../../../lib/utils/checkBounds";
+import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { createPortal } from "react-dom";
 
 export default function Tooltip({
   title,
@@ -25,6 +26,21 @@ export default function Tooltip({
   >({ left: 0, top: 0 });
   const locale = useSystemLocalization() as Record<string, string>;
 
+  const portalRootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const portalRoot = document.createElement("div");
+    portalRoot.id = "inspect-card-tooltip-root";
+    document.body.appendChild(portalRoot);
+    portalRootRef.current = portalRoot;
+
+    return () => {
+      if (portalRootRef.current) {
+        document.body.removeChild(portalRootRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     if (tooltipRef.current) {
       const { width, height } = tooltipRef.current.getBoundingClientRect();
@@ -40,7 +56,9 @@ export default function Tooltip({
     }
   }, [position]);
 
-  return (
+  if (!portalRootRef.current) return null;
+
+  return createPortal(
     <motion.div
       ref={tooltipRef}
       className="w-fit z-[999] flex flex-col border border-[var(--BLACK)]"
@@ -94,12 +112,13 @@ export default function Tooltip({
 
       {hasCardRef && (
         <div
-          className="text-center italic font-palatino z-[999]"
+          className="text-center italic font-palatino z-[990]"
           style={{ fontSize: sizeAdaptive(45), paddingTop: sizeAdaptive(50) }}
         >
           {locale["tooltip_holdToInspect"]}
         </div>
       )}
-    </motion.div>
+    </motion.div>,
+    portalRootRef.current,
   );
 }

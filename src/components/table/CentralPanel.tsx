@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+import { useCardCoordsState } from "../../hooks/useCardCoordsState";
 import { usePublicDataState } from "../../hooks/usePublicDataState";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import Deck from "./CentralPanel/Deck";
@@ -5,6 +7,26 @@ import DeckPlacingMarker from "./CentralPanel/DeckPlacingMarker";
 
 export default function CentralPanel() {
   const publicData = usePublicDataState()[0];
+  const [cardCoords, setCardCoords] = useCardCoordsState();
+
+  const deckRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (deckRef.current) {
+      const deckElement = deckRef.current.getBoundingClientRect();
+
+      const topCardCoords = {
+        x: cardCoords.topCard.x,
+        y: cardCoords.topCard.y,
+        height: deckElement.height,
+      };
+
+      setCardCoords((prev) => ({
+        ...prev,
+        topCard: topCardCoords,
+      }));
+    }
+  }, [cardCoords.topCard.x, cardCoords.topCard.y, setCardCoords]);
 
   return (
     <div
@@ -15,10 +37,11 @@ export default function CentralPanel() {
       }}
     >
       <div
+        ref={deckRef}
         className="h-[70%] w-[30%] flex justify-center relative"
         style={{ marginTop: sizeAdaptive(30) }}
       >
-        <DeckPlacingMarker />
+        <DeckPlacingMarker variation="a" />
         <Deck publicData={publicData} />
       </div>
 
@@ -28,7 +51,7 @@ export default function CentralPanel() {
         className="h-[70%] w-[30%] flex justify-center relative"
         style={{ marginTop: sizeAdaptive(30) }}
       >
-        <DeckPlacingMarker />
+        <DeckPlacingMarker variation="b" />
       </div>
     </div>
   );

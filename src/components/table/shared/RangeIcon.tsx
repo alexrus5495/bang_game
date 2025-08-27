@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
+import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import type {
   CardsMetaData,
   Player_PublicData,
   PlayingCardMeta,
   TooltipMessage,
-} from "../../../../types";
-import { useTooltip } from "../../../../hooks/useTooltip";
-import { useSystemLocalization } from "../../../../hooks/useSystemLocalization";
-import Tooltip from "../../Tooltip";
-import { useCardsMetaDataState } from "../../../../hooks/useCardsMetaDataState";
-import { defaultWeaponMeta } from "../../../../config/defaultWeaponMeta";
+} from "../../../types";
+import { useTooltip } from "../../../hooks/useTooltip";
+import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import Tooltip from "../Tooltip/Tooltip";
+import { useCardsMetaDataState } from "../../../hooks/useCardsMetaDataState";
+import { defaultWeaponMeta } from "../../../config/defaultWeaponMeta";
 
 export default function RangeIcon({
   playerData,
@@ -92,19 +92,13 @@ export default function RangeIcon({
         {...(hasCardRef(tooltipContent) ? handlersPinable : handlersNonPinable)}
       >
         <div
-          className="h-[100%] aspect-square border rounded-[50%] bg-[var(--BEIGE)] relative z-2"
+          className="h-[100%] aspect-square border rounded-[50%] bg-[var(--BEIGE)] relative z-1"
           style={{
             borderWidth: sizeAdaptive(300),
           }}
         >
           {range && (
-            <div
-              className="h-full w-full text-center"
-              style={{
-                fontSize: sizeAdaptive(25),
-                lineHeight: sizeAdaptive(25),
-              }}
-            >
+            <div className="h-full w-full text-center" style={{}}>
               {range}
             </div>
           )}
@@ -112,7 +106,7 @@ export default function RangeIcon({
         <img
           src="./icon-crosshair.png"
           alt=""
-          className="absolute top-[-65%] right-[26.2%] h-[90%] z-0"
+          className="absolute z-0 top-[-65%] h-[100%]"
           draggable={false}
         />
       </div>

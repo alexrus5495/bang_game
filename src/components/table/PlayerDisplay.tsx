@@ -1,0 +1,79 @@
+import { sizeAdaptive } from "../../lib/css/cssFunctions";
+import RoleIcon from "./OtherPlayersDisplay/OtherPlayerPanel/RoleIcon";
+import CharPortrait from "./shared/CharPortrait";
+import Bullets from "./shared/Bullets";
+import RangeIcon from "./shared/RangeIcon";
+import HandIcon from "./shared/HandIcon";
+import type { Player_PublicData } from "../../types";
+
+export default function PlayerDisplay({
+  playerData,
+  role,
+}: {
+  playerData: Player_PublicData;
+  role: string;
+}) {
+  return (
+    <div className="flex h-full w-full items-center">
+      <div className="w-full h-[70%] relative">
+        <div
+          className="h-[50%] w-full bg-[var(--WHITE)] absolute flex items-center"
+          style={{
+            bottom: 0,
+            borderBottomRightRadius: sizeAdaptive(35),
+            borderBottomLeftRadius: sizeAdaptive(25),
+            borderWidth: sizeAdaptive(300),
+          }}
+        >
+          <div
+            className="h-full w-full"
+            style={{
+              paddingLeft: sizeAdaptive(6.4),
+              fontSize: sizeAdaptive(20),
+              lineHeight: sizeAdaptive(15),
+            }}
+          >
+            {playerData.nickname}
+          </div>
+        </div>
+
+        <CharPortrait playerData={playerData} />
+
+        {role && (
+          <div
+            className="h-[50%] aspect-square absolute"
+            style={{ bottom: "-15%", left: "18%" }}
+          >
+            <RoleIcon role={role} />
+          </div>
+        )}
+
+        <div
+          className="w-[72%] absolute flex"
+          style={{
+            top: "10%",
+            right: "-4%",
+            height: sizeAdaptive(20),
+          }}
+        >
+          <Bullets playerData={playerData} />
+        </div>
+
+        <div
+          className="h-[40%] w-[60%] absolute flex justify-end"
+          style={{
+            top: "30%",
+            right: "-4%",
+            marginLeft: sizeAdaptive(45),
+            fontSize: sizeAdaptive(21),
+            lineHeight: sizeAdaptive(18),
+            gap: sizeAdaptive(100),
+          }}
+        >
+          <RangeIcon playerData={playerData} />
+          <HandIcon playerData={playerData} />
+        </div>
+      </div>
+    </div>
+  );
+}

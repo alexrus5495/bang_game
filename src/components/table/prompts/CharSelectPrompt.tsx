@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useSocket } from "../../../hooks/useSocket";
 import { motion } from "motion/react";
@@ -9,6 +9,7 @@ import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
 import CardHighlight from "../shared/CardHighlight";
 import Button from "../../shared/Button";
 import { usePublicDataState } from "../../../hooks/usePublicDataState";
+import { createPortal } from "react-dom";
 
 type CharOption = {
   id: string;
@@ -29,6 +30,23 @@ export default function CharSelectPrompt() {
   const [selectedOption, setSelectedOption] = useState<"a" | "b" | "none">(
     "none",
   );
+
+  const [isPortalReady, setIsPortalReady] = useState<boolean>(false);
+  const portalRootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const portalRoot = document.createElement("div");
+    portalRoot.id = "inspect-card-tooltip-root";
+    document.body.appendChild(portalRoot);
+    portalRootRef.current = portalRoot;
+    setIsPortalReady(true);
+
+    return () => {
+      if (portalRootRef.current) {
+        document.body.removeChild(portalRootRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const onSendTimerUpdate = (data: number) => {
@@ -61,8 +79,10 @@ export default function CharSelectPrompt() {
     socket.emit(SocketEvents.SELECT_CHAR, publicData?.id, option);
   };
 
-  return (
-    <div className="w-full h-full bg-black/70 absolute z-3 flex flex-col">
+  if (!isPortalReady) return null;
+
+  return createPortal(
+    <div className="w-full h-full bg-black/90 absolute z-3 flex flex-col">
       <div className="w-full h-[20%] border border-white flex justify-center items-center">
         <motion.div
           initial={{ y: "-100%" }}
@@ -178,6 +198,7 @@ export default function CharSelectPrompt() {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    portalRootRef.current!,
   );
 }

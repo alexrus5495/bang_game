@@ -1,4 +1,4 @@
-import type { PlayersPublicData } from "../../types";
+import type { PlayersPublicData, ProcessedPlayerData } from "../../types";
 
 export function processPlayersArray(
   publicPlayersDataArray: PlayersPublicData,
@@ -11,10 +11,16 @@ export function processPlayersArray(
 
   const relativeIndex = publicPlayersDataArray.indexOf(targetElement);
 
-  const rotatedArray = [
-    ...publicPlayersDataArray.slice(relativeIndex),
-    ...publicPlayersDataArray.slice(0, relativeIndex),
+  const processedData: ProcessedPlayerData[] = [];
+
+  publicPlayersDataArray.map((player, index) => {
+    processedData.push({ absoluteIndex: index, playerData: player });
+  });
+
+  const rotatedData = [
+    ...processedData.slice(relativeIndex),
+    ...processedData.slice(0, relativeIndex),
   ];
 
-  return rotatedArray;
+  return rotatedData;
 }

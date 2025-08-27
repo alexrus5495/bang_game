@@ -2,7 +2,7 @@ import { useSystemLocalization } from "../../../../hooks/useSystemLocalization";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
 import type { Player_PublicData, TooltipMessage } from "../../../../types";
-import Tooltip from "../../Tooltip";
+import Tooltip from "../../Tooltip/Tooltip";
 
 export default function PlayerTypeIcon({
   playerData,

@@ -8,7 +8,7 @@ import { usePublicDataState } from "../../../../hooks/usePublicDataState";
 import { processPlayersArray } from "../../../../lib/gameData/processPlayersArray";
 import { useEffect, useState } from "react";
 import { useSystemLocalization } from "../../../../hooks/useSystemLocalization";
-import Tooltip from "../../Tooltip";
+import Tooltip from "../../Tooltip/Tooltip";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { useCardsMetaDataState } from "../../../../hooks/useCardsMetaDataState";
 import { useSocket } from "../../../../hooks/useSocket";
@@ -109,15 +109,7 @@ export default function DistanceIcon({
           }}
         >
           {distance && (
-            <div
-              className="h-full w-full text-center"
-              style={{
-                fontSize: sizeAdaptive(25),
-                lineHeight: sizeAdaptive(25),
-              }}
-            >
-              {distance}
-            </div>
+            <div className="h-full w-full text-center">{distance}</div>
           )}
         </div>
         <img

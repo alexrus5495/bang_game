@@ -1,10 +1,10 @@
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
 import type { Player_PublicData } from "../../../../types";
-import Bullets from "./Bullets";
+import Bullets from "../../shared/Bullets";
 import DistanceIcon from "./DistanceIcon";
-import HandIcon from "./HandIcon";
+import HandIcon from "../../shared/HandIcon";
 import PlayerTypeIcon from "./PlayerTypeIcon";
-import RangeIcon from "./RangeIcon";
+import RangeIcon from "../../shared/RangeIcon";
 
 export default function InfoIcons({
   playerData,
@@ -19,12 +19,22 @@ export default function InfoIcons({
         right: "-5%",
       }}
     >
-      <div className="w-[60%]">
+      <div
+        className="h-[80%] w-[60%] flex items-center relative"
+        style={{
+          bottom: "10%",
+          gap: sizeAdaptive(300),
+        }}
+      >
         <Bullets playerData={playerData} />
       </div>
       <div
         className="w-[70%] h-full flex justify-end"
-        style={{ gap: sizeAdaptive(250) }}
+        style={{
+          gap: sizeAdaptive(250),
+          fontSize: sizeAdaptive(26),
+          lineHeight: sizeAdaptive(26),
+        }}
       >
         <PlayerTypeIcon playerData={playerData} />
         <RangeIcon playerData={playerData} />

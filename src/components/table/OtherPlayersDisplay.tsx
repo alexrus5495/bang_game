@@ -12,6 +12,8 @@ export default function OtherPlayersDisplay() {
 
   if (!publicData) return null;
 
+  const currentPlayerIndex = publicData.currentPlayer;
+
   const players = processPlayersArray(
     publicData.playersPublicData,
     socket.id as string,
@@ -23,10 +25,30 @@ export default function OtherPlayersDisplay() {
 
   return (
     <div className="w-full h-full">
-      {numberOfPlayers === 4 && <Layout_4 playersData={players} />}
-      {numberOfPlayers === 5 && <Layout_5 playersData={players} />}
-      {numberOfPlayers === 6 && <Layout_6 playersData={players} />}
-      {numberOfPlayers === 7 && <Layout_7 playersData={players} />}
+      {numberOfPlayers === 4 && (
+        <Layout_4
+          playersData={players}
+          currentPlayerIndex={currentPlayerIndex}
+        />
+      )}
+      {numberOfPlayers === 5 && (
+        <Layout_5
+          playersData={players}
+          currentPlayerIndex={currentPlayerIndex}
+        />
+      )}
+      {numberOfPlayers === 6 && (
+        <Layout_6
+          playersData={players}
+          currentPlayerIndex={currentPlayerIndex}
+        />
+      )}
+      {numberOfPlayers === 7 && (
+        <Layout_7
+          playersData={players}
+          currentPlayerIndex={currentPlayerIndex}
+        />
+      )}
     </div>
   );
 }
