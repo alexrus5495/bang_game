@@ -40,24 +40,35 @@ export default function DistanceIcon({
 
     const calculateDistance = () => {
       if (!publicData?.playersPublicData || !clientId) return;
+
       const playersArray = processPlayersArray(
         publicData.playersPublicData,
         clientId,
       );
       if (!playersArray) return;
 
-      let distance = 0;
-
+      //Distance clockwise
+      let distanceA = 0;
       for (const player of playersArray) {
-        if (player.id !== playerData.id) {
-          if (!player.isEliminated) distance++;
+        if (player.playerData.id !== playerData.id) {
+          if (!player.playerData.isEliminated) distanceA++;
         } else break;
       }
+
+      //Distance couter-clockwise
+      let distanceB = 1;
+      for (const player of playersArray) {
+        if (player.playerData.id !== playerData.id) {
+          if (!player.playerData.isEliminated) distanceB++;
+        } else distanceB = 1;
+      }
+
+      let shortestDistance = Math.min(distanceA, distanceB);
 
       newTooltipContent.push([
         {
           type: "plainText",
-          content: `${locale["tooltip_baseRange"]}: ${distance}`,
+          content: `${locale["tooltip_baseDistance"]}: ${shortestDistance}`,
         },
       ]);
 
@@ -66,7 +77,7 @@ export default function DistanceIcon({
       );
 
       if (mustangCard) {
-        distance++;
+        shortestDistance++;
 
         newTooltipContent.push([
           { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
@@ -78,7 +89,7 @@ export default function DistanceIcon({
       }
 
       if (playerData.char === "paul_regret") {
-        distance++;
+        shortestDistance++;
 
         newTooltipContent.push([
           { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
@@ -89,7 +100,7 @@ export default function DistanceIcon({
         ]);
       }
 
-      setDistance(distance);
+      setDistance(shortestDistance);
       setTooltipContent(newTooltipContent);
     };
 
