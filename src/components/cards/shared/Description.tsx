@@ -21,11 +21,15 @@ export default function CardDescriptionComponent({
 
   return (
     <div
-      className={`h-[175px] mt-[5px] w-full pl-[10px] pr-[10px] flex flex-col`}
+      className={`h-[175px] mt-[5px] w-full pl-[10px] pr-[10px] flex flex-col select-none`}
     >
       {description.map((line, lineIndex) => (
         <React.Fragment key={`line-${lineIndex}`}>
-          <div style={lineInlineStyle} className={lineClasses}>
+          <div
+            style={lineInlineStyle}
+            className={lineClasses}
+            draggable="false"
+          >
             {line.map((block, blockIndex) =>
               renderDescriptionBlock(
                 block,

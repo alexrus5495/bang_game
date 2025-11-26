@@ -7,8 +7,20 @@ import { processPlayersArray } from "../../lib/gameData/processPlayersArray";
 import PlayerHand from "./PlayerDisplay/PlayerHand";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import EquipmentCardsPanel from "./shared/EquipmentCardsPanel";
+import MessagesPanel from "./MessagesPanel";
+import type { Coordinates } from "../../types";
 
-export default function PlayerArea() {
+export default function PlayerArea({
+  draggedCardIndex,
+  setDraggedCardIndex,
+  setDraggedCardOffset,
+  isDraggedCardReady,
+}: {
+  draggedCardIndex: number | null;
+  setDraggedCardIndex: (newIndex: number | null) => void;
+  setDraggedCardOffset: (coordinated: Coordinates) => void;
+  isDraggedCardReady: boolean;
+}) {
   const { socket } = useSocket();
   const publicData = usePublicDataState()[0];
   const [role, setRole] = useState<string>("");
@@ -26,6 +38,7 @@ export default function PlayerArea() {
 
   if (!publicData) return null;
 
+  // Ready the array of players
   const playersArray = processPlayersArray(
     publicData.playersPublicData,
     socket.id as string,
@@ -35,7 +48,16 @@ export default function PlayerArea() {
 
   return (
     <div className="h-full w-full flex items-end relative">
-      <div className="w-[30%] h-full border border-white"></div>
+      <div className="flex w-[30%] h-full items-center">
+        <div
+          className="w-[95%] h-[90%] mt-[4%]"
+          style={{
+            padding: sizeAdaptive(100),
+          }}
+        >
+          <MessagesPanel />
+        </div>
+      </div>
       <div
         className="h-full w-[25%] flex flex-col justify-end"
         style={{ paddingBottom: sizeAdaptive(50) }}
@@ -52,7 +74,13 @@ export default function PlayerArea() {
         style={{ bottom: sizeAdaptive(50) }}
       >
         <div className="w-[85%] h-full">
-          <PlayerHand clientHand={publicData.clientHand} />
+          <PlayerHand
+            clientHand={publicData.clientHand}
+            draggedCardIndex={draggedCardIndex}
+            setDraggedCardIndex={setDraggedCardIndex}
+            setDraggedCardOffset={setDraggedCardOffset}
+            isDraggedCardReady={isDraggedCardReady}
+          />
         </div>
       </div>
     </div>

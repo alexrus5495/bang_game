@@ -75,7 +75,6 @@ export default function CharSelectPrompt() {
   }, [socket]);
 
   const handleSelectChar = (option: 0 | 1) => {
-    console.log("SENDING SELECT CHAR");
     socket.emit(SocketEvents.SELECT_CHAR, publicData?.id, option);
   };
 

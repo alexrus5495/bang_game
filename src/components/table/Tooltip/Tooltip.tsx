@@ -26,8 +26,8 @@ export default function Tooltip({
   >({ left: 0, top: 0 });
   const locale = useSystemLocalization() as Record<string, string>;
 
+  //Use a portal to move the component to the top of the DOM tree
   const portalRootRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const portalRoot = document.createElement("div");
     portalRoot.id = "inspect-card-tooltip-root";
@@ -41,6 +41,7 @@ export default function Tooltip({
     };
   }, []);
 
+  //Update the coordinates
   useEffect(() => {
     if (tooltipRef.current) {
       const { width, height } = tooltipRef.current.getBoundingClientRect();

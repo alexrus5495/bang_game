@@ -11,25 +11,21 @@ export function useTooltip() {
   };
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Control") {
-        setIsPinned(true);
-      }
+    const handleKeyDown = () => {
+      setIsPinned(true);
     };
 
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === "Control") {
-        setIsVisible(false);
-        setIsPinned(false);
-      }
+    const handleKeyUp = () => {
+      setIsVisible(false);
+      setIsPinned(false);
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("mousedown", handleKeyDown);
+    window.addEventListener("mouseup", handleKeyUp);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("mousedown", handleKeyDown);
+      window.removeEventListener("mouseup", handleKeyUp);
     };
   }, []);
 

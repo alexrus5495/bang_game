@@ -33,6 +33,8 @@ export default function CardTitleComponent({
         tracking-normal
         origin-center
         mask-weathered
+        pointer-none
+        select-none
         "
       style={dynamicClasses}
     >

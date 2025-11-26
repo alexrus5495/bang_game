@@ -38,6 +38,7 @@ export function getImageComponent(
     const imgOptions = {
       ...options,
       className: combinedClassName,
+      draggable: "false",
     } as React.ImgHTMLAttributes<HTMLImageElement> &
       RegularImageComponentCustomProps;
 
