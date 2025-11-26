@@ -48,7 +48,7 @@
   "botName8": "Pixel Pete",
   "botName9": "Binary Blues",
   "charSelect_title": "SELECT CHARACTER",
-  "tooltip_baseRange": "Base range",
+  "tooltip_baseDistance": "Base distance",
   "tooltip_handSize": "Cards in hand",
   "tooltip_from": "from",
   "tooltip_human": "Live player",
