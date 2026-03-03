@@ -17,7 +17,7 @@ import { setupDragAndDrop } from "./utils/setupDragAndDrop";
 export default function Table() {
   const { socket } = useSocket();
   const lobbyId = useCurrentLobbyState()[0];
-  const setCardsMeta = useCardsMetaDataState()[1];
+  const [cardsMeta, setCardsMeta] = useCardsMetaDataState();
   const [publicData, setPublicData] = usePublicDataState();
   const setMessages = useMessagesState()[1];
 
@@ -36,7 +36,7 @@ export default function Table() {
   //Card drag and drop mechanic
   const drag = useTableDragAndDrop();
 
-  // Check if over central panel
+  // Check if the mouse is over central panel
   const checkIfOverCentralPanel = useCallback(() => {
     if (!centralPanelRef.current) return false;
     const centralPanelRect = centralPanelRef.current.getBoundingClientRect();
@@ -56,10 +56,25 @@ export default function Table() {
       ? publicData?.clientHand[drag.draggedCardIndex]
       : "";
 
+  const draggedCardMeta = cardsMeta?.deckMeta[draggedCardId as string];
+
   // Handle drag end over central panel
   const handleDragEndedOverCentralPanel = useCallback(() => {
+    switch (draggedCardMeta?.effect.target) {
+      case "self":
+      case "many":
+      case "all":
+        console.log("No selector");
+        break;
+      case "one":
+        console.log("Show selector");
+        break;
+      default:
+        break;
+    }
+
     console.log(`Player played card ${draggedCardId}`);
-  }, [draggedCardId]);
+  }, [draggedCardId, draggedCardMeta]);
 
   //Setup Socket Events
   useEffect(() => {

@@ -60,8 +60,8 @@ export default function PlayerHand({
   const handleStartDrag = (event: React.MouseEvent, cardIndex: number) => {
     const cardElement = event.currentTarget;
 
+    //Calculate new card offset
     const cardRect = cardElement.getBoundingClientRect();
-
     const offsetX = event.clientX - cardRect.left;
     const offsetY = event.clientY - cardRect.top;
 
