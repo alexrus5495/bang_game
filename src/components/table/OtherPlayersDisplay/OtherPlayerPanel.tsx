@@ -47,7 +47,7 @@ export default function OtherPlayerPanel({
           <div
             className="h-full w-full"
             style={{
-              paddingLeft: sizeAdaptive(9),
+              paddingLeft: sizeAdaptive(10),
               fontSize: sizeAdaptive(25),
               lineHeight: sizeAdaptive(24),
             }}
