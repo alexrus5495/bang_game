@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../../hooks/useSocket";
 import { useCurrentLobbyState } from "../../hooks/useCurrentLobbyState";
 import OtherPlayersDisplay from "../../components/table/OtherPlayersDisplay";
@@ -11,10 +11,10 @@ import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import { useMessagesState } from "../../hooks/useMessagesState";
 import DragContainer from "../../components/table/DragContainer";
 import { setupTableSocketHandlers } from "./utils/setupTableSocketHandlers";
-import { useTableDragAndDrop } from "../../hooks/useTableDragAndDrop";
-import { setupDragAndDrop } from "./utils/setupDragAndDrop";
+import { DragDropProvider, useDragDrop } from "../../contexts/DragDropContext";
+import CurrentTurnDisplay from "../../components/table/CurrentTurnDisplay";
 
-export default function Table() {
+function TableContent() {
   const { socket } = useSocket();
   const lobbyId = useCurrentLobbyState()[0];
   const [cardsMeta, setCardsMeta] = useCardsMetaDataState();
@@ -33,48 +33,7 @@ export default function Table() {
     setTableHeight(tableRef.current.getBoundingClientRect().height);
   }, [tableRef]);
 
-  //Card drag and drop mechanic
-  const drag = useTableDragAndDrop();
-
-  // Check if the mouse is over central panel
-  const checkIfOverCentralPanel = useCallback(() => {
-    if (!centralPanelRef.current) return false;
-    const centralPanelRect = centralPanelRef.current.getBoundingClientRect();
-    const mouseX = drag.mousePosition.x;
-    const mouseY = drag.mousePosition.y;
-
-    return !(
-      centralPanelRect.right < mouseX ||
-      centralPanelRect.left > mouseX ||
-      centralPanelRect.top > mouseY ||
-      centralPanelRect.bottom < mouseY
-    );
-  }, [drag.mousePosition]);
-
-  const draggedCardId =
-    drag.draggedCardIndex !== null
-      ? publicData?.clientHand[drag.draggedCardIndex]
-      : "";
-
-  const draggedCardMeta = cardsMeta?.deckMeta[draggedCardId as string];
-
-  // Handle drag end over central panel
-  const handleDragEndedOverCentralPanel = useCallback(() => {
-    switch (draggedCardMeta?.effect.target) {
-      case "self":
-      case "many":
-      case "all":
-        console.log("No selector");
-        break;
-      case "one":
-        console.log("Show selector");
-        break;
-      default:
-        break;
-    }
-
-    console.log(`Player played card ${draggedCardId}`);
-  }, [draggedCardId, draggedCardMeta]);
+  const { isDragging, stopDragging } = { ...useDragDrop() };
 
   //Setup Socket Events
   useEffect(() => {
@@ -92,47 +51,25 @@ export default function Table() {
   );
   const charSelected = player ? player.char !== "" : undefined;
 
-  //Setup Drag Handlers
-  useEffect(() => {
-    return setupDragAndDrop({
-      isDragging: drag.isDragging,
-      checkIfOverCentralPanel,
-      isOverCentralPanel: drag.isOverCentralPanel,
-      stopDragging: drag.stopDragging,
-      handleDragEndedOverCentralPanel,
-      setMousePosition: drag.setMousePosition,
-      setIsOverCentralPanel: drag.setIsOverCentralPanel,
-    });
-  }, [
-    drag.isDragging,
-    drag.isOverCentralPanel,
-    drag.stopDragging,
-    drag.setMousePosition,
-    drag.setIsOverCentralPanel,
-    checkIfOverCentralPanel,
-    handleDragEndedOverCentralPanel,
-  ]);
-
   return (
     <>
       {!charSelected && <CharSelectPrompt />}
 
-      {drag.isDragging && (
-        <DragContainer
-          draggedCardId={draggedCardId ? draggedCardId : ""}
-          draggedCardOffset={drag.draggedCardOffset}
-          setIsDraggedCardReady={drag.setIsDraggedCardReady}
-          mousePosition={drag.mousePosition}
-          tableHeight={tableHeight}
-        />
-      )}
+      <DragContainer
+        tableHeight={tableHeight}
+        centralPanelRef={centralPanelRef as React.RefObject<HTMLDivElement>}
+      />
 
       <div
         ref={tableRef}
         className="w-[100vw] absolute select-none flex flex-col justify-center items-center border border-white"
         style={{ height: "min(51vw, 100vh)", width: "min(100vw, 196vh)" }}
-        onMouseUp={drag.stopDragging}
+        onMouseUp={stopDragging}
       >
+        <div className="w-[18%] h-[14%] absolute top-0 flex justify-center">
+          <CurrentTurnDisplay />
+        </div>
+
         <div className="w-full h-[60%]" style={{ marginTop: sizeAdaptive(50) }}>
           <OtherPlayersDisplay />
         </div>
@@ -145,14 +82,17 @@ export default function Table() {
         </div>
 
         <div className="w-full h-[40%]">
-          <PlayerArea
-            draggedCardIndex={drag.draggedCardIndex}
-            setDraggedCardIndex={drag.setDraggedCardIndex}
-            setDraggedCardOffset={drag.setDraggedCardOffset}
-            isDraggedCardReady={drag.isDraggedCardReady}
-          />
+          <PlayerArea />
         </div>
       </div>
     </>
+  );
+}
+
+export default function Table() {
+  return (
+    <DragDropProvider>
+      <TableContent />
+    </DragDropProvider>
   );
 }

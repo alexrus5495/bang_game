@@ -1,28 +1,98 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import PlayingCard from "../cards/PlayingCard";
-import type { Coordinates } from "../../types";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
+import { useDragDrop } from "../../contexts/DragDropContext";
+import { useCardsMetaDataState } from "../../hooks/useCardsMetaDataState";
+import { usePublicDataState } from "../../hooks/usePublicDataState";
+import { setupDragAndDrop } from "../../pages/table/utils/setupDragAndDrop";
 
 export default function DragContainer({
-  draggedCardId,
-  draggedCardOffset,
-  mousePosition,
-  setIsDraggedCardReady,
   tableHeight,
+  centralPanelRef,
 }: {
-  draggedCardId: string;
-  draggedCardOffset: Coordinates;
-  setIsDraggedCardReady: (isReady: boolean) => void;
-  mousePosition: Record<string, number>;
   tableHeight: number | null;
+  centralPanelRef: React.RefObject<HTMLDivElement>;
 }) {
+  const cardsMeta = useCardsMetaDataState()[0];
+  const publicData = usePublicDataState()[0];
+
+  //Card drag and drop mechanic
+  const drag = useDragDrop();
+
+  // Check if the mouse is over central panel
+  const checkIfOverCentralPanel = useCallback(() => {
+    if (!centralPanelRef.current) return false;
+    const centralPanelRect = centralPanelRef.current.getBoundingClientRect();
+    const mouseX = drag.mousePosition.x;
+    const mouseY = drag.mousePosition.y;
+
+    return !(
+      centralPanelRect.right < mouseX ||
+      centralPanelRect.left > mouseX ||
+      centralPanelRect.top > mouseY ||
+      centralPanelRect.bottom < mouseY
+    );
+  }, [drag.mousePosition, centralPanelRef]);
+
+  const draggedCardId =
+    drag.draggedCardIndex !== null
+      ? (publicData?.clientHand[drag.draggedCardIndex] as string)
+      : "";
+
+  const draggedCardMeta = cardsMeta?.deckMeta[draggedCardId as string];
+
+  // Handle drag end over central panel
+  const handleDragEndedOverCentralPanel = useCallback(() => {
+    switch (draggedCardMeta?.effect.target) {
+      case "self":
+      case "many":
+      case "all":
+        console.log("No selector");
+        break;
+      case "one":
+        console.log("Show selector");
+        break;
+      default:
+        break;
+    }
+
+    console.log(`Player played card ${draggedCardId}`);
+  }, [draggedCardId, draggedCardMeta]);
+
+  //Setup Drag Handlers
+  useEffect(() => {
+    return setupDragAndDrop({
+      isDragging: drag.isDragging,
+      checkIfOverCentralPanel,
+      isOverCentralPanel: drag.isOverCentralPanel,
+      stopDragging: drag.stopDragging,
+      handleDragEndedOverCentralPanel,
+      setMousePosition: drag.setMousePosition,
+      setIsOverCentralPanel: drag.setIsOverCentralPanel,
+    });
+  }, [
+    drag.isDragging,
+    drag.isOverCentralPanel,
+    drag.stopDragging,
+    drag.setMousePosition,
+    drag.setIsOverCentralPanel,
+    checkIfOverCentralPanel,
+    handleDragEndedOverCentralPanel,
+  ]);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const [coordinates, setCoordinates] = useState<
     Record<string, number | undefined>
   >({
-    left: mousePosition.x - draggedCardOffset.x,
-    top: mousePosition.y - draggedCardOffset.y,
+    left: drag.mousePosition.x - drag.draggedCardOffset.x,
+    top: drag.mousePosition.y - drag.draggedCardOffset.y,
   });
 
   const [cardHeight, setCardHeight] = useState<number>(0);
@@ -31,11 +101,11 @@ export default function DragContainer({
   useEffect(() => {
     if (containerRef.current) {
       setCoordinates({
-        left: mousePosition.x - draggedCardOffset.x,
-        top: mousePosition.y - draggedCardOffset.y,
+        left: drag.mousePosition.x - drag.draggedCardOffset.x,
+        top: drag.mousePosition.y - drag.draggedCardOffset.y,
       });
     }
-  }, [mousePosition, draggedCardOffset]);
+  }, [drag.mousePosition, drag.draggedCardOffset]);
 
   //Update card size
   useEffect(() => {
@@ -65,8 +135,8 @@ export default function DragContainer({
   }, []);
 
   useLayoutEffect(() => {
-    setIsDraggedCardReady(true);
-  }, [setIsDraggedCardReady]);
+    drag.setIsDraggedCardReady(true);
+  }, [drag]);
 
   if (!portalRootRef.current) return null;
 
@@ -81,23 +151,27 @@ export default function DragContainer({
         top: coordinates.top,
       }}
     >
-      <PlayingCard
-        cardId={draggedCardId}
-        initialIsFaceDown={false}
-        initialIsInteractable={false}
-      />
+      {drag.isDragging && (
+        <PlayingCard
+          cardId={draggedCardId}
+          initialIsFaceDown={false}
+          initialIsInteractable={false}
+        />
+      )}
 
-      <div
-        className="bg-black relative h-full w-full"
-        style={{
-          zIndex: -1,
-          top: "-96%",
-          right: "-5%",
-          opacity: 0.6,
+      {drag.isDragging && (
+        <div
+          className="bg-black relative h-full w-full"
+          style={{
+            zIndex: -1,
+            top: "-96%",
+            right: "-5%",
+            opacity: 0.6,
 
-          borderRadius: sizeAdaptive(55),
-        }}
-      ></div>
+            borderRadius: sizeAdaptive(55),
+          }}
+        ></div>
+      )}
     </div>,
     portalRootRef.current,
   );

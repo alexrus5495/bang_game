@@ -8,19 +8,8 @@ import PlayerHand from "./PlayerDisplay/PlayerHand";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import EquipmentCardsPanel from "./shared/EquipmentCardsPanel";
 import MessagesPanel from "./MessagesPanel";
-import type { Coordinates } from "../../types";
 
-export default function PlayerArea({
-  draggedCardIndex,
-  setDraggedCardIndex,
-  setDraggedCardOffset,
-  isDraggedCardReady,
-}: {
-  draggedCardIndex: number | null;
-  setDraggedCardIndex: (newIndex: number | null) => void;
-  setDraggedCardOffset: (coordinated: Coordinates) => void;
-  isDraggedCardReady: boolean;
-}) {
+export default function PlayerArea() {
   const { socket } = useSocket();
   const publicData = usePublicDataState()[0];
   const [role, setRole] = useState<string>("");
@@ -74,13 +63,7 @@ export default function PlayerArea({
         style={{ bottom: sizeAdaptive(50) }}
       >
         <div className="w-[85%] h-full">
-          <PlayerHand
-            clientHand={publicData.clientHand}
-            draggedCardIndex={draggedCardIndex}
-            setDraggedCardIndex={setDraggedCardIndex}
-            setDraggedCardOffset={setDraggedCardOffset}
-            isDraggedCardReady={isDraggedCardReady}
-          />
+          <PlayerHand clientHand={publicData.clientHand} />
         </div>
       </div>
     </div>

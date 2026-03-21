@@ -3,23 +3,19 @@ import PlayingCard from "../../cards/PlayingCard";
 import { useResizeObserver } from "../../../hooks/useResizeObserver";
 import InspectIcon from "./InspectIcon";
 import { useCardsMetaDataState } from "../../../hooks/useCardsMetaDataState";
-import type { Coordinates, PlayingCardMeta } from "../../../types";
+import type { PlayingCardMeta } from "../../../types";
 import { motion } from "motion/react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
+import { useDragDrop } from "../../../contexts/DragDropContext";
 
-export default function PlayerHand({
-  clientHand,
-  draggedCardIndex,
-  setDraggedCardIndex,
-  setDraggedCardOffset,
-  isDraggedCardReady,
-}: {
-  clientHand: string[];
-  draggedCardIndex: null | number;
-  setDraggedCardIndex: (newIndex: null | number) => void;
-  setDraggedCardOffset: (offset: Coordinates) => void;
-  isDraggedCardReady: boolean;
-}) {
+export default function PlayerHand({ clientHand }: { clientHand: string[] }) {
+  const {
+    draggedCardIndex,
+    setDraggedCardIndex,
+    setDraggedCardOffset,
+    isDraggedCardReady,
+  } = useDragDrop();
+
   const cardsMeta = useCardsMetaDataState()[0];
 
   // Parent container ref, used in dynamic margin calculation
@@ -76,7 +72,7 @@ export default function PlayerHand({
           <motion.div
             key={card}
             ref={(el) => setCardRef(index, el)}
-            className="relative h-full"
+            className="isCard relative h-full"
             style={{
               marginLeft: index !== 0 ? `-${cardMargin}px` : "",
               zIndex: highlightedCard === index ? 100 : 20 - index,
@@ -100,7 +96,7 @@ export default function PlayerHand({
                 ease: "easeInOut",
               },
             }}
-            onMouseEnter={() => setHighlightedCard(index)}
+            onMouseMove={() => setHighlightedCard(index)}
             onMouseDown={(e) => handleStartDrag(e, index)}
             onMouseLeave={() => setHighlightedCard(null)}
           >
