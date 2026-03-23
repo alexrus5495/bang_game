@@ -66,7 +66,7 @@ function TableContent() {
         style={{ height: "min(51vw, 100vh)", width: "min(100vw, 196vh)" }}
         onMouseUp={stopDragging}
       >
-        <div className="w-[18%] h-[14%] absolute top-0 flex justify-center">
+        <div className="w-[18%] h-auto absolute top-0 flex justify-center">
           <CurrentTurnDisplay />
         </div>
 

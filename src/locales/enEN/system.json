@@ -76,5 +76,7 @@
   "cardSymbol_drawRange": "Before applying the effect draw the top card of the deck and check if described condition is satisfied (discard the drawn card after the check)",
   "game_started": "The game has started!",
   "player_turn_start": "{player} turn has started!",
-  "your_turn": "YOUR TURN!"
+  "your_turn": "YOUR TURN!",
+  "current_turn": "CURRENT TURN:",
+  "end_turn": "END TURN"
 }

@@ -1,17 +1,15 @@
 import { usePublicDataState } from "../../../hooks/usePublicDataState";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../lib/images";
-import type {
-  Player_PublicData,
-  PlayersPublicData,
-  PublicData,
-} from "../../../types";
+import type { Player_PublicData, PublicData } from "../../../types";
 
 export default function Queue() {
   return (
-    <div className="w-[100%] h-[40%] m-auto relative">
+    <div
+      className="w-[100%] m-auto relative"
+      style={{ height: sizeAdaptive(19) }}
+    >
       <Frame />
-
       <Portraits />
     </div>
   );
@@ -34,7 +32,7 @@ function Frame() {
           key={i}
           className="bg-black h-full"
           style={{
-            width: sizeAdaptive(170),
+            width: sizeAdaptive(160),
           }}
         ></div>
       ))}
@@ -44,10 +42,7 @@ function Frame() {
 
 function Portraits() {
   const publicData = usePublicDataState()[0];
-
-  let queue: PlayersPublicData | undefined;
-
-  queue = prepareQueue(publicData);
+  const queue = prepareQueue(publicData);
 
   if (!queue) return;
 
@@ -55,7 +50,7 @@ function Portraits() {
     <div
       className="w-full h-full m-auto flex justify-center overflow-hidden relative"
       style={{
-        gap: sizeAdaptive(170),
+        gap: sizeAdaptive(155),
       }}
     >
       {Array.from({ length: 7 }, (_, i) => (
