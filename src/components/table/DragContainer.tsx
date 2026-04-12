@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -12,6 +13,11 @@ import { useDragDrop } from "../../contexts/DragDropContext";
 import { useCardsMetaDataState } from "../../hooks/useCardsMetaDataState";
 import { usePublicDataState } from "../../hooks/usePublicDataState";
 import { setupDragAndDrop } from "../../pages/table/utils/setupDragAndDrop";
+import {
+  useCardsOnTheTableContext,
+  type CardInitialData,
+} from "../../contexts/CardsOnTheTableContext";
+import { usePendingContext } from "../../contexts/PendingContext";
 
 export default function DragContainer({
   tableHeight,
@@ -22,9 +28,17 @@ export default function DragContainer({
 }) {
   const cardsMeta = useCardsMetaDataState()[0];
   const publicData = usePublicDataState()[0];
+  const clientHand = publicData?.clientHand;
 
-  //Card drag and drop mechanic
+  // Accessing contexts
   const drag = useDragDrop();
+  const pending = usePendingContext();
+  const addCardToTheTable = useCardsOnTheTableContext().addCard;
+
+  const visibleCards = useMemo(() => {
+    if (!clientHand) return [];
+    return clientHand.filter((card) => card !== pending.pendingCardId);
+  }, [clientHand, pending.pendingCardId]);
 
   // Check if the mouse is over central panel
   const checkIfOverCentralPanel = useCallback(() => {
@@ -43,13 +57,26 @@ export default function DragContainer({
 
   const draggedCardId =
     drag.draggedCardIndex !== null
-      ? (publicData?.clientHand[drag.draggedCardIndex] as string)
+      ? (visibleCards[drag.draggedCardIndex] as string)
       : "";
 
   const draggedCardMeta = cardsMeta?.deckMeta[draggedCardId as string];
 
   // Handle drag end over central panel
   const handleDragEndedOverCentralPanel = useCallback(() => {
+    pending.setPendingCardId(draggedCardId);
+
+    const cardRect = drag.draggedCardRef?.getBoundingClientRect();
+    if (!cardRect) return;
+
+    const cardInitialData: CardInitialData = {
+      cardId: draggedCardId,
+      initialHeight: cardRect?.height,
+      initialX: cardRect?.x,
+      initialY: cardRect?.y,
+    };
+    addCardToTheTable(cardInitialData);
+
     switch (draggedCardMeta?.effect.target) {
       case "self":
       case "many":
@@ -64,7 +91,13 @@ export default function DragContainer({
     }
 
     console.log(`Player played card ${draggedCardId}`);
-  }, [draggedCardId, draggedCardMeta]);
+  }, [
+    draggedCardId,
+    drag.draggedCardRef,
+    draggedCardMeta,
+    addCardToTheTable,
+    pending,
+  ]);
 
   //Setup Drag Handlers
   useEffect(() => {
@@ -104,8 +137,10 @@ export default function DragContainer({
         left: drag.mousePosition.x - drag.draggedCardOffset.x,
         top: drag.mousePosition.y - drag.draggedCardOffset.y,
       });
+
+      drag.setDraggedCardRef(containerRef.current);
     }
-  }, [drag.mousePosition, drag.draggedCardOffset]);
+  }, [drag]);
 
   //Update card size
   useEffect(() => {
@@ -134,6 +169,8 @@ export default function DragContainer({
     };
   }, []);
 
+  // Triggers when the card is fully loaded and sends the signal to the original card
+  // to disappear
   useLayoutEffect(() => {
     drag.setIsDraggedCardReady(true);
   }, [drag]);

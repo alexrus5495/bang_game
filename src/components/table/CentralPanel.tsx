@@ -12,7 +12,7 @@ export default function CentralPanel() {
 
   return (
     <div
-      className="bg-white h-full w-full bg-fabricTexture border flex"
+      className="h-full w-full bg-fabricTexture border flex"
       style={{
         borderWidth: sizeAdaptive(200),
         borderColor: "var(--WHITE)",
@@ -27,10 +27,7 @@ export default function CentralPanel() {
         <Deck publicData={publicData} />
       </div>
 
-      <div
-        className="h-[70%] bg-white w-[40%]"
-        style={{ marginTop: sizeAdaptive(30) }}
-      >
+      <div className="h-[70%] w-[40%]" style={{ marginTop: sizeAdaptive(30) }}>
         <CardPlayingArea />
       </div>
 

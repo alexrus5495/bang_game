@@ -11,13 +11,15 @@ import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import { useMessagesState } from "../../hooks/useMessagesState";
 import DragContainer from "../../components/table/DragContainer";
 import { setupTableSocketHandlers } from "./utils/setupTableSocketHandlers";
-import { DragDropProvider, useDragDrop } from "../../contexts/DragDropContext";
+import { DragDropProvider } from "../../contexts/DragDropContext";
 import CurrentTurnDisplay from "../../components/table/CurrentTurnDisplay";
+import { CardsOnTheTableProvider } from "../../contexts/CardsOnTheTableContext";
+import { PendingProvider } from "../../contexts/PendingContext";
 
 function TableContent() {
   const { socket } = useSocket();
   const lobbyId = useCurrentLobbyState()[0];
-  const [cardsMeta, setCardsMeta] = useCardsMetaDataState();
+  const setCardsMeta = useCardsMetaDataState()[1];
   const [publicData, setPublicData] = usePublicDataState();
   const setMessages = useMessagesState()[1];
 
@@ -32,8 +34,6 @@ function TableContent() {
     if (!tableRef.current) return;
     setTableHeight(tableRef.current.getBoundingClientRect().height);
   }, [tableRef]);
-
-  const { isDragging, stopDragging } = { ...useDragDrop() };
 
   //Setup Socket Events
   useEffect(() => {
@@ -64,7 +64,6 @@ function TableContent() {
         ref={tableRef}
         className="w-[100vw] absolute select-none flex flex-col justify-center items-center border border-white"
         style={{ height: "min(51vw, 100vh)", width: "min(100vw, 196vh)" }}
-        onMouseUp={stopDragging}
       >
         <div className="w-[18%] h-auto absolute top-0 flex justify-center">
           <CurrentTurnDisplay />
@@ -91,8 +90,12 @@ function TableContent() {
 
 export default function Table() {
   return (
-    <DragDropProvider>
-      <TableContent />
-    </DragDropProvider>
+    <CardsOnTheTableProvider>
+      <DragDropProvider>
+        <PendingProvider>
+          <TableContent />
+        </PendingProvider>
+      </DragDropProvider>
+    </CardsOnTheTableProvider>
   );
 }

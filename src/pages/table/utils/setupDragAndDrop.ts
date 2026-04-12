@@ -19,14 +19,14 @@ export function setupDragAndDrop({
 }: DragAndDropDependencies) {
   const reactivateHighlight = (e: MouseEvent) => {
     setTimeout(() => {
+      // Search for the card
       const elements = document.elementsFromPoint(e.clientX, e.clientY);
-      // Ищем среди них карту
       let cardElement = null;
       for (let i = 0; i < elements.length; i++) {
         const el = elements[i];
         let current = el;
 
-        // Проверяем сам элемент и его родителей
+        // Check if any of it's parets is THE card
         while (current && current !== document.body) {
           if (current.classList?.contains("isCard")) {
             cardElement = current;
@@ -61,10 +61,11 @@ export function setupDragAndDrop({
   const handleMouseUp = (e: MouseEvent) => {
     if (!isDragging) return;
 
-    stopDragging();
     if (isOverCentralPanel) {
       handleDragEndedOverCentralPanel();
     } else console.log("Player cancelled drag");
+
+    stopDragging();
 
     reactivateHighlight(e);
   };

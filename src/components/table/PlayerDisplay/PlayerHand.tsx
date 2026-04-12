@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import PlayingCard from "../../cards/PlayingCard";
 import { useResizeObserver } from "../../../hooks/useResizeObserver";
 import InspectIcon from "./InspectIcon";
@@ -7,6 +7,7 @@ import type { PlayingCardMeta } from "../../../types";
 import { motion } from "motion/react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useDragDrop } from "../../../contexts/DragDropContext";
+import { usePendingContext } from "../../../contexts/PendingContext";
 
 export default function PlayerHand({ clientHand }: { clientHand: string[] }) {
   const {
@@ -17,41 +18,49 @@ export default function PlayerHand({ clientHand }: { clientHand: string[] }) {
   } = useDragDrop();
 
   const cardsMeta = useCardsMetaDataState()[0];
+  const pending = usePendingContext();
+
+  const visibleCards = useMemo(
+    () => clientHand.filter((card) => card !== pending.pendingCardId),
+    [clientHand, pending.pendingCardId],
+  );
 
   // Parent container ref, used in dynamic margin calculation
   const { ref: containerRef, width: containerWidth } =
     useResizeObserver<HTMLDivElement>();
 
   // Calculated margin used to overlap cards so they fit the container
-  const [cardMargin, setCardMargin] = useState<number>(0);
+  const [cardOffset, setCardOffset] = useState<number>(0);
 
   // Which card is user currenlty hovering over
   const [highlightedCard, setHighlightedCard] = useState<number | null>(null);
 
   // Storing rendered cards refs
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const setCardRef = (index: number, element: HTMLDivElement | null) => {
-    cardRefs.current[index] = element;
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const setCardRef = (cardId: string, element: HTMLDivElement | null) => {
+    cardRefs.current[cardId] = element;
   };
 
-  // Dinamically ajdust cards margin so they overlap to fit the container
+  // Calculate the offset to correctrly position the cards
   useEffect(() => {
-    const firstCard = cardRefs.current[0];
+    const firstCard = cardRefs.current[visibleCards[0]];
 
-    if (containerWidth > 0 && firstCard && clientHand.length > 0) {
+    const cardsTotal = visibleCards.length;
+
+    if (containerWidth > 0 && firstCard && cardsTotal > 0) {
       const cardWidth = firstCard.getBoundingClientRect().width;
-      const cardsInHand = clientHand.length;
 
-      const totalCardsWidth = cardWidth * cardsInHand;
+      const initialTotalCardsWidth = cardWidth * cardsTotal;
+      const targetTotalCardsWidth = containerWidth;
+      const deltaTotalCardsWidth =
+        initialTotalCardsWidth - targetTotalCardsWidth;
 
-      const extraWidth = totalCardsWidth - containerWidth;
+      const offsetFactor = deltaTotalCardsWidth / (cardsTotal - 1);
 
-      const isCardsOverflow = extraWidth > 0;
-
-      const cardMargin = isCardsOverflow ? extraWidth / (cardsInHand - 1) : 0;
-      setCardMargin(cardMargin);
+      setCardOffset(cardWidth - offsetFactor);
     }
-  }, [clientHand, containerWidth]);
+  }, [containerWidth, pending.pendingCardId, visibleCards]);
 
   const handleStartDrag = (event: React.MouseEvent, cardIndex: number) => {
     const cardElement = event.currentTarget;
@@ -66,36 +75,40 @@ export default function PlayerHand({ clientHand }: { clientHand: string[] }) {
   };
 
   return (
-    <div ref={containerRef} className="h-full w-full flex justify-center">
-      {clientHand.map((card, index) => {
+    <div
+      ref={containerRef}
+      className="h-full w-full border border-green-400 relative"
+    >
+      {visibleCards.map((card, index) => {
         return (
           <motion.div
             key={card}
-            ref={(el) => setCardRef(index, el)}
-            className="isCard relative h-full"
+            ref={(el) => setCardRef(card, el)}
+            className="isCard absolute h-full border border-yellow-400"
             style={{
-              marginLeft: index !== 0 ? `-${cardMargin}px` : "",
+              left: `${cardOffset * index}px`,
               zIndex: highlightedCard === index ? 100 : 20 - index,
               visibility:
                 isDraggedCardReady && draggedCardIndex === index
                   ? "hidden"
                   : "visible",
-              // display: draggedCardIndex === index ? "none" : "block",
             }}
-            animate={{
-              bottom: highlightedCard === index ? "15%" : 0,
-              scale: highlightedCard === index ? 1.2 : 1,
-            }}
-            transition={{
-              scale: {
-                duration: 0.1,
-                ease: "easeInOut",
-              },
-              bottom: {
-                duration: 0.15,
-                ease: "easeInOut",
-              },
-            }}
+            // animate={{
+            //   marginLeft: index !== 0 ? -cardMargin : 0,
+            //   bottom: highlightedCard === index ? "15%" : 0,
+            //   scale: highlightedCard === index ? 1.2 : 1,
+            // }}
+            // transition={{
+            //   marginLeft: { duration: 0.2, ease: "easeInOut" },
+            //   scale: {
+            //     duration: 0.1,
+            //     ease: "easeInOut",
+            //   },
+            //   bottom: {
+            //     duration: 0.15,
+            //     ease: "easeInOut",
+            //   },
+            // }}
             onMouseMove={() => setHighlightedCard(index)}
             onMouseDown={(e) => handleStartDrag(e, index)}
             onMouseLeave={() => setHighlightedCard(null)}

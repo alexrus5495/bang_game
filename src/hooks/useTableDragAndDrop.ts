@@ -9,6 +9,14 @@ export function useTableDragAndDrop() {
     x: 0,
     y: 0,
   });
+  const [draggedCardRef, setDraggedCardRef] = useState<HTMLDivElement | null>(
+    null,
+  );
+
+  const [draggedCardCoords, setDraggedCardCoords] = useState<Coordinates>({
+    x: 0,
+    y: 0,
+  });
 
   const [isOverCentralPanel, setIsOverCentralPanel] = useState(false);
 
@@ -32,5 +40,9 @@ export function useTableDragAndDrop() {
     setIsOverCentralPanel,
     isDragging,
     stopDragging,
+    draggedCardCoords,
+    setDraggedCardCoords,
+    draggedCardRef,
+    setDraggedCardRef,
   };
 }

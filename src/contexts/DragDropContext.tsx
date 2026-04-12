@@ -15,6 +15,10 @@ interface DragDropContextType {
   stopDragging: () => void;
   setIsOverCentralPanel: (isOver: boolean) => void;
   isOverCentralPanel: boolean;
+  draggedCardRef: HTMLDivElement | null;
+  setDraggedCardRef: (newRef: HTMLDivElement | null) => void;
+  draggedCardCoords: Coordinates;
+  setDraggedCardCoords: (newCoords: Coordinates) => void;
 }
 
 const DragDropContext = createContext<DragDropContextType | undefined>(
