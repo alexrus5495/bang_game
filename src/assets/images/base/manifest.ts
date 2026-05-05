@@ -1,4 +1,4 @@
-import { createObjectsFromMassImport } from "../../../lib/images/massImport";
+import { createObjectsFromMassImport } from "../../../lib/massImport";
 
 const borders = import.meta.glob("./borders/*.{png,svg,webp}", {
   eager: true,
