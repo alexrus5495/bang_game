@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useCardsOnTheTableContext } from "../../../contexts/CardsOnTheTableContext";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import PlayingCard from "../../cards/PlayingCard";
@@ -8,7 +8,7 @@ import {
   CARD_CONTAINER_HEIGHT,
   CARD_CONTAINER_WIDTH,
 } from "../../cards/shared/constants";
-import { createPortal } from "react-dom";
+import RootPortal from "../../shared/RootPortal";
 
 type FinalPosition = {
   x: number;
@@ -20,7 +20,6 @@ export default function CardPlayingArea() {
   const table = useCardsOnTheTableContext().cardsOnTheTable;
   const anchorRef = useRef<HTMLDivElement | null>(null);
   const [final, setFinal] = useState<FinalPosition | null>(null);
-  const [portalReady, setPortalReady] = useState<boolean>(false);
 
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const setCardRefs = (cardId: string, element: HTMLDivElement | null) => {
@@ -28,9 +27,7 @@ export default function CardPlayingArea() {
   };
 
   useLayoutEffect(() => {
-    if (!portalReady || !anchorRef.current) return;
-
-    console.log(`updating finals`);
+    if (!anchorRef.current) return;
 
     const anchorRect = anchorRef.current.getBoundingClientRect();
 
@@ -38,7 +35,7 @@ export default function CardPlayingArea() {
     const finalY = anchorRect.y + anchorRect.height / 4;
 
     setFinal({ x: finalX, y: finalY, height: anchorRect.height });
-  }, [portalReady]);
+  }, []);
 
   return (
     <div className="w-full h-full relative">
@@ -58,7 +55,7 @@ export default function CardPlayingArea() {
       </div>
 
       <div className="absolute h-full w-full top-0">
-        <CardAnchor elRef={anchorRef} setPortalReady={setPortalReady} />
+        <CardAnchor elRef={anchorRef} />
 
         {final &&
           table.map((card, index) => {
@@ -98,45 +95,31 @@ export default function CardPlayingArea() {
 
 function CardAnchor({
   elRef,
-  setPortalReady,
 }: {
   elRef: React.RefObject<HTMLDivElement | null>;
-  setPortalReady: (isReady: boolean) => void;
 }) {
-  //Use a portal to move the component to the top of the DOM tree
-  const portalRootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const portalRoot = document.createElement("div");
-    portalRoot.id = "dragContainer";
-    document.body.appendChild(portalRoot);
-    portalRootRef.current = portalRoot;
-    setPortalReady(true);
-  }, [setPortalReady]);
-
-  if (!portalRootRef.current) return null;
-
-  return createPortal(
-    <div
-      className="absolute bottom-1/2 left-1/2 opacity-100 pointer-events-none"
-      ref={elRef}
-      style={{
-        height: sizeAdaptive(4.15),
-        transform: "translate(-50%)",
-      }}
-    >
-      <div className="h-full">
-        <CardScaler>
-          <div
-            className=""
-            style={{
-              height: `${CARD_CONTAINER_HEIGHT}px`,
-              width: `${CARD_CONTAINER_WIDTH}px`,
-            }}
-          ></div>
-        </CardScaler>
+  return (
+    <RootPortal portalId={"cardPlayingArea_anchor"}>
+      <div
+        className="absolute bottom-1/2 left-1/2 opacity-100 pointer-events-none"
+        ref={elRef}
+        style={{
+          height: sizeAdaptive(4.15),
+          transform: "translate(-50%)",
+        }}
+      >
+        <div className="h-full">
+          <CardScaler>
+            <div
+              className=""
+              style={{
+                height: `${CARD_CONTAINER_HEIGHT}px`,
+                width: `${CARD_CONTAINER_WIDTH}px`,
+              }}
+            ></div>
+          </CardScaler>
+        </div>
       </div>
-    </div>,
-    portalRootRef.current,
+    </RootPortal>
   );
 }

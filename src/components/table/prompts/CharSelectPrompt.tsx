@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useSocket } from "../../../hooks/useSocket";
 import { motion } from "motion/react";
@@ -9,44 +9,27 @@ import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
 import CardHighlight from "../shared/CardHighlight";
 import Button from "../../shared/Button";
 import { usePublicDataState } from "../../../hooks/usePublicDataState";
-import { createPortal } from "react-dom";
+import RootPortal from "../../shared/RootPortal";
 
 type CharOption = {
   id: string;
   bullets: number;
 };
 
+type HighlightedOption = "a" | "b" | "none";
+
 export default function CharSelectPrompt() {
   const { socket } = useSocket();
   const locale = useSystemLocalization() as Record<string, string>;
-  const publicData = usePublicDataState()[0];
 
   const [role, setRole] = useState<string>("");
   const [remainingTime, setRemainingTime] = useState<number>(60);
   const [charOptions, setCharOptions] = useState<CharOption[]>([]);
-  const [highlightedOption, setHighlightedOption] = useState<
-    "a" | "b" | "none"
-  >("none");
+  const [highlightedOption, setHighlightedOption] =
+    useState<HighlightedOption>("none");
   const [selectedOption, setSelectedOption] = useState<"a" | "b" | "none">(
     "none",
   );
-
-  const [isPortalReady, setIsPortalReady] = useState<boolean>(false);
-  const portalRootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const portalRoot = document.createElement("div");
-    portalRoot.id = "inspect-card-tooltip-root";
-    document.body.appendChild(portalRoot);
-    portalRootRef.current = portalRoot;
-    setIsPortalReady(true);
-
-    return () => {
-      if (portalRootRef.current) {
-        document.body.removeChild(portalRootRef.current);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     const onSendTimerUpdate = (data: number) => {
@@ -74,130 +57,127 @@ export default function CharSelectPrompt() {
     };
   }, [socket]);
 
+  return (
+    <RootPortal portalId={"char-select-prompt"}>
+      <div className="w-full h-full bg-black/90 absolute z-3 flex flex-col">
+        <div className="w-full h-[20%] border border-white flex justify-center items-center">
+          <motion.div
+            initial={{ y: "-100%" }}
+            animate={{ y: 0 }}
+            className="text-stroke-black"
+            style={{ fontSize: sizeAdaptive(10), color: "var(--RED)" }}
+          >
+            {locale["charSelect_title"]}
+          </motion.div>
+        </div>
+
+        <div className="w-full h-[65%] border border-white flex justify-center">
+          <div className="border border-white h-[70%] flex justify-center relative">
+            {charOptions.length > 0 && (
+              <CharOption
+                isHighlighted={highlightedOption === "a"}
+                isSelected={selectedOption === "a"}
+                charOptionIndex={0}
+                charOptionId={charOptions[0].id}
+                onMouseEnter={() => setHighlightedOption("a")}
+                onMouseLeave={() => setHighlightedOption("none")}
+                onClick={() => setSelectedOption("a")}
+              />
+            )}
+
+            {role !== "" && (
+              <div className="h-full absolute z-2">
+                <RoleCard cardId={role} />
+              </div>
+            )}
+
+            <div
+              className="absolute text-center"
+              style={{
+                bottom: "-20%",
+                fontSize: sizeAdaptive(15),
+                color: "var(--WHITE)",
+              }}
+            >
+              {remainingTime}
+            </div>
+
+            {charOptions.length > 0 && (
+              <CharOption
+                isHighlighted={highlightedOption === "b"}
+                isSelected={selectedOption === "b"}
+                charOptionIndex={1}
+                charOptionId={charOptions[1].id}
+                onMouseEnter={() => setHighlightedOption("b")}
+                onMouseLeave={() => setHighlightedOption("none")}
+                onClick={() => setSelectedOption("b")}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </RootPortal>
+  );
+}
+
+function CharOption({
+  isHighlighted,
+  isSelected,
+  charOptionIndex,
+  charOptionId,
+  onMouseLeave,
+  onMouseEnter,
+  onClick,
+}: {
+  isHighlighted: boolean;
+  isSelected: boolean;
+  charOptionIndex: 0 | 1;
+  charOptionId: string;
+  onClick: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+}) {
+  const { socket } = useSocket();
+  const publicData = usePublicDataState()[0];
+
   const handleSelectChar = (option: 0 | 1) => {
     socket.emit(SocketEvents.SELECT_CHAR, publicData?.id, option);
   };
 
-  if (!isPortalReady) return null;
+  return (
+    <motion.div
+      className="h-full absolute z-1"
+      initial={{ x: 0 }}
+      animate={{
+        x: charOptionIndex === 0 ? "-125%" : "125%",
+        scale: isHighlighted || isSelected ? 1.15 : 1,
+      }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onClick={onClick}
+    >
+      <CardHighlight
+        condition={() => isSelected || isHighlighted}
+        scaleFactor={2}
+        color={"#F3EFE3"}
+      />
 
-  return createPortal(
-    <div className="w-full h-full bg-black/90 absolute z-3 flex flex-col">
-      <div className="w-full h-[20%] border border-white flex justify-center items-center">
-        <motion.div
-          initial={{ y: "-100%" }}
-          animate={{ y: 0 }}
-          className="text-stroke-black"
-          style={{ fontSize: sizeAdaptive(10), color: "var(--RED)" }}
-        >
-          {locale["charSelect_title"]}
-        </motion.div>
-      </div>
+      {isSelected && (
+        <Button
+          text={"SELECT"}
+          className="absolute w-full"
+          style={{
+            bottom: "-20%",
+            fontSize: sizeAdaptive(15),
+            color: "var(--WHITE)",
+          }}
+          handler={() => {
+            handleSelectChar(charOptionIndex);
+          }}
+        />
+      )}
 
-      <div className="w-full h-[65%] border border-white flex justify-center">
-        <div className="border border-white h-[70%] flex justify-center relative">
-          {charOptions.length > 0 && (
-            <motion.div
-              className="h-full absolute z-1"
-              initial={{ x: 0 }}
-              animate={{
-                x: "-125%",
-                scale:
-                  highlightedOption === "a" || selectedOption === "a"
-                    ? 1.15
-                    : 1,
-              }}
-              onMouseEnter={() => setHighlightedOption("a")}
-              onMouseLeave={() => setHighlightedOption("none")}
-              onClick={() => setSelectedOption("a")}
-            >
-              <CardHighlight
-                condition={() =>
-                  selectedOption === "a" || highlightedOption === "a"
-                }
-                scaleFactor={2}
-                color={"#F3EFE3"}
-              />
-
-              {selectedOption === "a" && (
-                <Button
-                  text={"SELECT"}
-                  className="absolute w-full"
-                  style={{
-                    bottom: "-20%",
-                    fontSize: sizeAdaptive(15),
-                    color: "var(--WHITE)",
-                  }}
-                  handler={() => {
-                    handleSelectChar(0);
-                  }}
-                />
-              )}
-
-              <CharacterCard cardId={charOptions[0].id} />
-            </motion.div>
-          )}
-
-          {role !== "" && (
-            <div className="h-full absolute z-2">
-              <RoleCard cardId={role} />
-            </div>
-          )}
-
-          <div
-            className="absolute w-full"
-            style={{
-              bottom: "-20%",
-              fontSize: sizeAdaptive(15),
-              color: "var(--WHITE)",
-            }}
-          >
-            {remainingTime}
-          </div>
-
-          {charOptions.length > 0 && (
-            <motion.div
-              className="h-full absolute z-1"
-              initial={{ x: 0 }}
-              animate={{
-                x: "125%",
-                scale:
-                  highlightedOption === "b" || selectedOption === "b"
-                    ? 1.15
-                    : 1,
-              }}
-              onMouseEnter={() => setHighlightedOption("b")}
-              onMouseLeave={() => setHighlightedOption("none")}
-              onClick={() => setSelectedOption("b")}
-            >
-              <CardHighlight
-                condition={() =>
-                  selectedOption === "b" || highlightedOption === "b"
-                }
-                scaleFactor={2}
-                color={"#F3EFE3"}
-              />
-
-              {selectedOption === "b" && (
-                <Button
-                  text={"SELECT"}
-                  className="absolute w-full"
-                  style={{
-                    bottom: "-20%",
-                    fontSize: sizeAdaptive(15),
-                    color: "var(--WHITE)",
-                  }}
-                  handler={() => {
-                    handleSelectChar(1);
-                  }}
-                />
-              )}
-
-              <CharacterCard cardId={charOptions[1].id} />
-            </motion.div>
-          )}
-        </div>
-      </div>
-    </div>,
-    portalRootRef.current!,
+      <CharacterCard cardId={charOptionId} />
+    </motion.div>
   );
 }

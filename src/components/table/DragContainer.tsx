@@ -2,16 +2,13 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
-import { createPortal } from "react-dom";
 import PlayingCard from "../cards/PlayingCard";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import { useDragDrop } from "../../contexts/DragDropContext";
 import { useCardsMetaDataState } from "../../hooks/useCardsMetaDataState";
-import { usePublicDataState } from "../../hooks/usePublicDataState";
 import { setupDragAndDrop } from "../../pages/table/utils/setupDragAndDrop";
 import {
   useCardsOnTheTableContext,
@@ -19,6 +16,9 @@ import {
 } from "../../contexts/CardsOnTheTableContext";
 import { usePendingContext } from "../../contexts/PendingContext";
 import { useReadyAfterPaint } from "../../hooks/useReadyAfterPaint";
+import { useSocketId } from "../../hooks/useSocketId";
+import { useVisibleCards } from "../../contexts/VisibleCardsContext";
+import RootPortal from "../shared/RootPortal";
 
 export default function DragContainer({
   atReady,
@@ -30,18 +30,16 @@ export default function DragContainer({
   centralPanelRef: React.RefObject<HTMLDivElement>;
 }) {
   const cardsMeta = useCardsMetaDataState()[0];
-  const publicData = usePublicDataState()[0];
-  const clientHand = publicData?.clientHand;
+  const clientId = useSocketId();
+  const visibleCards = useVisibleCards();
 
   // Accessing contexts
   const drag = useDragDrop();
   const pending = usePendingContext();
   const addCardToTheTable = useCardsOnTheTableContext().addCard;
 
-  const visibleCards = useMemo(() => {
-    if (!clientHand) return [];
-    return clientHand.filter((card) => card !== pending.pendingCardId);
-  }, [clientHand, pending.pendingCardId]);
+  const playerVisibleCards =
+    clientId !== null ? (visibleCards.getPlayer(clientId)?.hand ?? []) : [];
 
   // Check if the mouse is over central panel
   const checkIfOverCentralPanel = useCallback(() => {
@@ -60,7 +58,7 @@ export default function DragContainer({
 
   const draggedCardId =
     drag.draggedCardIndex !== null
-      ? (visibleCards[drag.draggedCardIndex] as string)
+      ? (playerVisibleCards[drag.draggedCardIndex] as string)
       : "";
 
   const draggedCardMeta = cardsMeta?.deckMeta[draggedCardId as string];
@@ -157,21 +155,6 @@ export default function DragContainer({
     setCardHeight(calculateCardHeight());
   }, [tableHeight]);
 
-  //Use a portal to move the component to the top of the DOM tree
-  const portalRootRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const portalRoot = document.createElement("div");
-    portalRoot.id = "dragContainer";
-    document.body.appendChild(portalRoot);
-    portalRootRef.current = portalRoot;
-
-    return () => {
-      if (portalRootRef.current) {
-        document.body.removeChild(portalRootRef.current);
-      }
-    };
-  }, []);
-
   // Triggers when the card is fully loaded and sends the signal to the original card
   // to disappear
   useLayoutEffect(() => {
@@ -180,37 +163,37 @@ export default function DragContainer({
 
   useReadyAfterPaint(atReady);
 
-  if (!portalRootRef.current) return null;
+  return (
+    <RootPortal portalId={"dragContainer"}>
+      <div
+        className="pointer-none w-auto fixed"
+        ref={containerRef}
+        style={{
+          height: cardHeight,
+          zIndex: 999,
+          left: coordinates.left,
+          top: coordinates.top,
+        }}
+      >
+        {drag.isDragging && (
+          <PlayingCard cardId={draggedCardId} initialIsFaceDown={false} />
+        )}
 
-  return createPortal(
-    <div
-      className="pointer-none w-auto fixed"
-      ref={containerRef}
-      style={{
-        height: cardHeight,
-        zIndex: 999,
-        left: coordinates.left,
-        top: coordinates.top,
-      }}
-    >
-      {drag.isDragging && (
-        <PlayingCard cardId={draggedCardId} initialIsFaceDown={false} />
-      )}
+        {drag.isDragging && (
+          <div
+            className="bg-black relative h-full w-full"
+            style={{
+              zIndex: -1,
+              top: "-96%",
+              right: "-5%",
+              opacity: 0.6,
 
-      {drag.isDragging && (
-        <div
-          className="bg-black relative h-full w-full"
-          style={{
-            zIndex: -1,
-            top: "-96%",
-            right: "-5%",
-            opacity: 0.6,
-
-            borderRadius: sizeAdaptive(55),
-          }}
-        ></div>
-      )}
-    </div>,
-    portalRootRef.current,
+              borderRadius: sizeAdaptive(55),
+            }}
+          ></div>
+        )}
+      </div>
+      ,
+    </RootPortal>
   );
 }

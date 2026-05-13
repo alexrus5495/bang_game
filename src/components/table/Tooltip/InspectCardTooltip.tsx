@@ -4,15 +4,14 @@ import type {
   PlayingCardMeta,
   RoleCardMeta,
 } from "../../../types";
-import { useEffect, useRef, useState } from "react";
 import RoleCard from "../../cards/RoleCard";
 import { CARD_CONTAINER_BORDER_RADIUS } from "../../cards/shared/constants";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import CharacterCard from "../../cards/CharacterCard";
 import PlayingCard from "../../cards/PlayingCard";
 import DefaultWeaponCard from "../../cards/DefaultWeaponCard";
-import { createPortal } from "react-dom";
 import CardSymbolDescription from "./CardSymbolDescription";
+import RootPortal from "../../shared/RootPortal";
 
 export default function InspectCardTooltip({
   content,
@@ -23,29 +22,10 @@ export default function InspectCardTooltip({
   type: "playingCardRef" | "charCardRef" | "roleCardRef";
   delay?: number;
 }) {
-  const [isPortalReady, setIsPortalReady] = useState<boolean>(false);
-  const portalRootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const portalRoot = document.createElement("div");
-    portalRoot.id = "inspect-card-tooltip-root";
-    document.body.appendChild(portalRoot);
-    portalRootRef.current = portalRoot;
-    setIsPortalReady(true);
-
-    return () => {
-      if (portalRootRef.current) {
-        document.body.removeChild(portalRootRef.current);
-      }
-    };
-  }, []);
-
   const cardSymbols = extractSymbols(content as PlayingCardMeta);
 
-  if (!isPortalReady) return null;
-
-  return createPortal(
-    <>
+  return (
+    <RootPortal portalId={"inspect_card_tooltip"}>
       {/* Screen dimmmer */}
       <motion.div
         className="h-[100vh] w-[100vw] z-999 bg-black fixed top-0 left-0 pointer-events-none"
@@ -114,8 +94,7 @@ export default function InspectCardTooltip({
           </div>
         )}
       </motion.div>
-    </>,
-    portalRootRef.current!,
+    </RootPortal>
   );
 }
 
