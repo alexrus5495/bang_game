@@ -53,7 +53,7 @@
   "tooltip_from": "from",
   "tooltip_human": "Live player",
   "tooltip_bot": "Bot",
-  "tooltip_holdToInspect": "Hold LMB to inspect",
+  "tooltip_holdToInspect": "Hold {icon} to inspect",
   "sheriff": "Sheriff",
   "deputy": "Deputy",
   "renegade": "Renegade",

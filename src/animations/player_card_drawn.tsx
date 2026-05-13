@@ -17,7 +17,7 @@ export default function PlayerCardDrawn({
   const playerIsClient = data.player.id === socket.id;
 
   return (
-    <div className="w-full h-full z-1000 absolute">
+    <div className="w-0 h-0 z-1000 absolute">
       {playerIsClient ? (
         <ClientCardDrawn data={data} onComplete={onComplete} />
       ) : (
