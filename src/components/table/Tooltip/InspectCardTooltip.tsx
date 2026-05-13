@@ -87,7 +87,6 @@ export default function InspectCardTooltip({
                 <PlayingCard
                   cardId={content.cardInstanceId}
                   initialIsFaceDown={false}
-                  initialIsInteractable={false}
                 />
               )
             ) : (

@@ -31,7 +31,7 @@ export default function InspectIcon({
         <InspectCardTooltip
           content={cardMeta}
           type={"playingCardRef"}
-          delay={0.4}
+          delay={0.3}
         />
       )}
     </>

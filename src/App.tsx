@@ -10,7 +10,7 @@ import { useSocket } from "./hooks/useSocket";
 import SearchLobby from "./pages/searchLobby";
 import Lobby from "./pages/lobby";
 import { useCurrentPageState } from "./hooks/useCurrentPageState";
-import Table from "./pages/table/table";
+import Table from "./pages/table";
 import { SocketEvents } from "./lib/socketEvents";
 import { useAppDispatch } from "./hooks/useAppSelector";
 

@@ -1,4 +1,5 @@
 import { usePublicDataState } from "../../hooks/usePublicDataState";
+import { useReadyAfterPaint } from "../../hooks/useReadyAfterPaint";
 import { useSocket } from "../../hooks/useSocket";
 import { useSystemLocalization } from "../../hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
@@ -6,10 +7,17 @@ import type { PublicData } from "../../types";
 import Queue from "./CurrentTurnDisplay/Queue";
 import TurnControls from "./CurrentTurnDisplay/TurnControls";
 
-export default function CurrentTurnDisplay() {
+export default function CurrentTurnDisplay({
+  atReady,
+}: {
+  atReady: () => void;
+}) {
   const { socket } = useSocket();
   const publicData = usePublicDataState()[0] as PublicData;
   const currentPlayer = publicData?.playersPublicData[publicData.currentPlayer];
+
+  useReadyAfterPaint(atReady);
+
   if (!currentPlayer) return;
 
   return (

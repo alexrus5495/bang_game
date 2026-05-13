@@ -84,14 +84,10 @@ export default function CardPlayingArea() {
                 }}
                 transition={{
                   duration: 0.3,
-                  ease: "easeInOut",
+                  ease: "easeOut",
                 }}
               >
-                <PlayingCard
-                  cardId={card.cardId}
-                  initialIsFaceDown={false}
-                  initialIsInteractable={false}
-                />
+                <PlayingCard cardId={card.cardId} initialIsFaceDown={false} />
               </motion.div>
             );
           })}
@@ -129,15 +125,17 @@ function CardAnchor({
         transform: "translate(-50%)",
       }}
     >
-      <CardScaler>
-        <div
-          className=""
-          style={{
-            height: `${CARD_CONTAINER_HEIGHT}px`,
-            width: `${CARD_CONTAINER_WIDTH}px`,
-          }}
-        ></div>
-      </CardScaler>
+      <div className="h-full">
+        <CardScaler>
+          <div
+            className=""
+            style={{
+              height: `${CARD_CONTAINER_HEIGHT}px`,
+              width: `${CARD_CONTAINER_WIDTH}px`,
+            }}
+          ></div>
+        </CardScaler>
+      </div>
     </div>,
     portalRootRef.current,
   );

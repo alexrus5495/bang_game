@@ -18,11 +18,14 @@ import {
   type CardInitialData,
 } from "../../contexts/CardsOnTheTableContext";
 import { usePendingContext } from "../../contexts/PendingContext";
+import { useReadyAfterPaint } from "../../hooks/useReadyAfterPaint";
 
 export default function DragContainer({
+  atReady,
   tableHeight,
   centralPanelRef,
 }: {
+  atReady: () => void;
   tableHeight: number | null;
   centralPanelRef: React.RefObject<HTMLDivElement>;
 }) {
@@ -175,6 +178,8 @@ export default function DragContainer({
     drag.setIsDraggedCardReady(true);
   }, [drag]);
 
+  useReadyAfterPaint(atReady);
+
   if (!portalRootRef.current) return null;
 
   return createPortal(
@@ -189,11 +194,7 @@ export default function DragContainer({
       }}
     >
       {drag.isDragging && (
-        <PlayingCard
-          cardId={draggedCardId}
-          initialIsFaceDown={false}
-          initialIsInteractable={false}
-        />
+        <PlayingCard cardId={draggedCardId} initialIsFaceDown={false} />
       )}
 
       {drag.isDragging && (

@@ -5,12 +5,14 @@ import DistanceIcon from "./DistanceIcon";
 import HandIcon from "../../shared/HandIcon";
 import PlayerTypeIcon from "./PlayerTypeIcon";
 import RangeIcon from "../../shared/RangeIcon";
+import { AnimationAnchor } from "../../shared/AnimationAnchor";
 
 export default function InfoIcons({
   playerData,
 }: {
   playerData: Player_PublicData;
 }) {
+  if (!playerData.id) return null;
   return (
     <div
       className="absolute h-full w-[81%] flex"
@@ -36,6 +38,11 @@ export default function InfoIcons({
           lineHeight: sizeAdaptive(26),
         }}
       >
+        <AnimationAnchor
+          id={{ type: "opponent-hand", playerId: playerData.id }}
+          className="h-full aspect-square absolute"
+        />
+
         <PlayerTypeIcon playerData={playerData} />
         <RangeIcon playerData={playerData} />
         <DistanceIcon playerData={playerData} />

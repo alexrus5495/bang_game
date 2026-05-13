@@ -8,11 +8,14 @@ import PlayerHand from "./PlayerDisplay/PlayerHand";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import EquipmentCardsPanel from "./shared/EquipmentCardsPanel";
 import MessagesPanel from "./MessagesPanel";
+import { useReadyAfterPaint } from "../../hooks/useReadyAfterPaint";
 
-export default function PlayerArea() {
+export default function PlayerArea({ atReady }: { atReady: () => void }) {
   const { socket } = useSocket();
   const publicData = usePublicDataState()[0];
   const [role, setRole] = useState<string>("");
+
+  useReadyAfterPaint(atReady);
 
   useEffect(() => {
     const onSendRole = (role: string) => setRole(role);
@@ -44,7 +47,7 @@ export default function PlayerArea() {
             padding: sizeAdaptive(100),
           }}
         >
-          <MessagesPanel />
+          {/* <MessagesPanel /> */}
         </div>
       </div>
       <div
@@ -63,7 +66,7 @@ export default function PlayerArea() {
         style={{ bottom: sizeAdaptive(50) }}
       >
         <div className="w-[85%] h-full">
-          <PlayerHand clientHand={publicData.clientHand} />
+          <PlayerHand clientId={socket.id as string} />
         </div>
       </div>
     </div>

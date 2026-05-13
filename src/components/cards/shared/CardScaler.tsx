@@ -1,42 +1,21 @@
-import { useEffect, useRef, useState } from "react";
-import type { CardScalerProps } from "../types";
-import { CARD_CONTAINER_HEIGHT, CARD_CONTAINER_WIDTH } from "./constants";
+import { useCardScale } from "../../../hooks/useCardScale";
+import { CARD_CONTAINER_WIDTH } from "./constants";
+
+type CardScalerProps = {
+  children: React.ReactNode;
+};
 
 export default function CardScaler({ children }: CardScalerProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
-  const [isReady, setIsReady] = useState<boolean>(false);
+  const { ref: scaleRef, scale } = useCardScale();
 
-  //Updating scale
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const updateScale = () => {
-      const container = containerRef.current;
-      if (!container) return;
-
-      //Calculate scale factor
-      const newScale = container.clientHeight / CARD_CONTAINER_HEIGHT;
-
-      setScale(newScale);
-      setIsReady(true);
-    };
-
-    const observer = new ResizeObserver(updateScale);
-    observer.observe(containerRef.current);
-
-    updateScale();
-
-    return () => observer.disconnect();
-  }, []);
+  const cardWidth = CARD_CONTAINER_WIDTH * scale;
 
   return (
     <div
-      ref={containerRef}
       className="h-full flex items-center justify-center"
+      ref={scaleRef}
       style={{
-        width: `${CARD_CONTAINER_WIDTH * scale}px`,
-        opacity: isReady ? 1 : 0,
+        width: `${cardWidth}px`,
         transition: "opacity 0.1s",
       }}
     >

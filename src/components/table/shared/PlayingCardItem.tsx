@@ -17,11 +17,7 @@ export default function PlayingCardItem({
 
   return (
     <motion.div className="h-full w-fit cursor-pointer" {...handlersNonPinable}>
-      <PlayingCard
-        cardId={cardId}
-        initialIsFaceDown={false}
-        initialIsInteractable={false}
-      />
+      <PlayingCard cardId={cardId} initialIsFaceDown={false} />
 
       {isVisible && (
         <InspectCardTooltip

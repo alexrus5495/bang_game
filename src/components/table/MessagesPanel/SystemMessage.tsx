@@ -37,7 +37,7 @@ export default function Message_System({
   const formatDataItem = (
     item: MessageData_Player | MessageData_Card,
   ): string => {
-    switch (item.type) {
+    switch (item.tag) {
       case "player":
         return item.isAI ? locale[item.data] : item.data;
 

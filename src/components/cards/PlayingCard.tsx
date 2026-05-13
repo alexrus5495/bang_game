@@ -7,16 +7,13 @@ import { motion } from "motion/react";
 export default function PlayingCard({
   cardId,
   initialIsFaceDown,
-  initialIsInteractable,
   flipDelay,
 }: {
   cardId: string | null;
   initialIsFaceDown: boolean;
-  initialIsInteractable: boolean;
   flipDelay?: number;
 }) {
   const [isFaceDown, setIsFaceDown] = useState(initialIsFaceDown);
-  const [isInteractable, setIsInteractable] = useState(initialIsInteractable);
 
   useEffect(() => {
     if (flipDelay) {
@@ -29,11 +26,7 @@ export default function PlayingCard({
   }, [flipDelay]);
 
   return (
-    <div
-      className="h-full flex"
-      onClick={() => (isInteractable ? setIsFaceDown(!isFaceDown) : null)}
-      style={{ perspective: "1000px" }}
-    >
+    <div className="h-full flex" style={{ perspective: "1000px" }}>
       <motion.div
         className="h-full relative"
         initial={{ rotateY: initialIsFaceDown ? 180 : 0 }}
@@ -41,7 +34,7 @@ export default function PlayingCard({
           rotateY: isFaceDown ? 180 : 0,
         }}
         transition={{
-          duration: 0.3,
+          duration: 0.4,
         }}
         style={{ transformStyle: "preserve-3d" }}
       >

@@ -1,6 +1,7 @@
 import type { PublicData } from "../../../types";
 import PlayingCard from "../../cards/PlayingCard";
 import SkeletonCard from "../../cards/SkeletonCard";
+import { AnimationAnchor } from "../shared/AnimationAnchor";
 
 export default function Deck({
   publicData,
@@ -29,11 +30,12 @@ export default function Deck({
                 className="h-full w-auto absolute flex justify-center"
                 style={{ top: `-${(publicData.deckLength - 1) / 2.5}%` }}
               >
-                <PlayingCard
-                  cardId={null}
-                  initialIsFaceDown={true}
-                  initialIsInteractable={false}
+                <AnimationAnchor
+                  id={{ type: "deck" }}
+                  className="h-full w-full absolute"
                 />
+
+                <PlayingCard cardId={null} initialIsFaceDown={true} />
               </div>
             );
         })}

@@ -1,4 +1,5 @@
 import { usePublicDataState } from "../../hooks/usePublicDataState";
+import { useReadyAfterPaint } from "../../hooks/useReadyAfterPaint";
 import { useSocket } from "../../hooks/useSocket";
 import { processPlayersArray } from "../../lib/gameData/processPlayersArray";
 import Layout_4 from "./OtherPlayersDisplay/Layout_4";
@@ -6,9 +7,15 @@ import Layout_5 from "./OtherPlayersDisplay/Layout_5";
 import Layout_6 from "./OtherPlayersDisplay/Layout_6";
 import Layout_7 from "./OtherPlayersDisplay/Layout_7";
 
-export default function OtherPlayersDisplay() {
+export default function OtherPlayersDisplay({
+  atReady,
+}: {
+  atReady: () => void;
+}) {
   const { socket } = useSocket();
   const publicData = usePublicDataState()[0];
+
+  useReadyAfterPaint(atReady);
 
   if (!publicData) return null;
 

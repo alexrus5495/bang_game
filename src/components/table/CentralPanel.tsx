@@ -1,14 +1,14 @@
-import { useRef } from "react";
 import { usePublicDataState } from "../../hooks/usePublicDataState";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import Deck from "./CentralPanel/Deck";
 import DeckPlacingMarker from "./CentralPanel/DeckPlacingMarker";
 import CardPlayingArea from "./CentralPanel/CardPlayingArea";
+import { useReadyAfterPaint } from "../../hooks/useReadyAfterPaint";
 
-export default function CentralPanel() {
+export default function CentralPanel({ atReady }: { atReady: () => void }) {
   const publicData = usePublicDataState()[0];
 
-  const deckRef = useRef<HTMLDivElement>(null);
+  useReadyAfterPaint(atReady);
 
   return (
     <div
@@ -19,7 +19,6 @@ export default function CentralPanel() {
       }}
     >
       <div
-        ref={deckRef}
         className="h-[70%] w-[30%] flex justify-center relative"
         style={{ marginTop: sizeAdaptive(30) }}
       >
