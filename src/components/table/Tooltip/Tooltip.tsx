@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import type { TooltipMessage } from "../../../types";
 import TooltipMessageLine from "../Tooltip/TooltipMessage";
 import { checkBounds } from "../../../lib/utils/checkBounds";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import RootPortal from "../../shared/RootPortal";
 
 export default function Tooltip({

@@ -8,38 +8,32 @@ import {
 import PlayingCard from "../cards/PlayingCard";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import { useDragDrop } from "../../contexts/DragDropContext";
-import { useCardsMetaDataState } from "../../hooks/useCardsMetaDataState";
+import { useCardsMetaDataState } from "../../stores/hooks/useCardsMetaDataState";
 import { setupDragAndDrop } from "../../pages/table/utils/setupDragAndDrop";
-import {
-  useCardsOnTheTableContext,
-  type CardInitialData,
-} from "../../contexts/CardsOnTheTableContext";
-import { usePendingContext } from "../../contexts/PendingContext";
-import { useReadyAfterPaint } from "../../hooks/useReadyAfterPaint";
 import { useSocketId } from "../../hooks/useSocketId";
-import { useVisibleCards } from "../../contexts/VisibleCardsContext";
 import RootPortal from "../shared/RootPortal";
+import { useLocalState } from "../../contexts/LocalStateContext";
+import type { CardInitialData } from "../../contexts/LocalStateContext/useCardsOnTheTableState";
 
 export default function DragContainer({
-  atReady,
   tableHeight,
   centralPanelRef,
 }: {
-  atReady: () => void;
   tableHeight: number | null;
   centralPanelRef: React.RefObject<HTMLDivElement>;
 }) {
+  const localState = useLocalState();
   const cardsMeta = useCardsMetaDataState()[0];
   const clientId = useSocketId();
-  const visibleCards = useVisibleCards();
+  const visibleCards = localState.visibleCards;
 
   // Accessing contexts
   const drag = useDragDrop();
-  const pending = usePendingContext();
-  const addCardToTheTable = useCardsOnTheTableContext().addCard;
+  const pending = useLocalState().pendingCard;
+  const addCardToTheTable = localState.cardsOnTheTable.addCard;
 
   const playerVisibleCards =
-    clientId !== null ? (visibleCards.getPlayer(clientId)?.hand ?? []) : [];
+    clientId !== null ? (visibleCards.cards[clientId]?.hand ?? []) : [];
 
   // Check if the mouse is over central panel
   const checkIfOverCentralPanel = useCallback(() => {
@@ -65,7 +59,7 @@ export default function DragContainer({
 
   // Handle drag end over central panel
   const handleDragEndedOverCentralPanel = useCallback(() => {
-    pending.setPendingCardId(draggedCardId);
+    pending.set(draggedCardId);
 
     const cardRect = drag.draggedCardRef?.getBoundingClientRect();
     if (!cardRect) return;
@@ -160,8 +154,6 @@ export default function DragContainer({
   useLayoutEffect(() => {
     drag.setIsDraggedCardReady(true);
   }, [drag]);
-
-  useReadyAfterPaint(atReady);
 
   return (
     <RootPortal portalId={"dragContainer"}>

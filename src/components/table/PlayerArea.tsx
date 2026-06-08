@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { usePublicDataState } from "../../hooks/usePublicDataState";
+import { usePublicDataState } from "../../stores/hooks/usePublicDataState";
 import { useSocket } from "../../hooks/useSocket";
 import PlayerDisplay from "./PlayerDisplay";
 import { SocketEvents } from "../../lib/socketEvents";
@@ -7,15 +7,11 @@ import { processPlayersArray } from "../../lib/gameData/processPlayersArray";
 import PlayerHand from "./PlayerDisplay/PlayerHand";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import EquipmentCardsPanel from "./shared/EquipmentCardsPanel";
-import MessagesPanel from "./MessagesPanel";
-import { useReadyAfterPaint } from "../../hooks/useReadyAfterPaint";
 
-export default function PlayerArea({ atReady }: { atReady: () => void }) {
+export default function PlayerArea() {
   const { socket } = useSocket();
   const publicData = usePublicDataState()[0];
   const [role, setRole] = useState<string>("");
-
-  useReadyAfterPaint(atReady);
 
   useEffect(() => {
     const onSendRole = (role: string) => setRole(role);

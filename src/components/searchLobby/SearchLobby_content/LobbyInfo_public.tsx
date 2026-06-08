@@ -1,11 +1,11 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import type { LobbyPublicData, LobbySeat } from "../../../types";
 import Button from "../../shared/Button";
 import { useSocket } from "../../../hooks/useSocket";
 import { SocketEvents } from "../../../lib/socketEvents";
-import { useCurrentPageState } from "../../../hooks/useCurrentPageState";
-import { useCurrentLobbyState } from "../../../hooks/useCurrentLobbyState";
+import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
+import { useCurrentLobbyState } from "../../../stores/hooks/useCurrentLobbyState";
 
 export default function LobbyInfo_public({
   selectedLobbyData,

@@ -1,5 +1,5 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 
 export default function LobbyInfo_none() {
   const locale = useSystemLocalization() as Record<string, string>;

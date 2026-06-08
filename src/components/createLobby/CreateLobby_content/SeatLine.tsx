@@ -1,6 +1,6 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { motion } from "motion/react";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import type { LobbySeat } from "../../../types";
 
 export default function SeatLine({

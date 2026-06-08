@@ -3,7 +3,7 @@ import Background_big from "../components/shared/Background_big";
 import { useSocket } from "../hooks/useSocket";
 import { useEffect } from "react";
 import { SocketEvents } from "../lib/socketEvents";
-import { useCurrentPageState } from "../hooks/useCurrentPageState";
+import { useCurrentPageState } from "../stores/hooks/useCurrentPageState";
 
 export default function Lobby({
   setExitAnimationType,

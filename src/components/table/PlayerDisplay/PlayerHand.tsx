@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useResizeObserver } from "../../../hooks/useResizeObserver";
-import { usePendingContext } from "../../../contexts/PendingContext";
-import { useVisibleCards } from "../../../contexts/VisibleCardsContext";
 import CardInHand from "./PlayerHand/CardInHand";
 import { useDinamicSpacing } from "../../../hooks/useDinamicSpacing";
 import LayoutSlots from "./PlayerHand/LayoutSlots";
 import { useCardScale } from "../../../hooks/useCardScale";
+import { useLocalState } from "../../../contexts/LocalStateContext";
 
 export default function PlayerHand({ clientId }: { clientId: string }) {
-  const pending = usePendingContext();
-  const visibleCards = useVisibleCards().getPlayer(clientId)?.hand ?? [];
+  const localState = useLocalState();
+  const visibleCards = localState.visibleCards.cards[clientId]?.hand ?? [];
+  const pending = localState.pendingCard;
 
   // Parent container ref, used in dynamic margin calculation
   const { ref: containerRef, width: containerWidth } =
@@ -23,7 +23,7 @@ export default function PlayerHand({ clientId }: { clientId: string }) {
   const spacing = useDinamicSpacing(
     visibleCards,
     containerWidth,
-    pending.pendingCardId,
+    pending.id,
     scale,
   );
 

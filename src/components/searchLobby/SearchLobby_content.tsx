@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import { useSocket } from "../../hooks/useSocket";
-import { useSystemLocalization } from "../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import Button from "../shared/Button";
 import SearchLobby_lobbyTable from "./SearchLobby_content/SearchLobby_lobbyTable";
 import type { LobbyPublicData } from "../../types";
 import SearchLobby_lobbyDetails from "./SearchLobby_content/SearchLobby_lobbyDetails";
 import { SocketEvents } from "../../lib/socketEvents";
-import { useCurrentPageState } from "../../hooks/useCurrentPageState";
+import { useCurrentPageState } from "../../stores/hooks/useCurrentPageState";
 
 export default function SearchLobby_content() {
   const locale = useSystemLocalization() as Record<string, string>;

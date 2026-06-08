@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { motion } from "motion/react";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Button from "../../shared/Button";
 import { useSocket } from "../../../hooks/useSocket";
 import { SocketEvents } from "../../../lib/socketEvents";
-import { useCurrentLobbyState } from "../../../hooks/useCurrentLobbyState";
-import { useCurrentPageState } from "../../../hooks/useCurrentPageState";
+import { useCurrentLobbyState } from "../../../stores/hooks/useCurrentLobbyState";
+import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
 
 export default function Join_passwordForm({
   lobbyId,

@@ -4,13 +4,13 @@ import type {
   Player_PublicData,
   TooltipMessage,
 } from "../../../../types";
-import { usePublicDataState } from "../../../../hooks/usePublicDataState";
+import { usePublicDataState } from "../../../../stores/hooks/usePublicDataState";
 import { processPlayersArray } from "../../../../lib/gameData/processPlayersArray";
 import { useEffect, useState } from "react";
-import { useSystemLocalization } from "../../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import Tooltip from "../../Tooltip/Tooltip";
 import { useTooltip } from "../../../../hooks/useTooltip";
-import { useCardsMetaDataState } from "../../../../hooks/useCardsMetaDataState";
+import { useCardsMetaDataState } from "../../../../stores/hooks/useCardsMetaDataState";
 import { useSocket } from "../../../../hooks/useSocket";
 
 export default function DistanceIcon({

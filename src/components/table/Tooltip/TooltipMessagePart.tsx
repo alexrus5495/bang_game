@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useCardLocalization } from "../../../hooks/useCardLocalization";
+import { useCardLocalization } from "../../../stores/hooks/useCardLocalization";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import type {
   CharacterCardMeta,

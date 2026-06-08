@@ -5,7 +5,7 @@ import type { PlayingCardMeta } from "../../../../types";
 import PlayingCard from "../../../cards/PlayingCard";
 import InspectIcon from "../InspectIcon";
 import { AnimationAnchor } from "../../shared/AnimationAnchor";
-import { useCardsMetaDataState } from "../../../../hooks/useCardsMetaDataState";
+import { useCardsMetaDataState } from "../../../../stores/hooks/useCardsMetaDataState";
 
 type CardInHandProps = {
   cardId: string;

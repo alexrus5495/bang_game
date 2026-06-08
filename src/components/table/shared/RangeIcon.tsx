@@ -7,9 +7,9 @@ import type {
   TooltipMessage,
 } from "../../../types";
 import { useTooltip } from "../../../hooks/useTooltip";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Tooltip from "../Tooltip/Tooltip";
-import { useCardsMetaDataState } from "../../../hooks/useCardsMetaDataState";
+import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
 import { defaultWeaponMeta } from "../../../config/defaultWeaponMeta";
 
 export default function RangeIcon({

@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import type { Player_PublicData, PlayingCardMeta } from "../../../types";
-import { useCardsMetaDataState } from "../../../hooks/useCardsMetaDataState";
+import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
 import PlayingCardItem from "./PlayingCardItem";
 
 export default function EquipmentCardsPanel({

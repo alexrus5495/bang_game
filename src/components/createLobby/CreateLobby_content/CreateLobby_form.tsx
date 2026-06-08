@@ -1,6 +1,6 @@
 import type React from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import type { LobbyConfig } from "../../../types";
 import FormCheckboxInput from "./FormCheckboxInput";
 import FormTextInput from "./FormTextInput";

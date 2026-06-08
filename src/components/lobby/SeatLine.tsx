@@ -1,5 +1,5 @@
 import { useSocket } from "../../hooks/useSocket";
-import { useSystemLocalization } from "../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import type { LobbyPublicData, LobbySeat } from "../../types";
 import KickOutButton from "./KickOutButton";

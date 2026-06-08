@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import Button from "../shared/Button";
 import SeatController from "./CreateLobby_content/SeatController";
 import CreateLobby_form from "./CreateLobby_content/CreateLobby_form";
@@ -9,8 +9,8 @@ import { useSocket } from "../../hooks/useSocket";
 import type { LobbyConfig } from "../../types";
 import { blankLobbyConfig } from "../../config/blankLobby.config";
 import { SocketEvents } from "../../lib/socketEvents";
-import { useCurrentPageState } from "../../hooks/useCurrentPageState";
-import { useCurrentLobbyState } from "../../hooks/useCurrentLobbyState";
+import { useCurrentPageState } from "../../stores/hooks/useCurrentPageState";
+import { useCurrentLobbyState } from "../../stores/hooks/useCurrentLobbyState";
 
 export default function CreateLobby_content() {
   const locale = useSystemLocalization() as Record<string, string>;

@@ -1,13 +1,13 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Button from "../../shared/Button";
 import { useState } from "react";
 import FormTextInput from "../../createLobby/CreateLobby_content/FormTextInput";
 import { useSocket } from "../../../hooks/useSocket";
 import type { LobbyPublicData } from "../../../types";
 import { SocketEvents } from "../../../lib/socketEvents";
-import { useCurrentLobbyState } from "../../../hooks/useCurrentLobbyState";
-import { useCurrentPageState } from "../../../hooks/useCurrentPageState";
+import { useCurrentLobbyState } from "../../../stores/hooks/useCurrentLobbyState";
+import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
 
 export default function LobbyInfo_private({
   selectedLobbyData,

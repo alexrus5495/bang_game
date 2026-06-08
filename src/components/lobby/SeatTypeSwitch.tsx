@@ -1,5 +1,5 @@
 import { useSocket } from "../../hooks/useSocket";
-import { useSystemLocalization } from "../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import { SocketEvents } from "../../lib/socketEvents";
 import type { LobbySeat } from "../../types";

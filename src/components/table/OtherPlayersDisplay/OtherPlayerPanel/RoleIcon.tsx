@@ -1,5 +1,5 @@
-import { useCardsMetaDataState } from "../../../../hooks/useCardsMetaDataState";
-import { useSystemLocalization } from "../../../../hooks/useSystemLocalization";
+import { useCardsMetaDataState } from "../../../../stores/hooks/useCardsMetaDataState";
+import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../../lib/images";

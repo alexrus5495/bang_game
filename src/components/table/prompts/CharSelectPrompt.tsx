@@ -5,10 +5,10 @@ import { motion } from "motion/react";
 import { SocketEvents } from "../../../lib/socketEvents";
 import RoleCard from "../../cards/RoleCard";
 import CharacterCard from "../../cards/CharacterCard";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import CardHighlight from "../shared/CardHighlight";
 import Button from "../../shared/Button";
-import { usePublicDataState } from "../../../hooks/usePublicDataState";
+import { usePublicDataState } from "../../../stores/hooks/usePublicDataState";
 import RootPortal from "../../shared/RootPortal";
 
 type CharOption = {

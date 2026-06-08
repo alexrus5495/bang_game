@@ -1,4 +1,4 @@
-import { usePublicDataState } from "../../../hooks/usePublicDataState";
+import { usePublicDataState } from "../../../stores/hooks/usePublicDataState";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../lib/images";
 import type { Player_PublicData, PublicData } from "../../../types";

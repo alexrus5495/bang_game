@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import type { LobbyPublicData } from "../../types";
-import { useSystemLocalization } from "../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { motion } from "motion/react";
 
 export default function LobbyTitle({

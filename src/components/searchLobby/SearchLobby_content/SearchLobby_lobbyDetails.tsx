@@ -1,5 +1,5 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import type { LobbyPublicData } from "../../../types";
 import LobbyInfo_none from "./LobbyInfo_none";
 import LobbyInfo_private from "./LobbyInfo_private";

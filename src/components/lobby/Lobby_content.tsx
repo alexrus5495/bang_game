@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { useSystemLocalization } from "../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import Button from "../shared/Button";
 import type { LobbyPublicData } from "../../types";
 import { useSocket } from "../../hooks/useSocket";
-import { useCurrentLobbyState } from "../../hooks/useCurrentLobbyState";
+import { useCurrentLobbyState } from "../../stores/hooks/useCurrentLobbyState";
 import SeatLine from "./SeatLine";
 import LobbyTitle from "./LobbyTitle";
 import { SocketEvents } from "../../lib/socketEvents";
-import { useCurrentPageState } from "../../hooks/useCurrentPageState";
+import { useCurrentPageState } from "../../stores/hooks/useCurrentPageState";
 
 export default function Lobby_content({
   setExitAnimationType,

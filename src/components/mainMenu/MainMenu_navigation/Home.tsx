@@ -1,6 +1,6 @@
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Button from "../../shared/Button";
-import { useCurrentPageState } from "../../../hooks/useCurrentPageState";
+import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
 
 export default function MainMenu_navigation_Home({
   setMenuState,

@@ -1,4 +1,4 @@
-import { useCardLocalization } from "../../../hooks/useCardLocalization";
+import { useCardLocalization } from "../../../stores/hooks/useCardLocalization";
 import { getImageComponent } from "../../../lib/images";
 
 export function TextBlock({

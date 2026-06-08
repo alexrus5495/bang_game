@@ -24,7 +24,7 @@ import {
   CARD_CONTAINER_WIDTH,
 } from "./constants";
 import { getImageComponent } from "../../../lib/images";
-import { useCardsMetaDataState } from "../../../hooks/useCardsMetaDataState";
+import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
 
 export default function CardFace({ cardId, cardType }: CardProps) {
   const cardsMetaData = useCardsMetaDataState()[0];

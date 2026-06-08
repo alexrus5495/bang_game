@@ -1,6 +1,6 @@
 import { PLAYER_COLORS } from "../../../config/player.colors";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { motion } from "motion/react";
 import type { LobbyConfig, LobbySeat } from "../../../types";
 

@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { useCardLocalization } from "../../../hooks/useCardLocalization";
+import { useCardLocalization } from "../../../stores/hooks/useCardLocalization";
 
 export default function CardTitleComponent({
   pack,

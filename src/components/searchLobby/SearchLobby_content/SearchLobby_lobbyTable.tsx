@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { LobbyPublicData } from "../../../types";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 
 type SortConfig = {
   key: keyof LobbyPublicData;

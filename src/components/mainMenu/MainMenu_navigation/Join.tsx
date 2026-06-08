@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { motion } from "motion/react";
 import Button from "../../shared/Button";

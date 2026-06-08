@@ -3,7 +3,7 @@ import Button from "../shared/Button";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import type { LobbyPublicData, LobbySeat } from "../../types";
 import { useSocket } from "../../hooks/useSocket";
-import { useSystemLocalization } from "../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { SocketEvents } from "../../lib/socketEvents";
 
 export default function KickOutButton({

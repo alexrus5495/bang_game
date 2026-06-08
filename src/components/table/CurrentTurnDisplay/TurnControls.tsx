@@ -1,4 +1,4 @@
-import { useSystemLocalization } from "../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import Button from "../../shared/Button";
 

@@ -1,42 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../hooks/useSocket";
-import { useCurrentLobbyState } from "../hooks/useCurrentLobbyState";
+import { useCurrentLobbyState } from "../stores/hooks/useCurrentLobbyState";
 import OtherPlayersDisplay from "../components/table/OtherPlayersDisplay";
-import { usePublicDataState } from "../hooks/usePublicDataState";
+import { usePublicDataState } from "../stores/hooks/usePublicDataState";
 import CharSelectPrompt from "../components/table/prompts/CharSelectPrompt";
 import CentralPanel from "../components/table/CentralPanel";
-import { useCardsMetaDataState } from "../hooks/useCardsMetaDataState";
+import { useCardsMetaDataState } from "../stores/hooks/useCardsMetaDataState";
 import PlayerArea from "../components/table/PlayerArea";
 import { sizeAdaptive } from "../lib/css/cssFunctions";
-import { useMessagesState } from "../hooks/useMessagesState";
 import DragContainer from "../components/table/DragContainer";
-import { setupTableSocketHandlers } from "./table/utils/setupTableSocketHandlers";
 import { DragDropProvider } from "../contexts/DragDropContext";
 import CurrentTurnDisplay from "../components/table/CurrentTurnDisplay";
-import { CardsOnTheTableProvider } from "../contexts/CardsOnTheTableContext";
-import { PendingProvider } from "../contexts/PendingContext";
-import AnimationLayer from "../components/table/AnimationLayer";
 import { AnchorsProvider } from "../contexts/AnchorsContext";
-import { VisibleCardsProvider } from "../contexts/VisibleCardsContext";
+import { LocalStateProvider } from "../contexts/LocalStateContext";
+import { useTableSocketHandlers } from "../hooks/useTableSocketHandlers";
+import { useInitializeDeckSizes } from "../contexts/LocalStateContext/useInitializeDeckSizes";
+import { EventProcessor } from "../components/table/EventProcessor";
+import { useGameEventsState } from "../stores/hooks/useGameEventsState";
 
-type UiIsReadyFlagType = {
-  dragContainer: boolean;
-  currentTurnDisplay: boolean;
-  otherPlayersDisplay: boolean;
-  centralPanel: boolean;
-  playersArea: boolean;
-};
-
-function TableContent({
-  checkAsReady,
-}: {
-  checkAsReady: (flag: keyof UiIsReadyFlagType) => void;
-}) {
+function TableContent() {
   const { socket } = useSocket();
   const lobbyId = useCurrentLobbyState()[0];
   const setCardsMeta = useCardsMetaDataState()[1];
   const [publicData, setPublicData] = usePublicDataState();
-  const setMessages = useMessagesState()[1];
+  const setGameEvents = useGameEventsState()[1];
 
   //Refs for key elements
   const tableRef = useRef<HTMLDivElement>(null);
@@ -52,15 +39,15 @@ function TableContent({
   }, [tableRef]);
 
   //Setup Socket Events
-  useEffect(() => {
-    return setupTableSocketHandlers({
-      socket,
-      lobbyId,
-      setCardsMeta,
-      setPublicData,
-      setMessages,
-    });
-  }, [socket, lobbyId, setCardsMeta, setPublicData, setMessages]);
+  useTableSocketHandlers({
+    socket,
+    lobbyId,
+    setCardsMeta,
+    setPublicData,
+    setGameEvents,
+  });
+
+  useInitializeDeckSizes();
 
   const player = publicData?.playersPublicData.find(
     (player) => player.id === socket.id,
@@ -72,7 +59,6 @@ function TableContent({
       {!charSelected && <CharSelectPrompt />}
 
       <DragContainer
-        atReady={() => checkAsReady("dragContainer")}
         tableHeight={tableHeight}
         centralPanelRef={centralPanelRef as React.RefObject<HTMLDivElement>}
       />
@@ -83,26 +69,22 @@ function TableContent({
         style={{ height: "min(51vw, 100vh)", width: "min(100vw, 196vh)" }}
       >
         <div className="w-[18%] h-auto absolute top-0 flex justify-center">
-          <CurrentTurnDisplay
-            atReady={() => checkAsReady("currentTurnDisplay")}
-          />
+          <CurrentTurnDisplay />
         </div>
 
         <div className="w-full h-[60%]" style={{ marginTop: sizeAdaptive(50) }}>
-          <OtherPlayersDisplay
-            atReady={() => checkAsReady("otherPlayersDisplay")}
-          />
+          <OtherPlayersDisplay />
         </div>
 
         <div
           ref={centralPanelRef}
           className="h-[35%] w-[40%] absolute top-[22%]"
         >
-          <CentralPanel atReady={() => checkAsReady("centralPanel")} />
+          <CentralPanel />
         </div>
 
         <div className="w-full h-[40%]">
-          <PlayerArea atReady={() => checkAsReady("playersArea")} />
+          <PlayerArea />
         </div>
       </div>
     </>
@@ -110,44 +92,15 @@ function TableContent({
 }
 
 export default function Table() {
-  const { checkAsReady, isAllReady } = useGlobalReadyFlag();
-
   return (
-    <CardsOnTheTableProvider>
+    <LocalStateProvider>
       <DragDropProvider>
-        <PendingProvider>
-          <AnchorsProvider>
-            <VisibleCardsProvider>
-              <AnimationLayer isAllReady={isAllReady} />
-              <TableContent checkAsReady={checkAsReady} />
-            </VisibleCardsProvider>
-          </AnchorsProvider>
-        </PendingProvider>
+        <AnchorsProvider>
+          <EventProcessor>
+            <TableContent />
+          </EventProcessor>
+        </AnchorsProvider>
       </DragDropProvider>
-    </CardsOnTheTableProvider>
+    </LocalStateProvider>
   );
 }
-
-const useGlobalReadyFlag = () => {
-  const [uiIsReady, setUiIsReady] = useState<UiIsReadyFlagType>({
-    dragContainer: false,
-    currentTurnDisplay: false,
-    otherPlayersDisplay: false,
-    centralPanel: false,
-    playersArea: false,
-  });
-
-  const checkAsReady = (flag: keyof UiIsReadyFlagType) => {
-    setUiIsReady((prev) => ({
-      ...prev,
-      [flag]: true,
-    }));
-  };
-
-  const isAllReady = Object.values(uiIsReady).every(Boolean);
-
-  return {
-    checkAsReady,
-    isAllReady,
-  };
-};

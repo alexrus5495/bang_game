@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "./normalize.css";
 import "./App.css";
-import { loadLocalization } from "./store/slices/localeSlice";
 import MainMenu from "./pages/mainMenu";
 import { motion, AnimatePresence } from "motion/react";
 import CreateLobby from "./pages/createLobby";
@@ -9,16 +8,15 @@ import { sizeAdaptive } from "./lib/css/cssFunctions";
 import { useSocket } from "./hooks/useSocket";
 import SearchLobby from "./pages/searchLobby";
 import Lobby from "./pages/lobby";
-import { useCurrentPageState } from "./hooks/useCurrentPageState";
+import { useCurrentPageState } from "./stores/hooks/useCurrentPageState";
 import Table from "./pages/table";
 import { SocketEvents } from "./lib/socketEvents";
-import { useAppDispatch } from "./hooks/useAppSelector";
+import { useLoadLocalization } from "./stores/hooks/useLoadLocalization";
 
 export default function App() {
   const { isConnected, socketId } = useSocket();
   const [currentPage, setCurrentPage] = useCurrentPageState();
-  const dispatch = useAppDispatch();
-
+  const loadLocalization = useLoadLocalization();
   const { socket } = useSocket();
 
   useEffect(() => {
@@ -35,8 +33,8 @@ export default function App() {
   );
 
   useEffect(() => {
-    dispatch(loadLocalization("enEN"));
-  }, [dispatch]);
+    loadLocalization("enEN");
+  }, [loadLocalization]);
 
   useEffect(() => {
     setIsFirstRender(false);
@@ -53,7 +51,7 @@ export default function App() {
         }}
         className="absolute"
       >
-        {isConnected ? `Connected: ${socketId}` : "`Connecting..."}
+        {isConnected ? `Connected: ${socketId}` : "Connecting..."}
       </div>
       <AnimatePresence mode="wait">
         {currentPage === "mainMenu" && (

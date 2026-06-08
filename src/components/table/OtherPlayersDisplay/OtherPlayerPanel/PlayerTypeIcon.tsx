@@ -1,4 +1,4 @@
-import { useSystemLocalization } from "../../../../hooks/useSystemLocalization";
+import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
 import type { Player_PublicData, TooltipMessage } from "../../../../types";
