@@ -2,47 +2,41 @@ import { useCallback, useState } from "react";
 import type { Coordinates } from "../types";
 
 export function useTableDragAndDrop() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isDraggedCardReady, setIsDraggedCardReady] = useState<boolean>(false);
   const [draggedCardIndex, setDraggedCardIndex] = useState<null | number>(null);
+  const [pointerEvent, setPointerEvent] = useState<React.PointerEvent | null>(
+    null,
+  );
   const [draggedCardOffset, setDraggedCardOffset] = useState<Coordinates>({
     x: 0,
     y: 0,
   });
-  const [draggedCardRef, setDraggedCardRef] = useState<HTMLDivElement | null>(
-    null,
-  );
-
-  const [draggedCardCoords, setDraggedCardCoords] = useState<Coordinates>({
-    x: 0,
-    y: 0,
-  });
-
   const [isOverCentralPanel, setIsOverCentralPanel] = useState(false);
 
   const isDragging = draggedCardIndex !== null;
 
+  const startDragging = useCallback(
+    (event: React.PointerEvent, index: number, offset: Coordinates) => {
+      setPointerEvent(event);
+      setDraggedCardIndex(index);
+      setDraggedCardOffset(offset);
+    },
+    [],
+  );
+
   const stopDragging = useCallback(() => {
     setDraggedCardIndex(null);
-    setIsDraggedCardReady(false);
+    setPointerEvent(null);
+    setIsOverCentralPanel(false);
   }, []);
 
   return {
-    mousePosition,
-    setMousePosition,
-    isDraggedCardReady,
-    setIsDraggedCardReady,
     draggedCardIndex,
-    setDraggedCardIndex,
+    pointerEvent,
     draggedCardOffset,
-    setDraggedCardOffset,
     isOverCentralPanel,
     setIsOverCentralPanel,
     isDragging,
+    startDragging,
     stopDragging,
-    draggedCardCoords,
-    setDraggedCardCoords,
-    draggedCardRef,
-    setDraggedCardRef,
   };
 }
