@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+/.claude/skills/react-doctor/SKILL.md
+/.claude/skills/react-doctor/references/explain.md
+/.github/workflows/react-doctor.yml
