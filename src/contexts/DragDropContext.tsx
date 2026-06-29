@@ -1,24 +1,20 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, use } from "react";
 import { useTableDragAndDrop } from "../hooks/useTableDragAndDrop";
 import type { Coordinates } from "../types";
 
 interface DragDropContextType {
   draggedCardIndex: number | null;
-  setDraggedCardIndex: (index: number | null) => void;
-  setDraggedCardOffset: (coordinates: Coordinates) => void;
-  isDraggedCardReady: boolean;
-  setIsDraggedCardReady: (ready: boolean) => void;
-  isDragging: boolean;
-  mousePosition: Coordinates;
-  setMousePosition: (newCoords: Coordinates) => void;
+  pointerEvent: React.PointerEvent | null;
   draggedCardOffset: Coordinates;
-  stopDragging: () => void;
-  setIsOverCentralPanel: (isOver: boolean) => void;
+  isDragging: boolean;
   isOverCentralPanel: boolean;
-  draggedCardRef: HTMLDivElement | null;
-  setDraggedCardRef: (newRef: HTMLDivElement | null) => void;
-  draggedCardCoords: Coordinates;
-  setDraggedCardCoords: (newCoords: Coordinates) => void;
+  setIsOverCentralPanel: (isOver: boolean) => void;
+  startDragging: (
+    event: React.PointerEvent,
+    index: number,
+    offset: Coordinates,
+  ) => void;
+  stopDragging: () => void;
 }
 
 const DragDropContext = createContext<DragDropContextType | undefined>(
@@ -36,7 +32,7 @@ export function DragDropProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useDragDrop() {
-  const context = useContext(DragDropContext);
+  const context = use(DragDropContext);
   if (context === undefined) {
     throw new Error("useDragDrop must be used within a DragDropProvider");
   }

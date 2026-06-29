@@ -1,8 +1,9 @@
 import {
   createContext,
+  use,
   useCallback,
-  useContext,
   useEffect,
+  useMemo,
   useRef,
   type ReactNode,
 } from "react";
@@ -53,41 +54,61 @@ function serializeAnchor(id: AnchorId): string {
 const AnchorsContext = createContext<AnchorContextType | null>(null);
 
 export function AnchorsProvider({ children }: { children: ReactNode }) {
-  const registryRef = useRef<AnchorRegistry>(new Map());
+  const registryRef = useRef<AnchorRegistry | null>(null);
+
+  if (registryRef.current === null) {
+    registryRef.current = new Map();
+  }
+
+  const safeRef = registryRef as React.RefObject<AnchorRegistry>;
 
   const register = useCallback(
     (id: AnchorId, getRect: () => DOMRect | null) => {
       const key = serializeAnchor(id);
-      registryRef.current.set(key, getRect);
+      safeRef.current.set(key, getRect);
     },
-    [],
+    [safeRef],
   );
 
-  const unregister = useCallback((id: AnchorId) => {
-    const key = serializeAnchor(id);
-    registryRef.current.delete(key);
-  }, []);
+  const unregister = useCallback(
+    (id: AnchorId) => {
+      const key = serializeAnchor(id);
+      safeRef.current.delete(key);
+    },
+    [safeRef],
+  );
 
-  const getRect = useCallback((id: AnchorId) => {
-    const key = serializeAnchor(id);
-    const fn = registryRef.current.get(key);
-    return fn ? fn() : null;
-  }, []);
+  const getRect = useCallback(
+    (id: AnchorId) => {
+      const key = serializeAnchor(id);
+      const fn = safeRef.current.get(key);
+      return fn ? fn() : null;
+    },
+    [safeRef],
+  );
 
   const getAll = useCallback(() => {
-    return registryRef;
-  }, []);
+    return safeRef;
+  }, [safeRef]);
+
+  const value = useMemo(
+    () => ({
+      register,
+      unregister,
+      getRect,
+      getAll,
+    }),
+    [register, unregister, getRect, getAll],
+  );
 
   return (
-    <AnchorsContext.Provider value={{ register, unregister, getRect, getAll }}>
-      {children}
-    </AnchorsContext.Provider>
+    <AnchorsContext.Provider value={value}>{children}</AnchorsContext.Provider>
   );
 }
 
-export function useAnchor<T extends HTMLElement>(id: AnchorId) {
+export function useAnchorRef<T extends HTMLElement>(id: AnchorId) {
   const ref = useRef<T>(null);
-  const context = useContext(AnchorsContext);
+  const context = use(AnchorsContext);
 
   useEffect(() => {
     if (!context) return;
@@ -105,7 +126,7 @@ export function useAnchor<T extends HTMLElement>(id: AnchorId) {
 }
 
 export function useAnchors() {
-  const context = useContext(AnchorsContext);
+  const context = use(AnchorsContext);
 
   if (!context) {
     throw new Error("useAnchors must be used within AnchorsProvider");
