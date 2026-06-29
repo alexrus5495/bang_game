@@ -5,10 +5,12 @@ import type { TooltipMessage } from "../../../../types";
 import Tooltip from "../../Tooltip/Tooltip";
 import { useLocalStateStore } from "../../../../stores/localStateStore";
 import React from "react";
+import { useDragDropStore } from "../../../../stores/dragDropStore";
 
 const PlayerTypeIcon = React.memo(({ playerId }: { playerId: string }) => {
   const { position, isVisible, handlersNonPinable } = useTooltip();
   const locale = useSystemLocalization() as Record<string, string>;
+  const isDragging = useDragDropStore((state) => state.isDragging);
 
   const isAI = useLocalStateStore(
     (state) => state.playersController.getPlayerById(playerId)?.isAI,
@@ -28,8 +30,9 @@ const PlayerTypeIcon = React.memo(({ playerId }: { playerId: string }) => {
   return (
     <>
       <div
-        className="h-[100%] aspect-square border rounded-[50%] bg-paperTexture-yellow overflow-hidden cursor-pointer"
+        className="h-[100%] aspect-square border rounded-[50%] bg-paperTexture-yellow overflow-hidden"
         style={{
+          cursor: isDragging ? "default" : "pointer",
           borderWidth: sizeAdaptive(300),
         }}
         {...handlersNonPinable}

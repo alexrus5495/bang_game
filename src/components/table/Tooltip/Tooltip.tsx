@@ -6,6 +6,7 @@ import TooltipMessageLine from "../Tooltip/TooltipMessage";
 import { checkBounds } from "../../../lib/utils/checkBounds";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import RootPortal from "../../shared/RootPortal";
+import { useDragDropStore } from "../../../stores/dragDropStore";
 
 const Tooltip = React.memo(
   ({
@@ -22,6 +23,7 @@ const Tooltip = React.memo(
     isPinned?: boolean;
   }) => {
     const tooltipRef = useRef<HTMLDivElement>(null);
+    const isDragging = useDragDropStore((state) => state.isDragging);
 
     const [coordinates, setCoordinates] = useState<
       Record<string, number | undefined>
@@ -46,6 +48,8 @@ const Tooltip = React.memo(
     useLayoutEffect(() => {
       updateCoordinates();
     }, [updateCoordinates]);
+
+    if (isDragging) return null;
 
     return (
       <RootPortal portalId="inspect_card_tooltip">

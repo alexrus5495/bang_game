@@ -3,10 +3,12 @@ import { useTooltip } from "../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import Tooltip from "../Tooltip/Tooltip";
 import { useLocalStateStore } from "../../../stores/localStateStore";
+import { useDragDropStore } from "../../../stores/dragDropStore";
 
 export default function HandIcon({ playerId }: { playerId: string }) {
   const { position, isVisible, handlersNonPinable } = useTooltip();
   const locale = useSystemLocalization() as Record<string, string>;
+  const isDragging = useDragDropStore((state) => state.isDragging);
 
   const handLength =
     useLocalStateStore((state) =>
@@ -16,7 +18,8 @@ export default function HandIcon({ playerId }: { playerId: string }) {
   return (
     <>
       <div
-        className="h-full aspect-square cursor-pointer"
+        className="h-full aspect-square"
+        style={{ cursor: isDragging ? "default" : "pointer" }}
         {...handlersNonPinable}
       >
         <div

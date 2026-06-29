@@ -1,19 +1,15 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { m, useDragControls, useMotionValue } from "framer-motion";
 import PlayingCard from "../cards/PlayingCard";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
-import { useDragDrop } from "../../contexts/DragDropContext";
 import { useCardsMetaDataState } from "../../stores/hooks/useCardsMetaDataState";
-import { setupDragAndDrop } from "../../pages/table/utils/setupDragAndDrop";
 import { useSocketId } from "../../hooks/useSocketId";
 import RootPortal from "../shared/RootPortal";
-import { useLocalState } from "../../contexts/LocalStateContext";
-import type { CardInitialData } from "../../contexts/LocalStateContext/useCardsOnTheTableState";
+import { useLocalStateStore } from "../../stores/localStateStore";
+import type { CardInitialData } from "../../stores/localStateStore/types";
+import { calculateCardHeight } from "../../lib/utils/calculateCardHeight";
+import { useDragDropStore } from "../../stores/dragDropStore";
+import { useShallow } from "zustand/shallow";
 
 export default function DragContainer({
   tableHeight,
@@ -22,55 +18,149 @@ export default function DragContainer({
   tableHeight: number | null;
   centralPanelRef: React.RefObject<HTMLDivElement>;
 }) {
-  const localState = useLocalState();
+  const players = useLocalStateStore((state) => state.players);
+  const pendingController = useLocalStateStore(
+    (state) => state.pendingController,
+  );
+  const tableController = useLocalStateStore((state) => state.tableController);
+
   const cardsMeta = useCardsMetaDataState()[0];
   const clientId = useSocketId();
-  const visibleCards = localState.visibleCards;
 
-  // Accessing contexts
-  const drag = useDragDrop();
-  const pending = useLocalState().pendingCard;
-  const addCardToTheTable = localState.cardsOnTheTable.addCard;
+  const player = players.find((player) => player.id === clientId);
+  const cards = player?.hand;
 
-  const playerVisibleCards =
-    clientId !== null ? (visibleCards.cards[clientId]?.hand ?? []) : [];
+  const {
+    isDragging,
+    stopDragging,
+    draggedCardIndex,
+    pointerEvent,
+    draggedCardOffset,
+    isOverCentralPanel,
+    setIsOverCentralPanel,
+  } = useDragDropStore(
+    useShallow((state) => ({
+      isDragging: state.isDragging,
+      stopDragging: state.stopDragging,
+      draggedCardIndex: state.draggedCardIndex,
+      pointerEvent: state.pointerEvent,
+      draggedCardOffset: state.draggedCardOffset,
+      isOverCentralPanel: state.isOverCentralPanel,
+      setIsOverCentralPanel: state.setIsOverCentralPanel,
+    })),
+  );
 
-  // Check if the mouse is over central panel
-  const checkIfOverCentralPanel = useCallback(() => {
-    if (!centralPanelRef.current) return false;
-    const centralPanelRect = centralPanelRef.current.getBoundingClientRect();
-    const mouseX = drag.mousePosition.x;
-    const mouseY = drag.mousePosition.y;
+  const dragControls = useDragControls();
+  const motionDivRef = useRef<HTMLDivElement>(null);
 
-    return !(
-      centralPanelRect.right < mouseX ||
-      centralPanelRect.left > mouseX ||
-      centralPanelRect.top > mouseY ||
-      centralPanelRect.bottom < mouseY
-    );
-  }, [drag.mousePosition, centralPanelRef]);
+  //--------------------------
+  // This is a fail safe for the drag system used in Motion.
+  // stopDragging is tied to the onDragStart function, which is only called if
+  // the pointer has been moved on whatever distance (even 1px). If the mouse
+  // hasn't been moved - the drag can't be stopped because it has never started.
+  //
+  // If we initialte drag and then try to end it without moving the pointer,
+  // stopDragging will never be called.
+  // So we have to manually call stopDragging in this scenario.
+  //
+  // 1. This flag is true when the mouse has been moved while dragging
+  const hasDragStarted = useRef(false);
+
+  // 2. Reset the flag on drag end
+  // Removed: this is now handled in onDragEnd
+
+  // 3. Manually call stopDragging in the scenario described above.
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleGlobalPointerUp = () => {
+      if (!hasDragStarted.current) {
+        stopDragging();
+      }
+    };
+
+    window.addEventListener("pointerup", handleGlobalPointerUp);
+    window.addEventListener("pointercancel", handleGlobalPointerUp);
+
+    return () => {
+      window.removeEventListener("pointerup", handleGlobalPointerUp);
+      window.removeEventListener("pointercancel", handleGlobalPointerUp);
+    };
+  }, [isDragging, stopDragging]);
+  //
+  //--------------------------
+  //
 
   const draggedCardId =
-    drag.draggedCardIndex !== null
-      ? (playerVisibleCards[drag.draggedCardIndex] as string)
-      : "";
+    draggedCardIndex !== null && cards ? cards[draggedCardIndex] : "";
 
   const draggedCardMeta = cardsMeta?.deckMeta[draggedCardId as string];
 
-  // Handle drag end over central panel
-  const handleDragEndedOverCentralPanel = useCallback(() => {
-    pending.set(draggedCardId);
+  // Храним событие для запуска драга после появления элемента в DOM
+  const pendingDragEvent = useRef<React.PointerEvent | null>(null);
 
-    const cardRect = drag.draggedCardRef?.getBoundingClientRect();
+  // Сохраняем событие при старте драга
+  useEffect(() => {
+    if (isDragging && pointerEvent) {
+      pendingDragEvent.current = pointerEvent;
+    }
+  }, [isDragging, pointerEvent]);
+
+  // Сбрасываем при завершении драга
+  useEffect(() => {
+    if (!isDragging) {
+      pendingDragEvent.current = null;
+    }
+  }, [isDragging]);
+
+  // Колбэк для ref — вызывается, когда m.div появляется в DOM
+  const handleMotionDivRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      motionDivRef.current = node;
+
+      if (node && pendingDragEvent.current) {
+        const event = pendingDragEvent.current;
+        pendingDragEvent.current = null;
+
+        // Небольшая задержка, чтобы framer-motion полностью инициализировал контроллы
+        setTimeout(() => {
+          dragControls.start(event);
+        }, 0);
+      }
+    },
+    [dragControls],
+  );
+
+  const checkIfOverCentralPanel = useCallback(
+    (mouseX: number, mouseY: number) => {
+      if (!centralPanelRef.current) return false;
+      const centralPanelRect = centralPanelRef.current.getBoundingClientRect();
+
+      return !(
+        centralPanelRect.right < mouseX ||
+        centralPanelRect.left > mouseX ||
+        centralPanelRect.top > mouseY ||
+        centralPanelRect.bottom < mouseY
+      );
+    },
+    [centralPanelRef],
+  );
+
+  // Is called when the card dropped in the playing zone.
+  const handleDragEndedOverCentralPanel = useCallback(() => {
+    pendingController.set(draggedCardId);
+
+    const cardRect = motionDivRef.current?.getBoundingClientRect();
     if (!cardRect) return;
 
     const cardInitialData: CardInitialData = {
       cardId: draggedCardId,
-      initialHeight: cardRect?.height,
-      initialX: cardRect?.x,
-      initialY: cardRect?.y,
+      initialHeight: cardRect.height,
+      initialX: cardRect.x,
+      initialY: cardRect.y,
     };
-    addCardToTheTable(cardInitialData);
+
+    tableController.addCard(cardInitialData);
 
     switch (draggedCardMeta?.effect.target) {
       case "self":
@@ -86,106 +176,90 @@ export default function DragContainer({
     }
 
     console.log(`Player played card ${draggedCardId}`);
-  }, [
-    draggedCardId,
-    drag.draggedCardRef,
-    draggedCardMeta,
-    addCardToTheTable,
-    pending,
-  ]);
+  }, [draggedCardId, draggedCardMeta, pendingController, tableController]);
 
-  //Setup Drag Handlers
-  useEffect(() => {
-    return setupDragAndDrop({
-      isDragging: drag.isDragging,
-      checkIfOverCentralPanel,
-      isOverCentralPanel: drag.isOverCentralPanel,
-      stopDragging: drag.stopDragging,
-      handleDragEndedOverCentralPanel,
-      setMousePosition: drag.setMousePosition,
-      setIsOverCentralPanel: drag.setIsOverCentralPanel,
-    });
-  }, [
-    drag.isDragging,
-    drag.isOverCentralPanel,
-    drag.stopDragging,
-    drag.setMousePosition,
-    drag.setIsOverCentralPanel,
-    checkIfOverCentralPanel,
-    handleDragEndedOverCentralPanel,
-  ]);
+  // ------------------
+  //
+  //
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [coordinates, setCoordinates] = useState<
-    Record<string, number | undefined>
-  >({
-    left: drag.mousePosition.x - drag.draggedCardOffset.x,
-    top: drag.mousePosition.y - drag.draggedCardOffset.y,
-  });
+  //
+  //
+  // ------------------
 
-  const [cardHeight, setCardHeight] = useState<number>(0);
+  // Adjust the card position
+  if (!isDragging) return null;
 
-  //Update card position
-  useEffect(() => {
-    if (containerRef.current) {
-      setCoordinates({
-        left: drag.mousePosition.x - drag.draggedCardOffset.x,
-        top: drag.mousePosition.y - drag.draggedCardOffset.y,
-      });
+  const initialLeft = pointerEvent
+    ? pointerEvent.clientX - draggedCardOffset.x
+    : 0;
+  const initialTop = pointerEvent
+    ? pointerEvent.clientY - draggedCardOffset.y
+    : 0;
 
-      drag.setDraggedCardRef(containerRef.current);
-    }
-  }, [drag]);
-
-  //Update card size
-  useEffect(() => {
-    const calculateCardHeight = () => {
-      if (!tableHeight) return 0;
-      // height get calculated by trailing changes in height of parent elements.
-      // Probably better switching to ref, but will do for now
-      else return tableHeight * 0.4 * 0.8 * 1.2;
-    };
-
-    setCardHeight(calculateCardHeight());
-  }, [tableHeight]);
-
-  // Triggers when the card is fully loaded and sends the signal to the original card
-  // to disappear
-  useLayoutEffect(() => {
-    drag.setIsDraggedCardReady(true);
-  }, [drag]);
+  if (!tableHeight) return;
 
   return (
     <RootPortal portalId={"dragContainer"}>
       <div
-        className="pointer-none w-auto fixed"
-        ref={containerRef}
         style={{
-          height: cardHeight,
+          perspective: 800,
+          position: "fixed",
+          left: initialLeft,
+          top: initialTop,
           zIndex: 999,
-          left: coordinates.left,
-          top: coordinates.top,
         }}
       >
-        {drag.isDragging && (
-          <PlayingCard cardId={draggedCardId} initialIsFaceDown={false} />
-        )}
+        <m.div
+          ref={handleMotionDivRef}
+          drag
+          dragControls={dragControls}
+          dragListener={false} // The drag initiated by ref callback above
+          onDragStart={() => {
+            hasDragStarted.current = true;
+          }}
+          onDrag={(_, info) => {
+            const isOver = checkIfOverCentralPanel(info.point.x, info.point.y);
+            setIsOverCentralPanel(isOver);
 
-        {drag.isDragging && (
+            rotateY.set(Math.max(-15, Math.min(15, info.velocity.x / 200)));
+            rotateX.set(Math.max(-15, Math.min(15, -info.velocity.y / 200)));
+          }}
+          onDragEnd={() => {
+            // Reset the flag directly in the event handler
+            hasDragStarted.current = false;
+
+            if (isOverCentralPanel) {
+              handleDragEndedOverCentralPanel();
+            } else {
+              console.log("Player cancelled drag");
+            }
+            stopDragging();
+          }}
+          className="fixed pointer-events-none w-auto"
+          style={{
+            transformStyle: "preserve-3d",
+            rotateX,
+            rotateY,
+
+            height: calculateCardHeight(tableHeight),
+          }}
+        >
+          <PlayingCard cardId={draggedCardId} initialIsFaceDown={false} />
+
           <div
-            className="bg-black relative h-full w-full"
+            className="bg-black h-full w-full relative"
             style={{
               zIndex: -1,
               top: "-96%",
               right: "-5%",
               opacity: 0.6,
-
               borderRadius: sizeAdaptive(55),
             }}
           ></div>
-        )}
+        </m.div>
       </div>
-      ,
     </RootPortal>
   );
 }

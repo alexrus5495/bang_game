@@ -1,6 +1,5 @@
 import { m } from "motion/react";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
-import { useDragDrop } from "../../../../contexts/DragDropContext";
 import type { PlayingCardMeta } from "../../../../types";
 import PlayingCard from "../../../cards/PlayingCard";
 import InspectIcon from "../InspectIcon";
@@ -8,6 +7,8 @@ import AnimationAnchor from "../../shared/AnimationAnchor";
 import { useCardsMetaDataState } from "../../../../stores/hooks/useCardsMetaDataState";
 import { useMemo, useState } from "react";
 import type { AnchorId } from "../../../../contexts/AnchorsContext";
+import { useDragDropStore } from "../../../../stores/dragDropStore";
+import { useShallow } from "zustand/shallow";
 
 type CardInHandProps = {
   cardId: string;
@@ -20,7 +21,14 @@ export default function CardInHand({
   spacing,
   index,
 }: CardInHandProps) {
-  const { draggedCardIndex, startDragging } = useDragDrop();
+  const { draggedCardIndex, startDragging, isDragging } = useDragDropStore(
+    useShallow((state) => ({
+      draggedCardIndex: state.draggedCardIndex,
+      startDragging: state.startDragging,
+      isDragging: state.isDragging,
+    })),
+  );
+
   const [isHighlighted, setIsHighlighted] = useState(false);
 
   const cardsMeta = useCardsMetaDataState()[0];
@@ -37,6 +45,16 @@ export default function CardInHand({
     const offsetY = event.clientY - cardRect.top;
 
     startDragging(event, cardIndex, { x: offsetX, y: offsetY });
+  };
+
+  const handleMouseEnter = () => {
+    if (isDragging) return;
+    setIsHighlighted(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) return;
+    setIsHighlighted(false);
   };
 
   const isThisCardDragged = draggedCardIndex === index;
@@ -70,8 +88,8 @@ export default function CardInHand({
         },
       }}
       onPointerDown={(e) => handleStartDrag(e, index)}
-      onMouseEnter={() => setIsHighlighted(true)}
-      onMouseLeave={() => setIsHighlighted(false)}
+      onMouseEnter={() => handleMouseEnter()}
+      onMouseLeave={() => handleMouseLeave()}
     >
       <AnimationAnchor id={anchorId} className="w-full h-full absolute" />
 

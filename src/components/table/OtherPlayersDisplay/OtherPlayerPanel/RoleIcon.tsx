@@ -6,9 +6,11 @@ import { getImageComponent } from "../../../../lib/images";
 import type { CardsMetaData, TooltipMessage } from "../../../../types";
 import Tooltip from "../../Tooltip/Tooltip";
 import { useMemo } from "react";
+import { useDragDropStore } from "../../../../stores/dragDropStore";
 
 export default function RoleIcon({ role }: { role: string }) {
   const { position, isVisible, handlersPinable, isPinned } = useTooltip();
+  const isDragging = useDragDropStore((state) => state.isDragging);
   const locale = useSystemLocalization() as Record<string, string>;
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
 
@@ -24,9 +26,10 @@ export default function RoleIcon({ role }: { role: string }) {
   return (
     <>
       <div
-        className="rounded-[50%] bg-paperTexture-yellow cursor-pointer relative z-3"
+        className="rounded-[50%] bg-paperTexture-yellow relative z-3"
         {...handlersPinable}
         style={{
+          cursor: isDragging ? "default" : "pointer",
           borderWidth: sizeAdaptive(300),
           padding: sizeAdaptive(300),
         }}

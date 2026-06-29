@@ -8,7 +8,6 @@ import { useCardsMetaDataState } from "../stores/hooks/useCardsMetaDataState";
 import PlayerArea from "../components/table/PlayerArea";
 import { sizeAdaptive } from "../lib/css/cssFunctions";
 import DragContainer from "../components/table/DragContainer";
-import { DragDropProvider } from "../contexts/DragDropContext";
 import { AnchorsProvider } from "../contexts/AnchorsContext";
 import { useTableSocketHandlers } from "../hooks/useTableSocketHandlers";
 import { EventProcessor } from "../components/table/EventProcessor";
@@ -100,12 +99,10 @@ function TableContent() {
 
 export default function Table() {
   return (
-    <DragDropProvider>
-      <AnchorsProvider>
-        <EventProcessor>
-          <TableContent />
-        </EventProcessor>
-      </AnchorsProvider>
-    </DragDropProvider>
+    <AnchorsProvider>
+      <EventProcessor>
+        <TableContent />
+      </EventProcessor>
+    </AnchorsProvider>
   );
 }

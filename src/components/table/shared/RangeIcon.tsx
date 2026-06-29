@@ -13,6 +13,7 @@ import { defaultWeaponMeta } from "../../../config/defaultWeaponMeta";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/shallow";
+import { useDragDropStore } from "../../../stores/dragDropStore";
 
 type PlayerSlice = {
   char: string;
@@ -51,6 +52,7 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
   } = useTooltip();
   const locale = useSystemLocalization() as Record<string, string>;
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
+  const isDragging = useDragDropStore((state) => state.isDragging);
 
   const { range, tooltipContent } = useMemo(() => {
     const weapon = {
@@ -114,7 +116,8 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
   return (
     <>
       <div
-        className="h-full aspect-square cursor-pointer relative"
+        className="h-full aspect-square relative"
+        style={{ cursor: isDragging ? "default" : "pointer" }}
         {...(hasCardRef(tooltipContent) ? handlersPinable : handlersNonPinable)}
       >
         <div

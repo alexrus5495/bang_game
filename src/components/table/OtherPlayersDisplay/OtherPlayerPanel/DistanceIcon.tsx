@@ -10,10 +10,12 @@ import { useLocalStateStore } from "../../../../stores/localStateStore";
 import { useRotatedPlayerIds } from "../../../../hooks/useRotatedPlayerIds";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/shallow";
+import { useDragDropStore } from "../../../../stores/dragDropStore";
 
 const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
   const { socket } = useSocket();
   const clientId = socket.id!;
+  const isDragging = useDragDropStore((state) => state.isDragging);
 
   const {
     position,
@@ -128,7 +130,8 @@ const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
   return (
     <>
       <div
-        className="h-full aspect-square cursor-pointer relative"
+        className="h-full aspect-square relative"
+        style={{ cursor: isDragging ? "default" : "pointer" }}
         {...(hasCardRef(tooltipContent) ? handlersPinable : handlersNonPinable)}
       >
         <div

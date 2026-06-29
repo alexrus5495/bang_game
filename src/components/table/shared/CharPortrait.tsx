@@ -9,6 +9,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/shallow";
+import { useDragDropStore } from "../../../stores/dragDropStore";
 
 const CharPortrait = React.memo(({ playerId }: { playerId: string }) => {
   const playerData = useStore(
@@ -23,6 +24,8 @@ const CharPortrait = React.memo(({ playerId }: { playerId: string }) => {
       };
     }),
   );
+
+  const isDragging = useDragDropStore((state) => state.isDragging);
 
   const imageElement = useMemo(() => {
     if (!playerData?.char) return null;
@@ -55,8 +58,9 @@ const CharPortrait = React.memo(({ playerId }: { playerId: string }) => {
   return (
     <>
       <div
-        className="h-full aspect-square rounded-[35%] bg-[var(--WHITE)] relative overflow-hidden outline cursor-pointer"
+        className="h-full aspect-square rounded-[35%] bg-[var(--WHITE)] relative overflow-hidden outline"
         style={{
+          cursor: isDragging ? "default" : "pointer",
           borderColor: color,
           borderWidth: sizeAdaptive(180),
           outlineColor: "var(--BLACK)",
