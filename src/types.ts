@@ -1,6 +1,7 @@
 import { BORDER_COLORS, BORDER_TYPES } from "./config/borders.config";
 import type { CARDPACKS } from "./config/cardpacks";
 import type { CARD_DECORATIONS } from "./config/decorations.config";
+import type { ClientPlayer } from "./stores/localStateStore/types";
 
 type Suit = "clubs" | "diamonds" | "hearts" | "spades";
 export type Role = "sheriff" | "deputy" | "outlaw" | "renegade";
@@ -115,40 +116,6 @@ export type Player_WeaponData = {
   range: number;
 };
 
-export type ProcessedPlayerData = {
-  absoluteIndex: number;
-  playerData: Player_PublicData;
-};
-
-export type Player_PublicData = {
-  id: string | undefined;
-  isAI: boolean;
-  nickname: string;
-  color: string;
-  char: string;
-  weapon: Player_WeaponData;
-  role: string | undefined;
-  handLength: number;
-  equipment: string[];
-  isEliminated: boolean;
-  stats: {
-    health: { current: number; max: number };
-    bangCardsPlayed: number;
-    bangCardsPlayedLimit: number;
-  };
-};
-
-export type PlayersPublicData = Player_PublicData[];
-
-export type PublicData = {
-  id: string;
-  deckLength: number;
-  discardPileLength: number;
-  currentPlayer: number;
-  playersPublicData: PlayersPublicData;
-  clientHand: string[];
-};
-
 export type TooltipMessagePart = {
   type: "plainText" | "playingCardRef" | "charCardRef" | "roleCardRef";
   content: string | PlayingCardMeta | CharacterCardMeta | RoleCardMeta;
@@ -164,60 +131,67 @@ export type CardCoords = {
   };
 };
 
-export type Messages = Message[];
-
-export type Message = SystemMessage | PlayerMessage;
-
-export interface PlayerMessage {
+export interface GameEvent {
   id: number;
-  type: "player";
-  author: string;
-  content: string;
+  type: keyof EventType;
+  data: EventType[keyof EventType];
   timestamp: Date;
 }
 
-export interface SystemMessage {
-  id: number;
-  type: "system";
-  template: keyof MessageTemplate;
-  data: MessageTemplate[keyof MessageTemplate];
-  timestamp: Date;
-}
-
-// WARNING: probably will need to sync the type with the server side one.
-export interface MessageTemplate {
-  game_started: null;
-  player_turn_end: { player: MessageData_Player };
-  player_turn_start: { player: MessageData_Player };
-  player_card_drawn: {
-    player: MessageData_Player;
+export interface EventType {
+  GAME_CREATED: { gameId: string; deckSize: number; numberOfSeats: number };
+  INITIALIZATION_STARTED: null;
+  INITIALIZATION_COMPLETED: null;
+  DEALING_CARDS: null;
+  CARDS_DEALT: null;
+  GAME_STARTED: null;
+  PLAYER_ASSIGNED_SLOT: {
+    index: number;
+    playerData: Pick<ClientPlayer, "id" | "nickname" | "color" | "isAI">;
+  };
+  PLAYERS_SHUFFLED: { newOrder: string[] };
+  PLAYER_ASSIGNED_ROLE: { playerId: string; role: string };
+  PLAYER_ASSIGNED_CHAR: {
+    playerId: string;
+    char: string;
+    health: {
+      current: number;
+      max: number;
+    };
+  };
+  PLAYER_TURN_START: { playerId: string };
+  PLAYER_TURN_DRAWING_START: { playerId: string };
+  PLAYER_TURN_DRAWING_END: { playerId: string };
+  PLAYER_TURN_PLAYING_START: { playerId: string };
+  PLAYER_TURN_PLAYING_END: { playerId: string };
+  PLAYER_TURN_DISCARDING_START: { playerId: string };
+  PLAYER_TURN_DISCARDING_END: { playerId: string };
+  PLAYER_TURN_END: { playerId: string };
+  CARD_DRAWN: {
+    playerId: string;
     card: {
-      id: string | null;
+      id: string;
       index: number;
     };
     visibleTo: string[];
   };
-  player_played_card: { player: MessageData_Player; card: MessageData_Card };
+  CARD_DISCARDED: {
+    playerId: string;
+    card: {
+      id: string;
+      index: number;
+    };
+    visibleTo: string[];
+  };
+  player_played_card: { playerId: string; cardId: string };
   player_player_card_against: {
-    player1: MessageData_Player;
-    player2: MessageData_Player;
-    card: string;
+    playerId: string;
+    targetPlayerId: string;
+    cardId: string;
   };
 }
 
-export type AnimationData = MessageTemplate[keyof MessageTemplate];
-
-export type MessageData_Card = {
-  tag: "card";
-  cardId: string;
-};
-
-export type MessageData_Player = {
-  tag: "player";
-  isAI: boolean;
-  nickname: string;
-  id: string;
-};
+export type AnimationData = EventType[keyof EventType];
 
 export type Coordinates = {
   x: number;

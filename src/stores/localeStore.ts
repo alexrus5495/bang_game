@@ -16,23 +16,66 @@ interface LocaleState {
   loadLocalization: (localeCode: LocaleCode) => Promise<void>;
 }
 
+interface LocaleLoaderRegistry {
+  system: () => Promise<{ default: Record<string, string> }>;
+  cards: Record<string, () => Promise<{ default: Record<string, unknown> }>>;
+}
+
+// Static registry containing explicit string literal imports for each locale and card pack.
+// This allows the bundler to successfully apply code-splitting to JSON translation assets.
+const LOCALE_REGISTRY: Record<LocaleCode, LocaleLoaderRegistry> = {
+  enEN: {
+    system: () => import("../locales/enEN/system.json"),
+    cards: {
+      base: () => import("../locales/enEN/cards.base.json"),
+    },
+  },
+};
+
 const loadCardsLocales = async (
   localeCode: LocaleCode,
 ): Promise<CardsLocalizationData> => {
+  const registry = LOCALE_REGISTRY[localeCode];
+  if (!registry) {
+    throw new Error(
+      `[Locale Error]: Static registry entry not found for locale "${localeCode}".`,
+    );
+  }
+
   const cardPacks = await Promise.all(
     CARDPACKS.map(async (pack) => {
-      const cards = await import(`../locales/${localeCode}/cards.${pack}.json`);
+      const loadPackJson = registry.cards[pack];
+
+      if (!loadPackJson) {
+        throw new Error(
+          `[Locale Error]: Missing translation loader for pack "${pack}" in locale "${localeCode}".`,
+        );
+      }
+
+      const cards = await loadPackJson();
       return { [pack]: cards.default };
     }),
   );
+
   return cardPacks.reduce((acc, pack) => ({ ...acc, ...pack }), {});
 };
 
 const loadLocaleFiles = async (
   localeCode: LocaleCode,
 ): Promise<LocalizationData> => {
-  const system = await import(`../locales/${localeCode}/system.json`);
-  const cards = await loadCardsLocales(localeCode);
+  const registry = LOCALE_REGISTRY[localeCode];
+  if (!registry) {
+    throw new Error(
+      `[Locale Error]: Static registry entry not found for locale "${localeCode}".`,
+    );
+  }
+
+  // Load system translation file and cards translation files concurrently using static paths
+  const [system, cards] = await Promise.all([
+    registry.system(),
+    loadCardsLocales(localeCode),
+  ]);
+
   return { system: system.default, cards };
 };
 
