@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Button from "../../shared/Button";
@@ -72,7 +72,7 @@ export default function Join_idForm({
       className="flex flex-col justify-center items-center h-[55%]"
       style={{ gap: sizeAdaptive(20) }}
     >
-      <motion.input
+      <m.input
         type="text"
         value={lobbyId}
         onChange={(e) => updateLobbyId(e.target.value)}
@@ -88,7 +88,7 @@ export default function Join_idForm({
         maxLength={20}
       />
 
-      <motion.input
+      <m.input
         type="text"
         value={playerName}
         onChange={(e) => setPlayerName(e.target.value)}

@@ -72,6 +72,7 @@ export default function LobbyInfo_public({
       >
         <input
           type="text"
+          aria-label={locale["enter_as"]}
           placeholder={`${locale["enter_as"]}...`}
           className="border w-[90%]"
           style={{

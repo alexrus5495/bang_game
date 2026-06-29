@@ -1,61 +1,57 @@
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
 import { useDragDrop } from "../../../../contexts/DragDropContext";
 import type { PlayingCardMeta } from "../../../../types";
 import PlayingCard from "../../../cards/PlayingCard";
 import InspectIcon from "../InspectIcon";
-import { AnimationAnchor } from "../../shared/AnimationAnchor";
+import AnimationAnchor from "../../shared/AnimationAnchor";
 import { useCardsMetaDataState } from "../../../../stores/hooks/useCardsMetaDataState";
+import { useMemo, useState } from "react";
+import type { AnchorId } from "../../../../contexts/AnchorsContext";
 
 type CardInHandProps = {
   cardId: string;
   spacing: number;
   index: number;
-  isHighlighted: boolean;
-  onMouseMove: () => void;
-  onMouseLeave: () => void;
 };
 
 export default function CardInHand({
   cardId,
   spacing,
   index,
-  isHighlighted,
-  onMouseMove,
-  onMouseLeave,
 }: CardInHandProps) {
-  const {
-    draggedCardIndex,
-    isDraggedCardReady,
-    setDraggedCardIndex,
-    setDraggedCardOffset,
-  } = useDragDrop();
+  const { draggedCardIndex, startDragging } = useDragDrop();
+  const [isHighlighted, setIsHighlighted] = useState(false);
 
   const cardsMeta = useCardsMetaDataState()[0];
 
-  const handleStartDrag = (event: React.MouseEvent, cardIndex: number) => {
+  const handleStartDrag = (
+    event: React.PointerEvent<HTMLDivElement>,
+    cardIndex: number,
+  ) => {
     const cardElement = event.currentTarget;
 
-    //Calculate new card offset
+    //Calculate the offset for the proxy card so it renders in the exact same spot as the original
     const cardRect = cardElement.getBoundingClientRect();
     const offsetX = event.clientX - cardRect.left;
     const offsetY = event.clientY - cardRect.top;
 
-    setDraggedCardIndex(cardIndex);
-    setDraggedCardOffset({ x: offsetX, y: offsetY });
+    startDragging(event, cardIndex, { x: offsetX, y: offsetY });
   };
 
+  const isThisCardDragged = draggedCardIndex === index;
+  const anchorId = useMemo<AnchorId>(
+    () => ({ type: "player-hand", index }),
+    [index],
+  );
+
   return (
-    <motion.div
+    <m.div
       key={cardId}
       className="isCard absolute h-full"
       style={{
         zIndex: isHighlighted ? 100 : 20 + index,
-        opacity: 100,
-        visibility:
-          isDraggedCardReady && draggedCardIndex === index
-            ? "hidden"
-            : "visible",
+        visibility: isThisCardDragged ? "hidden" : "visible",
       }}
       initial={false}
       animate={{
@@ -73,14 +69,11 @@ export default function CardInHand({
           ease: "easeInOut",
         },
       }}
-      onMouseMove={onMouseMove}
-      onMouseDown={(e) => handleStartDrag(e, index)}
-      onMouseLeave={onMouseLeave}
+      onPointerDown={(e) => handleStartDrag(e, index)}
+      onMouseEnter={() => setIsHighlighted(true)}
+      onMouseLeave={() => setIsHighlighted(false)}
     >
-      <AnimationAnchor
-        id={{ type: "player-hand", index: index }}
-        className="w-full h-full absolute"
-      />
+      <AnimationAnchor id={anchorId} className="w-full h-full absolute" />
 
       <PlayingCard cardId={cardId} initialIsFaceDown={false} />
 
@@ -101,6 +94,6 @@ export default function CardInHand({
           }}
         ></div>
       )}
-    </motion.div>
+    </m.div>
   );
 }

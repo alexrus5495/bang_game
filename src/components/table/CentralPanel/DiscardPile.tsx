@@ -1,26 +1,26 @@
 import React, { useMemo } from "react";
-import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useTooltip } from "../../../hooks/useTooltip";
-import SkeletonCard from "../../cards/SkeletonCard";
+import { useLocalStateStore } from "../../../stores/localStateStore";
 import type { TooltipMessage } from "../../../types";
-import AnimationAnchor from "../shared/AnimationAnchor";
 import PlayingCard from "../../cards/PlayingCard";
+import SkeletonCard from "../../cards/SkeletonCard";
+import AnimationAnchor from "../shared/AnimationAnchor";
 import Tooltip from "../Tooltip/Tooltip";
 import type { AnchorId } from "../../../contexts/AnchorsContext";
 
-const Deck = React.memo(() => {
-  const deckSize = useLocalStateStore((state) => state.deckCurrentSize);
+const DiscardPile = React.memo(() => {
+  const size = useLocalStateStore().discardCurrentSize;
   const { position, isVisible, handlersNonPinable } = useTooltip();
 
   const skeletonCards = useMemo(() => {
-    if (deckSize <= 1) return null;
+    if (size <= 1) return null;
 
-    return Array.from({ length: deckSize - 1 }, (_, index) => {
+    return Array.from({ length: size - 1 }, (_, index) => {
       if (index % 2 === 0) {
         return (
           <div
             // react-doctor-disable-next-line no-array-index-as-key
-            key={`cardSkeleton-${index}`}
+            key={index}
             className="h-full w-full absolute flex justify-center"
             style={{ top: `-${index / 2.5}%` }}
           >
@@ -30,14 +30,13 @@ const Deck = React.memo(() => {
       }
       return null;
     });
-  }, [deckSize]);
+  }, [size]);
 
-  const tooltipContent = useMemo<TooltipMessage[]>(
-    () => [[{ type: "plainText", content: deckSize.toString() }]],
-    [deckSize],
-  );
+  const tooltipContent: TooltipMessage[] = [
+    [{ type: "plainText", content: size.toString() }],
+  ];
 
-  const anchorId: AnchorId = useMemo(() => ({ type: "deck" }), []);
+  const anchorId: AnchorId = useMemo(() => ({ type: "discard" }), []);
 
   return (
     <>
@@ -45,20 +44,22 @@ const Deck = React.memo(() => {
 
       <div
         className="h-full w-auto absolute flex justify-center"
-        style={{ top: deckSize > 0 ? `-${deckSize / 2.5}%` : "0%" }}
-        {...(deckSize > 0 ? handlersNonPinable : {})}
+        style={{ top: size > 0 ? `-${size / 2.5}%` : "0%" }}
+        {...(size > 0 ? handlersNonPinable : {})}
       >
         <AnimationAnchor id={anchorId} className="h-full w-full absolute" />
+
         <div
           className="h-full w-auto"
-          style={{ opacity: deckSize > 0 ? "100" : "0" }}
+          style={{ opacity: size > 0 ? "100" : "0" }}
         >
           <PlayingCard cardId={null} initialIsFaceDown={true} />
         </div>
       </div>
+
       {isVisible && (
         <Tooltip
-          title={"Deck"}
+          title={"DiscardPile"}
           content={tooltipContent}
           position={position}
           hasCardRef={false}
@@ -68,4 +69,4 @@ const Deck = React.memo(() => {
   );
 });
 
-export default Deck;
+export default DiscardPile;

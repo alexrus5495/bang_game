@@ -1,5 +1,5 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import type { LobbySeat } from "../../../types";
 
@@ -29,18 +29,18 @@ export default function SeatLine({
       >
         {`${index + 1}.`}
       </h3>
-      <motion.div
-        key={index}
+      <m.div
+        key={seat.id}
         className="h-[70%] aspect-square cursor-pointer"
         style={{ background: seat.color, borderWidth: sizeAdaptive(200) }}
         whileTap={{ scale: 0.8 }}
         transition={{ duration: 0.15 }}
-      ></motion.div>
+      ></m.div>
       <div
         className="h-full flex items-center justify-center"
         style={{ gap: sizeAdaptive(50), width: sizeAdaptive(3) }}
       >
-        <motion.button
+        <m.button
           type="button"
           className="h-full cursor-pointer"
           style={{
@@ -53,14 +53,14 @@ export default function SeatLine({
           transition={{ duration: 0.15 }}
         >
           {locale.human}
-        </motion.button>
+        </m.button>
 
         <span
           className="h-[60%] bg-[var(--BLACK)]"
           style={{ width: sizeAdaptive(250) }}
         ></span>
 
-        <motion.button
+        <m.button
           type="button"
           className="h-full cursor-pointer"
           style={{
@@ -73,7 +73,7 @@ export default function SeatLine({
           transition={{ duration: 0.15 }}
         >
           {locale.ai}
-        </motion.button>
+        </m.button>
       </div>
     </div>
   );

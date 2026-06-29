@@ -1,16 +1,17 @@
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { useTooltip } from "../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import type { Player_PublicData } from "../../../types";
 import Tooltip from "../Tooltip/Tooltip";
+import { useLocalStateStore } from "../../../stores/localStateStore";
 
-export default function HandIcon({
-  playerData,
-}: {
-  playerData: Player_PublicData;
-}) {
+export default function HandIcon({ playerId }: { playerId: string }) {
   const { position, isVisible, handlersNonPinable } = useTooltip();
   const locale = useSystemLocalization() as Record<string, string>;
+
+  const handLength =
+    useLocalStateStore((state) =>
+      state.playersController.getPlayerHandLength(playerId),
+    ) ?? 0;
 
   return (
     <>
@@ -19,13 +20,13 @@ export default function HandIcon({
         {...handlersNonPinable}
       >
         <div
-          className="h-full aspect-square border rounded-[50%] bg-[var(--BEIGE)] relative z-1"
+          className="h-full aspect-square border rounded-[50%] bg-paperTexture-yellow relative z-1"
           style={{
             borderWidth: sizeAdaptive(300),
           }}
         >
           <div className="h-full w-full text-center" style={{}}>
-            {playerData.handLength}
+            {handLength}
           </div>
         </div>
         <img
@@ -39,7 +40,7 @@ export default function HandIcon({
 
       {isVisible && (
         <Tooltip
-          title={`${locale["tooltip_handSize"]}: ${playerData.handLength}`}
+          title={`${locale["tooltip_handSize"]}: ${handLength}`}
           content={undefined}
           position={position}
           hasCardRef={false}

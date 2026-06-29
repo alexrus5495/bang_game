@@ -1,4 +1,4 @@
-import { motion, useAnimation } from "motion/react";
+import { m, useAnimation } from "motion/react";
 import { useEffect } from "react";
 
 export default function Logo() {
@@ -25,7 +25,7 @@ export default function Logo() {
 
   return (
     <>
-      <motion.img
+      <m.img
         initial={{ scale: 5, opacity: 0 }}
         animate={shadowControls}
         src="./title_shadow.png"
@@ -38,7 +38,7 @@ export default function Logo() {
           cursor: "pointer",
         }}
       />
-      <motion.img
+      <m.img
         initial={{ scale: 3, opacity: 0 }}
         animate={logoControls}
         onClick={handleClickLogo}

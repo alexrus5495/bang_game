@@ -1,7 +1,7 @@
 import { PLAYER_COLORS } from "../../../config/player.colors";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import type { LobbyConfig, LobbySeat } from "../../../types";
 
 export default function SeatController({
@@ -66,7 +66,7 @@ export default function SeatController({
         className="flex h-full items-center"
         style={{ gap: sizeAdaptive(90) }}
       >
-        <motion.button
+        <m.button
           type="button"
           className="h-[45%] aspect-square"
           style={{
@@ -81,7 +81,7 @@ export default function SeatController({
           onClick={() => decreaseNumberOfPlayers()}
           whileTap={{ scale: 0.8 }}
           transition={{ duration: 0.15 }}
-        ></motion.button>
+        ></m.button>
 
         <div
           className="h-[40%] outline aspect-square text-center"
@@ -94,7 +94,7 @@ export default function SeatController({
           {lobbyConfig.numberOfSeats}
         </div>
 
-        <motion.button
+        <m.button
           type="button"
           className="h-[45%] aspect-square"
           style={{
@@ -109,7 +109,7 @@ export default function SeatController({
           onClick={() => increaseNumberOfPlayers()}
           whileTap={{ scale: 0.8 }}
           transition={{ duration: 0.15 }}
-        ></motion.button>
+        ></m.button>
       </div>
     </div>
   );

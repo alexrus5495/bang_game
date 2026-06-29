@@ -1,15 +1,11 @@
-import { usePublicDataState } from "../../hooks/usePublicDataState";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import Deck from "./CentralPanel/Deck";
 import DeckPlacingMarker from "./CentralPanel/DeckPlacingMarker";
 import CardPlayingArea from "./CentralPanel/CardPlayingArea";
-import { useReadyAfterPaint } from "../../hooks/useReadyAfterPaint";
+import DiscardPile from "./CentralPanel/DiscardPile";
+import React from "react";
 
-export default function CentralPanel({ atReady }: { atReady: () => void }) {
-  const publicData = usePublicDataState()[0];
-
-  useReadyAfterPaint(atReady);
-
+const CentralPanel = React.memo(() => {
   return (
     <div
       className="h-full w-full bg-fabricTexture border flex"
@@ -23,7 +19,7 @@ export default function CentralPanel({ atReady }: { atReady: () => void }) {
         style={{ marginTop: sizeAdaptive(30) }}
       >
         <DeckPlacingMarker variation="a" />
-        <Deck publicData={publicData} />
+        <Deck />
       </div>
 
       <div className="h-[70%] w-[40%]" style={{ marginTop: sizeAdaptive(30) }}>
@@ -35,7 +31,10 @@ export default function CentralPanel({ atReady }: { atReady: () => void }) {
         style={{ marginTop: sizeAdaptive(30) }}
       >
         <DeckPlacingMarker variation="b" />
+        <DiscardPile />
       </div>
     </div>
   );
-}
+});
+
+export default CentralPanel;

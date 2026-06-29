@@ -1,38 +1,21 @@
+import { useRotatedPlayerIds } from "../../../hooks/useRotatedPlayerIds";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import type { ProcessedPlayerData } from "../../../types";
 import OtherPlayerPanel from "./OtherPlayerPanel";
 
-export default function Layout_5({
-  playersData,
-  currentPlayerIndex,
-}: {
-  playersData: ProcessedPlayerData[];
-  currentPlayerIndex: number;
-}) {
+export default function Layout_5() {
+  const ids = useRotatedPlayerIds();
   return (
     <div
       className="flex flex-col w-full h-full justify-start"
       style={{ paddingLeft: sizeAdaptive(80), paddingRight: sizeAdaptive(80) }}
     >
       <div className="w-full h-[33%] flex justify-between">
-        <OtherPlayerPanel
-          playerData={playersData[2].playerData}
-          isCurrent={currentPlayerIndex === playersData[2].absoluteIndex}
-        />
-        <OtherPlayerPanel
-          playerData={playersData[3].playerData}
-          isCurrent={currentPlayerIndex === playersData[3].absoluteIndex}
-        />
+        <OtherPlayerPanel playerId={ids[2]} />
+        <OtherPlayerPanel playerId={ids[3]} />
       </div>
       <div className="w-full h-[33%] flex justify-between">
-        <OtherPlayerPanel
-          playerData={playersData[1].playerData}
-          isCurrent={currentPlayerIndex === playersData[1].absoluteIndex}
-        />
-        <OtherPlayerPanel
-          playerData={playersData[4].playerData}
-          isCurrent={currentPlayerIndex === playersData[4].absoluteIndex}
-        />
+        <OtherPlayerPanel playerId={ids[1]} />
+        <OtherPlayerPanel playerId={ids[4]} />
       </div>
     </div>
   );

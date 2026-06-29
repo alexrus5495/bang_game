@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useSocket } from "../../../hooks/useSocket";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { SocketEvents } from "../../../lib/socketEvents";
 import RoleCard from "../../cards/RoleCard";
 import CharacterCard from "../../cards/CharacterCard";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import CardHighlight from "../shared/CardHighlight";
 import Button from "../../shared/Button";
-import { usePublicDataState } from "../../../stores/hooks/usePublicDataState";
 import RootPortal from "../../shared/RootPortal";
+import { useLocalStateStore } from "../../../stores/localStateStore";
 
 type CharOption = {
   id: string;
@@ -18,12 +18,11 @@ type CharOption = {
 
 type HighlightedOption = "a" | "b" | "none";
 
-export default function CharSelectPrompt() {
+const CharSelectPrompt = React.memo(() => {
   const { socket } = useSocket();
   const locale = useSystemLocalization() as Record<string, string>;
 
   const [role, setRole] = useState<string>("");
-  const [remainingTime, setRemainingTime] = useState<number>(60);
   const [charOptions, setCharOptions] = useState<CharOption[]>([]);
   const [highlightedOption, setHighlightedOption] =
     useState<HighlightedOption>("none");
@@ -32,10 +31,6 @@ export default function CharSelectPrompt() {
   );
 
   useEffect(() => {
-    const onSendTimerUpdate = (data: number) => {
-      setRemainingTime(data);
-    };
-
     const onSendCharOptions = (data: CharOption[]) => {
       setCharOptions(data);
     };
@@ -47,7 +42,6 @@ export default function CharSelectPrompt() {
     socket.emit(SocketEvents.REQUEST_ROLE);
     socket.emit(SocketEvents.REQUEST_CHAR_OPTIONS);
 
-    socket.on(SocketEvents.SEND_TIMER_UPDATE, onSendTimerUpdate);
     socket.on(SocketEvents.SEND_CHAR_OPTIONS, onSendCharOptions);
     socket.on(SocketEvents.SEND_ROLE, onSendRole);
 
@@ -59,16 +53,16 @@ export default function CharSelectPrompt() {
 
   return (
     <RootPortal portalId={"char-select-prompt"}>
-      <div className="w-full h-full bg-black/90 absolute z-3 flex flex-col">
+      <div className="w-full h-full bg-black/90 absolute z-30 flex flex-col">
         <div className="w-full h-[20%] border border-white flex justify-center items-center">
-          <motion.div
+          <m.div
             initial={{ y: "-100%" }}
             animate={{ y: 0 }}
             className="text-stroke-black"
             style={{ fontSize: sizeAdaptive(10), color: "var(--RED)" }}
           >
             {locale["charSelect_title"]}
-          </motion.div>
+          </m.div>
         </div>
 
         <div className="w-full h-[65%] border border-white flex justify-center">
@@ -91,16 +85,7 @@ export default function CharSelectPrompt() {
               </div>
             )}
 
-            <div
-              className="absolute text-center"
-              style={{
-                bottom: "-20%",
-                fontSize: sizeAdaptive(15),
-                color: "var(--WHITE)",
-              }}
-            >
-              {remainingTime}
-            </div>
+            <Timer />
 
             {charOptions.length > 0 && (
               <CharOption
@@ -117,6 +102,36 @@ export default function CharSelectPrompt() {
         </div>
       </div>
     </RootPortal>
+  );
+});
+
+function Timer() {
+  const { socket } = useSocket();
+  const [remainingTime, setRemainingTime] = useState<number>(60);
+
+  useEffect(() => {
+    const onSendTimerUpdate = (data: number) => {
+      setRemainingTime(data);
+    };
+
+    socket.on(SocketEvents.SEND_TIMER_UPDATE, onSendTimerUpdate);
+
+    return () => {
+      socket.off(SocketEvents.SEND_TIMER_UPDATE, onSendTimerUpdate);
+    };
+  }, [socket]);
+
+  return (
+    <div
+      className="absolute text-center"
+      style={{
+        bottom: "-20%",
+        fontSize: sizeAdaptive(15),
+        color: "var(--WHITE)",
+      }}
+    >
+      {remainingTime}
+    </div>
   );
 }
 
@@ -138,14 +153,14 @@ function CharOption({
   onMouseLeave: () => void;
 }) {
   const { socket } = useSocket();
-  const publicData = usePublicDataState()[0];
+  const gameId = useLocalStateStore((state) => state.gameId);
 
   const handleSelectChar = (option: 0 | 1) => {
-    socket.emit(SocketEvents.SELECT_CHAR, publicData?.id, option);
+    socket.emit(SocketEvents.SELECT_CHAR, gameId, option);
   };
 
   return (
-    <motion.div
+    <m.div
       className="h-full absolute z-1"
       initial={{ x: 0 }}
       animate={{
@@ -178,6 +193,8 @@ function CharOption({
       )}
 
       <CharacterCard cardId={charOptionId} />
-    </motion.div>
+    </m.div>
   );
 }
+
+export default CharSelectPrompt;

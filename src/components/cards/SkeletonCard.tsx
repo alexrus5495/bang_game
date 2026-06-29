@@ -1,3 +1,4 @@
+import React from "react";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import CardScaler from "./shared/CardScaler";
 import {
@@ -6,7 +7,7 @@ import {
   CARD_CONTAINER_WIDTH,
 } from "./shared/constants";
 
-export default function SkeletonCard() {
+const SkeletonCard = React.memo(() => {
   return (
     <CardScaler>
       <div
@@ -21,4 +22,6 @@ export default function SkeletonCard() {
       ></div>
     </CardScaler>
   );
-}
+});
+
+export default SkeletonCard;

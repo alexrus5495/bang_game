@@ -1,5 +1,5 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 
 export default function FormCheckboxInput({
   inputName,
@@ -27,7 +27,7 @@ export default function FormCheckboxInput({
       >
         {text}:
       </label>
-      <motion.input
+      <m.input
         type="checkbox"
         name={inputName}
         id={inputName}

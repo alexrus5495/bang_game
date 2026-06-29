@@ -1,4 +1,5 @@
-import { useAnchor, type AnchorId } from "../../../contexts/AnchorsContext";
+import React from "react";
+import { useAnchorRef, type AnchorId } from "../../../contexts/AnchorsContext";
 
 type AnchorProps = {
   id: AnchorId;
@@ -6,8 +7,10 @@ type AnchorProps = {
   style?: React.CSSProperties;
 };
 
-export function AnimationAnchor({ id, className, style }: AnchorProps) {
-  const ref = useAnchor<HTMLDivElement>(id);
+const AnimationAnchor = React.memo(({ id, className, style }: AnchorProps) => {
+  const ref = useAnchorRef<HTMLDivElement>(id);
 
   return <div ref={ref} className={className} style={style}></div>;
-}
+});
+
+export default AnimationAnchor;

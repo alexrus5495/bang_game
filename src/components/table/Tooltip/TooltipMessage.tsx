@@ -1,3 +1,4 @@
+import React from "react";
 import type {
   CharacterCardMeta,
   PlayingCardMeta,
@@ -6,32 +7,40 @@ import type {
 } from "../../../types";
 import TooltipMessageCardRef from "./TooltipMessagePart";
 
-export default function TooltipMessageLine({
-  message,
-}: {
-  message: TooltipMessage;
-}) {
-  return (
-    <>
-      {message.map((part, index) => {
-        if (part.type === "plainText") {
-          return <span key={index}>{part.content as string}</span>;
-        } else {
-          return (
-            <TooltipMessageCardRef
-              meta={
-                part.content as
-                  | PlayingCardMeta
-                  | CharacterCardMeta
-                  | RoleCardMeta
-              }
-              type={part.type}
-              key={index}
-            />
-          );
-        }
-      })}
-      <div></div>
-    </>
-  );
-}
+const TooltipMessageLine = React.memo(
+  ({ message }: { message: TooltipMessage }) => {
+    return (
+      <>
+        {message.map((part, index) => {
+          if (part.type === "plainText") {
+            return (
+              <span
+                // react-doctor-disable-next-line no-array-index-as-key
+                key={index}
+              >
+                {part.content as string}
+              </span>
+            );
+          } else {
+            return (
+              <TooltipMessageCardRef
+                meta={
+                  part.content as
+                    | PlayingCardMeta
+                    | CharacterCardMeta
+                    | RoleCardMeta
+                }
+                type={part.type}
+                // react-doctor-disable-next-line no-array-index-as-key
+                key={index}
+              />
+            );
+          }
+        })}
+        <div></div>
+      </>
+    );
+  },
+);
+
+export default TooltipMessageLine;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import type { LobbyPublicData } from "../../types";
 import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 
 export default function LobbyTitle({
   lobbyData,
@@ -40,7 +40,7 @@ export default function LobbyTitle({
         style={{ fontSize: sizeAdaptive(33), gap: sizeAdaptive(30) }}
       >
         <h3>{lobbyData ? `ID: ${lobbyData.id}` : locale["lobby_noLobby"]}</h3>
-        <motion.button
+        <m.button
           type="button"
           className={`${idCopied ? "" : "cursor-pointer"} w-[8%]`}
           onClick={
@@ -51,7 +51,7 @@ export default function LobbyTitle({
           whileHover={{ scale: idCopied ? 1 : 1.3 }}
         >
           {idCopied ? locale["lobby_copied"] : locale["lobby_copy"]}
-        </motion.button>
+        </m.button>
       </div>
     </div>
   );

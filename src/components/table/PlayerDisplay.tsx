@@ -4,15 +4,23 @@ import CharPortrait from "./shared/CharPortrait";
 import Bullets from "./shared/Bullets";
 import RangeIcon from "./shared/RangeIcon";
 import HandIcon from "./shared/HandIcon";
-import type { Player_PublicData } from "../../types";
+import { useLocalStateStore } from "../../stores/localStateStore";
+import { useStore } from "zustand";
+import { useShallow } from "zustand/shallow";
 
-export default function PlayerDisplay({
-  playerData,
-  role,
-}: {
-  playerData: Player_PublicData;
-  role: string;
-}) {
+export default function PlayerDisplay({ playerId }: { playerId: string }) {
+  const { nickname, role } = useStore(
+    useLocalStateStore,
+    useShallow((state) => {
+      const p = state.playersController.getPlayerById(playerId);
+      if (!p) return { nickname: "", role: "" };
+      return {
+        nickname: p.nickname,
+        role: p.role,
+      };
+    }),
+  );
+
   return (
     <div className="flex h-full w-full items-center">
       <div className="w-full h-[70%] relative">
@@ -33,11 +41,11 @@ export default function PlayerDisplay({
               lineHeight: sizeAdaptive(15),
             }}
           >
-            {playerData.nickname}
+            {nickname}
           </div>
         </div>
 
-        <CharPortrait playerData={playerData} />
+        <CharPortrait playerId={playerId} />
 
         {role && (
           <div
@@ -56,7 +64,7 @@ export default function PlayerDisplay({
             height: sizeAdaptive(20),
           }}
         >
-          <Bullets playerData={playerData} />
+          <Bullets playerId={playerId} />
         </div>
 
         <div
@@ -70,8 +78,8 @@ export default function PlayerDisplay({
             gap: sizeAdaptive(100),
           }}
         >
-          <RangeIcon playerData={playerData} />
-          <HandIcon playerData={playerData} />
+          <RangeIcon playerId={playerId} />
+          <HandIcon playerId={playerId} />
         </div>
       </div>
     </div>

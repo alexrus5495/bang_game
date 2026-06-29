@@ -1,19 +1,37 @@
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import type { Player_PublicData } from "../../../types";
 import CharPortrait from "../shared/CharPortrait";
 import EquipmentCardsPanel from "../shared/EquipmentCardsPanel";
 import InfoIcons from "./OtherPlayerPanel/InfoIcons";
 import RoleIcon from "./OtherPlayerPanel/RoleIcon";
+import React from "react";
+import { useLocalStateStore } from "../../../stores/localStateStore";
+import { useShallow } from "zustand/shallow";
+import { useStore } from "zustand";
 
-export default function OtherPlayerPanel({
-  playerData,
-  isCurrent,
-}: {
-  playerData: Player_PublicData;
-  isCurrent: boolean;
-}) {
+const OtherPlayerPanel = React.memo(({ playerId }: { playerId: string }) => {
   const locale = useSystemLocalization() as Record<string, string>;
+  const currentPlayerId = useStore(
+    useLocalStateStore,
+    (state) => state.turn.playerId,
+  );
+
+  const isCurrent = currentPlayerId === playerId;
+
+  const player = useStore(
+    useLocalStateStore,
+    useShallow((state) => {
+      const p = state.playersController.getPlayerById(playerId);
+      if (!p) return null;
+      return {
+        nickname: p.nickname,
+        isAI: p.isAI,
+        role: p.role,
+      };
+    }),
+  );
+
+  if (!player) return null;
 
   return (
     <div
@@ -35,7 +53,7 @@ export default function OtherPlayerPanel({
     >
       <div className="w-full h-[50%] relative">
         <div
-          className="h-[50%] w-full bg-[var(--WHITE)] absolute flex items-center"
+          className="h-[50%] w-full bg-paperTexture-white absolute flex items-center"
           style={{
             bottom: 0,
             borderBottomRightRadius: sizeAdaptive(35),
@@ -43,7 +61,7 @@ export default function OtherPlayerPanel({
             borderWidth: sizeAdaptive(300),
           }}
         >
-          <InfoIcons playerData={playerData} />
+          <InfoIcons playerId={playerId} />
           <div
             className="h-full w-full"
             style={{
@@ -52,26 +70,26 @@ export default function OtherPlayerPanel({
               lineHeight: sizeAdaptive(24),
             }}
           >
-            {playerData.isAI
-              ? locale[playerData.nickname]
-              : playerData.nickname}
+            {player.isAI ? locale[player.nickname] : player.nickname}
           </div>
         </div>
-        <CharPortrait playerData={playerData} />
+        <CharPortrait playerId={playerId} />
 
-        {playerData.role && (
+        {player.role && (
           <div
             className="h-[50%] aspect-square absolute"
             style={{ bottom: "-15%", left: "13%" }}
           >
-            <RoleIcon role={playerData.role} />
+            <RoleIcon role={player.role} />
           </div>
         )}
       </div>
 
       <div className="w-full h-[50%] flex justify-center items-center">
-        <EquipmentCardsPanel playerData={playerData} />
+        <EquipmentCardsPanel playerId={playerId} />
       </div>
     </div>
   );
-}
+});
+
+export default OtherPlayerPanel;

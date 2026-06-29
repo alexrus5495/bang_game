@@ -1,22 +1,26 @@
 import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
-import type { Player_PublicData, TooltipMessage } from "../../../../types";
+import type { TooltipMessage } from "../../../../types";
 import Tooltip from "../../Tooltip/Tooltip";
+import { useLocalStateStore } from "../../../../stores/localStateStore";
+import React from "react";
 
-export default function PlayerTypeIcon({
-  playerData,
-}: {
-  playerData: Player_PublicData;
-}) {
+const PlayerTypeIcon = React.memo(({ playerId }: { playerId: string }) => {
   const { position, isVisible, handlersNonPinable } = useTooltip();
   const locale = useSystemLocalization() as Record<string, string>;
+
+  const isAI = useLocalStateStore(
+    (state) => state.playersController.getPlayerById(playerId)?.isAI,
+  );
+
+  if (!isAI) return null;
 
   const tooltipContant: TooltipMessage[] = [
     [
       {
         type: "plainText",
-        content: `${playerData.isAI ? locale["tooltip_bot"] : locale["tooltip_human"]}`,
+        content: `${isAI ? locale["tooltip_bot"] : locale["tooltip_human"]}`,
       },
     ],
   ];
@@ -24,16 +28,16 @@ export default function PlayerTypeIcon({
   return (
     <>
       <div
-        className="h-[100%] aspect-square border rounded-[50%] bg-[var(--BEIGE)] overflow-hidden cursor-pointer"
+        className="h-[100%] aspect-square border rounded-[50%] bg-paperTexture-yellow overflow-hidden cursor-pointer"
         style={{
           borderWidth: sizeAdaptive(300),
         }}
         {...handlersNonPinable}
       >
-        {playerData.isAI ? (
-          <img src="./icon-bot.png" draggable={false} />
+        {isAI ? (
+          <img alt="robot icon" src="./icon-bot.png" draggable={false} />
         ) : (
-          <img src="./icon-person.png" draggable={false} />
+          <img alt="person icon" src="./icon-person.png" draggable={false} />
         )}
       </div>
 
@@ -47,4 +51,6 @@ export default function PlayerTypeIcon({
       )}
     </>
   );
-}
+});
+
+export default PlayerTypeIcon;

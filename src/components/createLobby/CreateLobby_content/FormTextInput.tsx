@@ -1,5 +1,5 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 
 export default function FormTextInput({
   inputName,
@@ -31,7 +31,7 @@ export default function FormTextInput({
       >
         {text}:
       </label>
-      <motion.input
+      <m.input
         type="text"
         name={inputName}
         value={state}

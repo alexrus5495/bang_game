@@ -1,54 +1,18 @@
-import { usePublicDataState } from "../../stores/hooks/usePublicDataState";
-import { useSocket } from "../../hooks/useSocket";
-import { processPlayersArray } from "../../lib/gameData/processPlayersArray";
 import Layout_4 from "./OtherPlayersDisplay/Layout_4";
 import Layout_5 from "./OtherPlayersDisplay/Layout_5";
 import Layout_6 from "./OtherPlayersDisplay/Layout_6";
 import Layout_7 from "./OtherPlayersDisplay/Layout_7";
+import { useLocalStateStore } from "../../stores/localStateStore";
 
 export default function OtherPlayersDisplay() {
-  const { socket } = useSocket();
-  const publicData = usePublicDataState()[0];
-
-  if (!publicData) return null;
-
-  const currentPlayerIndex = publicData.currentPlayer;
-
-  const players = processPlayersArray(
-    publicData.playersPublicData,
-    socket.id as string,
-  );
-
-  if (!players) return null;
-
-  const numberOfPlayers = players.length;
+  const numberOfPlayers = useLocalStateStore((state) => state.players.length);
 
   return (
     <div className="w-full h-full">
-      {numberOfPlayers === 4 && (
-        <Layout_4
-          playersData={players}
-          currentPlayerIndex={currentPlayerIndex}
-        />
-      )}
-      {numberOfPlayers === 5 && (
-        <Layout_5
-          playersData={players}
-          currentPlayerIndex={currentPlayerIndex}
-        />
-      )}
-      {numberOfPlayers === 6 && (
-        <Layout_6
-          playersData={players}
-          currentPlayerIndex={currentPlayerIndex}
-        />
-      )}
-      {numberOfPlayers === 7 && (
-        <Layout_7
-          playersData={players}
-          currentPlayerIndex={currentPlayerIndex}
-        />
-      )}
+      {numberOfPlayers === 4 && <Layout_4 />}
+      {numberOfPlayers === 5 && <Layout_5 />}
+      {numberOfPlayers === 6 && <Layout_6 />}
+      {numberOfPlayers === 7 && <Layout_7 />}
     </div>
   );
 }

@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @font-face {
   font-family: "OldTownLT";
   src: url("./assets/fonts/old_town_lt.otf") format("opentype");
@@ -92,8 +103,18 @@
   }
 
   .bg-fabricTexture {
-    background-image: url(./assets/images/core/fabricTexture.jpg);
+    background-image: url(./assets/images/core/fabricTexture_small.jpg);
     background-size: 100%;
+  }
+
+  .bg-paperTexture-yellow {
+    background-image: url(./assets/images/core/paperTexture_yellow.png);
+    background-size: 300%;
+  }
+
+  .bg-paperTexture-white {
+    background-image: url(./assets/images/core/paperTexture_white.jpg);
+    background-size: 250%;
   }
 
   .custom-text-highlighted {

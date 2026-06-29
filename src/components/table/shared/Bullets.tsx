@@ -1,14 +1,33 @@
-import type { Player_PublicData } from "../../../types";
 import { getImageComponent } from "../../../lib/images";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
+import React, { useMemo } from "react";
+import { useStore } from "zustand";
+import { useShallow } from "zustand/shallow";
+import { useLocalStateStore } from "../../../stores/localStateStore";
 
-export default function Bullets({
-  playerData,
-}: {
-  playerData: Player_PublicData;
-}) {
-  const maxHealth = playerData.stats.health.max;
-  const currentHealth = playerData.stats.health.current;
+const Bullets = React.memo(({ playerId }: { playerId: string }) => {
+  const health = useStore(
+    useLocalStateStore,
+    useShallow((state) => state.playersController.getPlayerHealth(playerId)),
+  );
+
+  const maxHealth = health.max;
+  const currentHealth = health.current;
+
+  const imageElementBulletFull = useMemo(() => {
+    return getImageComponent("bullet_full_V", {
+      draggable: false,
+      className: "h-full w-auto",
+    });
+  }, []);
+
+  const imageElementBulletEmpty = useMemo(() => {
+    return getImageComponent("bullet_empty_V", {
+      draggable: false,
+      className: "h-full w-auto",
+    });
+  }, []);
+
   if (!maxHealth) return null;
 
   return (
@@ -20,13 +39,12 @@ export default function Bullets({
           style={{ marginBottom: sizeAdaptive(35) }}
         >
           {index <= currentHealth - 1
-            ? getImageComponent("bullet_full_V", {
-                draggable: false,
-                className: "h-full w-auto",
-              })
-            : getImageComponent("bullet_empty_V", { draggable: false })}
+            ? imageElementBulletFull
+            : imageElementBulletEmpty}
         </div>
       ))}
     </>
   );
-}
+});
+
+export default Bullets;

@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import {
   BUTTON_TRANSITION,
   BUTTON_WHILE_HOVER,
@@ -18,7 +18,7 @@ export default function Button({
   disabled?: boolean;
 }) {
   return (
-    <motion.button
+    <m.button
       type="button"
       className={`${className} ${!disabled ? "cursor-pointer" : ""}`}
       style={style}
@@ -28,6 +28,6 @@ export default function Button({
       disabled={disabled}
     >
       {text}
-    </motion.button>
+    </m.button>
   );
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Button from "../../shared/Button";
 import { useSocket } from "../../../hooks/useSocket";
@@ -59,7 +59,7 @@ export default function Join_passwordForm({
       className="flex flex-col justify-center items-center h-[55%]"
       style={{ gap: sizeAdaptive(20) }}
     >
-      <motion.input
+      <m.input
         type="text"
         value={password}
         onChange={(e) => updatePassword(e.target.value)}

@@ -1,18 +1,13 @@
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
-import type { Player_PublicData } from "../../../../types";
 import Bullets from "../../shared/Bullets";
 import DistanceIcon from "./DistanceIcon";
 import HandIcon from "../../shared/HandIcon";
 import PlayerTypeIcon from "./PlayerTypeIcon";
 import RangeIcon from "../../shared/RangeIcon";
-import { AnimationAnchor } from "../../shared/AnimationAnchor";
+import AnimationAnchor from "../../shared/AnimationAnchor";
+import React from "react";
 
-export default function InfoIcons({
-  playerData,
-}: {
-  playerData: Player_PublicData;
-}) {
-  if (!playerData.id) return null;
+const InfoIcons = React.memo(({ playerId }: { playerId: string }) => {
   return (
     <div
       className="absolute h-full w-[81%] flex"
@@ -28,7 +23,7 @@ export default function InfoIcons({
           gap: sizeAdaptive(300),
         }}
       >
-        <Bullets playerData={playerData} />
+        <Bullets playerId={playerId} />
       </div>
       <div
         className="w-[70%] h-full flex justify-end"
@@ -39,15 +34,17 @@ export default function InfoIcons({
         }}
       >
         <AnimationAnchor
-          id={{ type: "opponent-hand", playerId: playerData.id }}
+          id={{ type: "opponent-hand", playerId: playerId }}
           className="h-full aspect-square absolute"
         />
 
-        <PlayerTypeIcon playerData={playerData} />
-        <RangeIcon playerData={playerData} />
-        <DistanceIcon playerData={playerData} />
-        <HandIcon playerData={playerData} />
+        <PlayerTypeIcon playerId={playerId} />
+        <RangeIcon playerId={playerId} />
+        <DistanceIcon playerId={playerId} />
+        <HandIcon playerId={playerId} />
       </div>
     </div>
   );
-}
+});
+
+export default InfoIcons;

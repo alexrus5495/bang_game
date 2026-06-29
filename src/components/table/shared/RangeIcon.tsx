@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import type {
   CardsMetaData,
-  Player_PublicData,
   PlayingCardMeta,
   TooltipMessage,
 } from "../../../types";
@@ -11,15 +10,37 @@ import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalizati
 import Tooltip from "../Tooltip/Tooltip";
 import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
 import { defaultWeaponMeta } from "../../../config/defaultWeaponMeta";
+import { useLocalStateStore } from "../../../stores/localStateStore";
+import { useStore } from "zustand";
+import { useShallow } from "zustand/shallow";
 
-export default function RangeIcon({
-  playerData,
-}: {
-  playerData: Player_PublicData;
-}) {
-  const [range, setRange] = useState<number | undefined>(undefined);
-  const [tooltipContent, setTooltipContent] = useState<TooltipMessage[]>([]);
+type PlayerSlice = {
+  char: string;
+  weaponCard: string;
+  weaponRange: number;
+  hasScope: boolean;
+};
 
+const RangeIcon = React.memo(({ playerId }: { playerId: string }) => {
+  const player = useStore(
+    useLocalStateStore,
+    useShallow((state) => {
+      const p = state.playersController.getPlayerById(playerId);
+      if (!p) return null;
+      return {
+        char: p.char,
+        weaponCard: p.weapon.card,
+        weaponRange: p.weapon.range,
+        hasScope: p.equipment.some((item) => item.startsWith("scope_")),
+      };
+    }),
+  );
+  if (!player) return null;
+
+  return <RangeIconInner player={player} />;
+});
+
+const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
   const {
     position,
     isVisible,
@@ -31,76 +52,79 @@ export default function RangeIcon({
   const locale = useSystemLocalization() as Record<string, string>;
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
 
-  useEffect(() => {
+  const { range, tooltipContent } = useMemo(() => {
+    const weapon = {
+      card: player.weaponCard,
+      range: player.weaponRange,
+    };
+    const equipment = player.hasScope
+      ? ["scope_scope"] // заглушка для find
+      : [];
+
+    let currentRange = weapon.range;
+
     const newTooltipContent: TooltipMessage[] = [];
 
-    const calculateRange = () => {
-      let range = playerData.weapon.range;
+    // 1. Add base weapon range details
+    newTooltipContent.push([
+      {
+        type: "plainText",
+        content: `+${currentRange} ${locale["tooltip_from"]} `,
+      },
+      {
+        type: "playingCardRef",
+        content:
+          weapon.card === "colt45"
+            ? (defaultWeaponMeta as Omit<
+                PlayingCardMeta,
+                "rankAndSuit" | "cardInstanceId" | "effect" | "_range"
+              >)
+            : cardsMeta.deckMeta[weapon.card],
+      },
+    ]);
 
+    // 2. Check if the player has a Scope equipped
+    const scopeCard = equipment.find((item) => item.startsWith("scope_"));
+
+    if (scopeCard) {
+      currentRange++;
       newTooltipContent.push([
+        { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
+        { type: "playingCardRef", content: cardsMeta.deckMeta[scopeCard] },
+      ]);
+    }
+
+    // 3. Check for Rose Doolan character passive ability
+    if (player!.char === "rose_doolan") {
+      currentRange++;
+      newTooltipContent.push([
+        { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
         {
-          type: "plainText",
-          content: `+${range} ${locale["tooltip_from"]} `,
-        },
-        {
-          type: "playingCardRef",
-          content:
-            playerData.weapon.card === "colt45"
-              ? (defaultWeaponMeta as Omit<
-                  PlayingCardMeta,
-                  "rankAndSuit" | "cardInstanceId" | "effect" | "_range"
-                >)
-              : cardsMeta.deckMeta[playerData.weapon.card],
+          type: "charCardRef",
+          content: cardsMeta.charDeckMeta["rose_doolan"],
         },
       ]);
+    }
 
-      const scopeCard = playerData.equipment.find((item) =>
-        item.startsWith("scope_"),
-      );
-
-      if (scopeCard) {
-        range++;
-
-        newTooltipContent.push([
-          { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
-          { type: "playingCardRef", content: cardsMeta.deckMeta[scopeCard] },
-        ]);
-      }
-
-      if (playerData.char === "rose_doolan") {
-        range++;
-        newTooltipContent.push([
-          { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
-          {
-            type: "charCardRef",
-            content: cardsMeta.charDeckMeta["rose_doolan"],
-          },
-        ]);
-      }
-
-      setRange(range);
-      setTooltipContent(newTooltipContent);
+    return {
+      range: currentRange,
+      tooltipContent: newTooltipContent,
     };
-
-    calculateRange();
-  }, [playerData, locale, cardsMeta]);
-
+  }, [player, locale, cardsMeta]);
   return (
     <>
       <div
-        className="h-full aspect-sqare cursor-pointer"
+        className="h-full aspect-square cursor-pointer relative"
         {...(hasCardRef(tooltipContent) ? handlersPinable : handlersNonPinable)}
       >
         <div
-          className="h-[100%] aspect-square border rounded-[50%] bg-[var(--BEIGE)] relative z-1"
+          className="h-[100%] aspect-square border rounded-[50%] bg-paperTexture-yellow relative z-1"
           style={{
             borderWidth: sizeAdaptive(300),
           }}
         >
-          {range && (
-            <div className="h-full w-full text-center" style={{}}>
-              {range}
-            </div>
+          {range !== undefined && (
+            <div className="h-full w-full text-center">{range}</div>
           )}
         </div>
         <img
@@ -110,7 +134,8 @@ export default function RangeIcon({
           draggable={false}
         />
       </div>
-      {isVisible && tooltipContent && (
+
+      {isVisible && tooltipContent.length > 0 && (
         <Tooltip
           title={`${locale.range} = ${range}`}
           content={tooltipContent}
@@ -121,4 +146,6 @@ export default function RangeIcon({
       )}
     </>
   );
-}
+});
+
+export default RangeIcon;

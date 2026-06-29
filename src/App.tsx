@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./normalize.css";
 import "./App.css";
 import MainMenu from "./pages/mainMenu";
-import { motion, AnimatePresence } from "motion/react";
+import { m, AnimatePresence } from "motion/react";
 import CreateLobby from "./pages/createLobby";
 import { sizeAdaptive } from "./lib/css/cssFunctions";
 import { useSocket } from "./hooks/useSocket";
@@ -55,7 +55,7 @@ export default function App() {
       </div>
       <AnimatePresence mode="wait">
         {currentPage === "mainMenu" && (
-          <motion.div
+          <m.div
             key={"mainMenu"}
             exit={{ translateX: "-100vw" }}
             animate={{ translateX: 0 }}
@@ -64,11 +64,11 @@ export default function App() {
             className="h-[100%] w-[100%] flex items-center justify-center"
           >
             <MainMenu />
-          </motion.div>
+          </m.div>
         )}
 
         {currentPage === "createLobby" && (
-          <motion.div
+          <m.div
             key={"createLobby"}
             className="h-[100%] w-[100%] flex items-center justify-center"
             initial={{ translateX: "100vw" }}
@@ -77,11 +77,11 @@ export default function App() {
             exit={{ translateX: "100vw" }}
           >
             <CreateLobby />
-          </motion.div>
+          </m.div>
         )}
 
         {currentPage === "searchLobby" && (
-          <motion.div
+          <m.div
             key={"searchLobby"}
             className="h-[100%] w-[100%] flex items-center justify-center"
             initial={{ translateX: "100vw" }}
@@ -90,11 +90,11 @@ export default function App() {
             exit={{ translateX: "100vw" }}
           >
             <SearchLobby />
-          </motion.div>
+          </m.div>
         )}
 
         {currentPage === "lobby" && (
-          <motion.div
+          <m.div
             key={"lobby"}
             className="h-[100%] w-[100%] flex items-center justify-center"
             initial={{ translateX: "100vw" }}
@@ -107,11 +107,11 @@ export default function App() {
             }
           >
             <Lobby setExitAnimationType={setExitAnimationType} />
-          </motion.div>
+          </m.div>
         )}
 
         {currentPage === "table" && (
-          <motion.div
+          <m.div
             key={"table"}
             className="h-[100%] w-[100%] flex items-center justify-center"
             initial={{ translateY: "-100vh" }}
@@ -120,7 +120,7 @@ export default function App() {
             exit={{ translateY: "100vh" }}
           >
             <Table />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

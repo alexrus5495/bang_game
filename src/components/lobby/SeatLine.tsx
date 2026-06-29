@@ -39,9 +39,9 @@ export default function SeatLine({
       >
         <div className="h-[60%] aspect-square border">
           {seat.type === "ai" ? (
-            <img src="./icon-bot.png" />
+            <img alt="robot icon" src="./icon-bot.png" />
           ) : (
-            <img src="./icon-person.png" />
+            <img alt="person-icon" src="./icon-person.png" />
           )}
         </div>
         <div style={{ fontSize: sizeAdaptive(40) }}>
@@ -53,10 +53,10 @@ export default function SeatLine({
         </div>
         {isLobbyOwner() && (
           <img
+            alt="sheriff icon"
             className="h-[40%] aspect-square"
             style={{ marginLeft: sizeAdaptive(90) }}
             src="./sheriff_icon.png"
-            alt=""
           />
         )}
       </div>

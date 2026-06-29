@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import MainMenu_navigation_Home from "./MainMenu_navigation/Home";
 import { AnimatePresence } from "motion/react";
 import MainMenu_navigation_Join from "./MainMenu_navigation/Join";
@@ -22,7 +22,7 @@ export default function MainMenu_navigation() {
       >
         <AnimatePresence mode="wait">
           {menuState === "home" && (
-            <motion.div
+            <m.div
               key={"home"}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
@@ -30,11 +30,11 @@ export default function MainMenu_navigation() {
               animate={{ opacity: 1, transition: { duration: 0.3 } }}
             >
               <MainMenu_navigation_Home setMenuState={setMenuState} />
-            </motion.div>
+            </m.div>
           )}
 
           {menuState === "join" && (
-            <motion.div
+            <m.div
               className="h-full w-full"
               key={"join"}
               exit={{ opacity: 0 }}
@@ -43,7 +43,7 @@ export default function MainMenu_navigation() {
               animate={{ opacity: 1, transition: { duration: 0.3 } }}
             >
               <MainMenu_navigation_Join setMenuState={setMenuState} />
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
       </ul>

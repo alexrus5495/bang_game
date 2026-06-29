@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import { useDinamicSpacing } from "../../../../hooks/useDinamicSpacing";
 import SkeletonCard from "../../../cards/SkeletonCard";
-import { AnimationAnchor } from "../../shared/AnimationAnchor";
+import AnimationAnchor from "../../shared/AnimationAnchor";
 import { useCardScale } from "../../../../hooks/useCardScale";
+import type { AnchorId } from "../../../../contexts/AnchorsContext";
 
 export default function LayoutSlots({
   quantity,
@@ -23,7 +24,12 @@ export default function LayoutSlots({
   return (
     <div className="w-full h-full absolute z-0" ref={scaleRef}>
       {Array.from({ length: quantity }, (_, index) => (
-        <Slot key={index} index={index} spacing={spacing} />
+        <Slot
+          // react-doctor-disable-next-line no-array-index-as-key
+          key={index}
+          index={index}
+          spacing={spacing}
+        />
       ))}
     </div>
   );
@@ -35,16 +41,22 @@ type SlotType = {
 };
 
 function Slot({ index, spacing }: SlotType) {
+  const anchorId: AnchorId = useMemo(
+    () => ({
+      type: "player-hand-slot",
+      index,
+    }),
+    [index],
+  );
+
   return (
     <div
       className="w-auto h-full absolute"
+      // react-doctor-disable-next-line no-array-index-as-key
       key={index}
       style={{ left: `${spacing * index}px`, opacity: 0 }}
     >
-      <AnimationAnchor
-        id={{ type: "player-hand-slot", index: index }}
-        className="w-full h-full absolute"
-      />
+      <AnimationAnchor id={anchorId} className="w-full h-full absolute" />
       <SkeletonCard />;
     </div>
   );

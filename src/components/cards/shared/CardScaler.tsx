@@ -1,3 +1,4 @@
+import React from "react";
 import { useCardScale } from "../../../hooks/useCardScale";
 import { CARD_CONTAINER_WIDTH } from "./constants";
 
@@ -5,7 +6,7 @@ type CardScalerProps = {
   children: React.ReactNode;
 };
 
-export default function CardScaler({ children }: CardScalerProps) {
+const CardScaler = React.memo(({ children }: CardScalerProps) => {
   const { ref: scaleRef, scale } = useCardScale();
 
   const cardWidth = CARD_CONTAINER_WIDTH * scale;
@@ -24,4 +25,6 @@ export default function CardScaler({ children }: CardScalerProps) {
       </div>
     </div>
   );
-}
+});
+
+export default CardScaler;

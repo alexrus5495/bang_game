@@ -1,5 +1,7 @@
+import React from "react";
 import { getImageComponent } from "../../../lib/images";
-export default function Bullets({ count }: { count: number }) {
+
+const Bullets = React.memo(({ count }: { count: number }) => {
   return (
     <div
       className="
@@ -18,4 +20,6 @@ export default function Bullets({ count }: { count: number }) {
       ))}
     </div>
   );
-}
+});
+
+export default Bullets;

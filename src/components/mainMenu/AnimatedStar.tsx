@@ -1,4 +1,4 @@
-import { motion, useAnimation } from "motion/react";
+import { m, useAnimation } from "motion/react";
 
 export default function AnimatedStar() {
   const starControls = useAnimation();
@@ -19,7 +19,7 @@ export default function AnimatedStar() {
     starControls.set({ rotate: 40 });
   }
   return (
-    <motion.img
+    <m.img
       initial={{ rotate: 40 }}
       animate={starControls}
       src="./sheriff-star.png"

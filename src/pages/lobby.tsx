@@ -15,6 +15,10 @@ export default function Lobby({
 
   useEffect(() => {
     socket.on(SocketEvents.KICKED_OUT, handleKickedOut);
+
+    return () => {
+      socket.off(SocketEvents.KICKED_OUT, handleKickedOut);
+    };
   });
 
   const handleKickedOut = () => {

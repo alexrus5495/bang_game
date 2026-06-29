@@ -1,3 +1,4 @@
+import React from "react";
 import { getImageComponent } from "../../../lib/images";
 import CardScaler from "./CardScaler";
 import {
@@ -6,7 +7,7 @@ import {
   CARD_CONTAINER_WIDTH,
 } from "./constants";
 
-export default function CardBack() {
+const CardBack = React.memo(() => {
   return (
     <CardScaler>
       <div
@@ -23,4 +24,6 @@ export default function CardBack() {
       </div>
     </CardScaler>
   );
-}
+});
+
+export default CardBack;

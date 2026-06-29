@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { CARD_CONTAINER_BORDER_RADIUS } from "../../cards/shared/constants";
 
@@ -12,7 +12,7 @@ export default function CardHighlight({
   color: string;
 }) {
   return (
-    <motion.div
+    <m.div
       className="h-full w-full absolute"
       initial={{ opacity: 0 }}
       animate={{
@@ -23,6 +23,6 @@ export default function CardHighlight({
       }}
       transition={{ duration: 0.3 }}
       style={{ borderRadius: CARD_CONTAINER_BORDER_RADIUS }}
-    ></motion.div>
+    ></m.div>
   );
 }

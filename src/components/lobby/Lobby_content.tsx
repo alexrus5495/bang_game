@@ -24,28 +24,29 @@ export default function Lobby_content({
   const currentLobbyId = useCurrentLobbyState()[0];
 
   useEffect(() => {
-    socket.emit(SocketEvents.REQUEST_LOBBY_DATA, currentLobbyId);
+    if (!socket) return;
 
-    const handleLobbyUpdate = (data: LobbyPublicData) => {
+    const handleLobbyData = (data: LobbyPublicData) => {
       setLobbyData(data);
     };
 
-    const gameCreatedHandler = () => {
-      console.log("GAME CREATED");
-
+    const handleGameCreated = () => {
       setCurrentPage("table");
     };
 
-    socket.on(SocketEvents.SEND_LOBBY_DATA, (data) => setLobbyData(data));
-    socket.on(SocketEvents.LOBBY_UPDATE, (data) => setLobbyData(data));
-    socket.on(SocketEvents.GAME_CREATED, () => gameCreatedHandler());
+    socket.emit(SocketEvents.REQUEST_LOBBY_DATA, currentLobbyId);
+
+    socket.on(SocketEvents.SEND_LOBBY_DATA, handleLobbyData);
+    socket.on(SocketEvents.LOBBY_UPDATE, handleLobbyData);
+    socket.on(SocketEvents.GAME_CREATED, handleGameCreated);
 
     return () => {
-      socket.emit(SocketEvents.EXIT_LOBBY, lobbyData?.id);
-      socket.off(SocketEvents.LOBBY_UPDATE, handleLobbyUpdate);
-      socket.off(SocketEvents.GAME_CREATED, gameCreatedHandler);
+      socket.emit(SocketEvents.EXIT_LOBBY, currentLobbyId);
+      socket.off(SocketEvents.SEND_LOBBY_DATA, handleLobbyData);
+      socket.off(SocketEvents.LOBBY_UPDATE, handleLobbyData);
+      socket.off(SocketEvents.GAME_CREATED, handleGameCreated);
     };
-  }, [socket, currentLobbyId, lobbyData?.id, setCurrentPage]);
+  }, [socket, currentLobbyId, setCurrentPage]);
 
   const handleExit = () => {
     socket.emit(SocketEvents.EXIT_LOBBY, lobbyData?.id);
@@ -123,7 +124,7 @@ export default function Lobby_content({
             >
               {lobbyData?.seats.map((seat, index) => (
                 <div
-                  key={index}
+                  key={seat.id}
                   className={`w-full h-[14%] border-b flex items-center ${seat.playerId === socket.id ? "bg-blue-100" : ""}`}
                   style={{
                     paddingLeft: sizeAdaptive(30),

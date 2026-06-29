@@ -1,14 +1,9 @@
 import { useLayoutEffect, useRef, useState } from "react";
-import { useCardsOnTheTableContext } from "../../../contexts/CardsOnTheTableContext";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import PlayingCard from "../../cards/PlayingCard";
-import { motion } from "motion/react";
-import CardScaler from "../../cards/shared/CardScaler";
-import {
-  CARD_CONTAINER_HEIGHT,
-  CARD_CONTAINER_WIDTH,
-} from "../../cards/shared/constants";
-import RootPortal from "../../shared/RootPortal";
+import { m } from "motion/react";
+
+import { useLocalStateStore } from "../../../stores/localStateStore";
 
 type FinalPosition = {
   x: number;
@@ -17,7 +12,7 @@ type FinalPosition = {
 };
 
 export default function CardPlayingArea() {
-  const table = useCardsOnTheTableContext().cardsOnTheTable;
+  const table = useLocalStateStore((state) => state.cardsOnTheTable);
   const anchorRef = useRef<HTMLDivElement | null>(null);
   const [final, setFinal] = useState<FinalPosition | null>(null);
 
@@ -55,13 +50,11 @@ export default function CardPlayingArea() {
       </div>
 
       <div className="absolute h-full w-full top-0">
-        <CardAnchor elRef={anchorRef} />
-
         {final &&
           table.map((card, index) => {
             return (
-              <motion.div
-                key={index}
+              <m.div
+                key={card.cardId}
                 ref={(el) => setCardRefs(card.cardId, el)}
                 className="absolute top-1/2 left-1/2"
                 style={{
@@ -85,41 +78,10 @@ export default function CardPlayingArea() {
                 }}
               >
                 <PlayingCard cardId={card.cardId} initialIsFaceDown={false} />
-              </motion.div>
+              </m.div>
             );
           })}
       </div>
     </div>
-  );
-}
-
-function CardAnchor({
-  elRef,
-}: {
-  elRef: React.RefObject<HTMLDivElement | null>;
-}) {
-  return (
-    <RootPortal portalId={"cardPlayingArea_anchor"}>
-      <div
-        className="absolute bottom-1/2 left-1/2 opacity-100 pointer-events-none"
-        ref={elRef}
-        style={{
-          height: sizeAdaptive(4.15),
-          transform: "translate(-50%)",
-        }}
-      >
-        <div className="h-full">
-          <CardScaler>
-            <div
-              className=""
-              style={{
-                height: `${CARD_CONTAINER_HEIGHT}px`,
-                width: `${CARD_CONTAINER_WIDTH}px`,
-              }}
-            ></div>
-          </CardScaler>
-        </div>
-      </div>
-    </RootPortal>
   );
 }

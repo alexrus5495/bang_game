@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import Button from "../../shared/Button";
 import Join_idForm from "./Join_idForm";
 import Join_passwordForm from "./Join_passwordForm";
@@ -29,7 +29,7 @@ export default function MainMenu_navigation_Join({
       </h2>
 
       {currentForm === "idForm" && (
-        <motion.div
+        <m.div
           key={"idForm"}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
@@ -43,11 +43,11 @@ export default function MainMenu_navigation_Join({
             setPlayerName={setPlayerName}
             setCurrentForm={setCurrentForm}
           />
-        </motion.div>
+        </m.div>
       )}
 
       {currentForm === "passwordForm" && (
-        <motion.div
+        <m.div
           key={"passwordForm"}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
@@ -55,7 +55,7 @@ export default function MainMenu_navigation_Join({
           animate={{ opacity: 1, transition: { duration: 0.3 } }}
         >
           <Join_passwordForm lobbyId={lobbyId} playerName={playerName} />
-        </motion.div>
+        </m.div>
       )}
 
       <Button

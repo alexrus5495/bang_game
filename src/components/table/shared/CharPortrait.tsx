@@ -1,46 +1,70 @@
+import React, { useMemo } from "react";
 import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { useTooltip } from "../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../lib/images";
-import type {
-  CardsMetaData,
-  Player_PublicData,
-  TooltipMessage,
-} from "../../../types";
+import type { CardsMetaData, TooltipMessage } from "../../../types";
 import Tooltip from "../Tooltip/Tooltip";
+import { useLocalStateStore } from "../../../stores/localStateStore";
+import { useStore } from "zustand";
+import { useShallow } from "zustand/shallow";
 
-export default function CharPortrait({
-  playerData,
-}: {
-  playerData: Player_PublicData;
-}) {
-  const isEliminated = playerData.isEliminated;
+const CharPortrait = React.memo(({ playerId }: { playerId: string }) => {
+  const playerData = useStore(
+    useLocalStateStore,
+    useShallow((state) => {
+      const p = state.playersController.getPlayerById(playerId);
+      if (!p) return null;
+      return {
+        char: p.char,
+        isEliminated: p.flags.isEliminated,
+        color: p.color,
+      };
+    }),
+  );
+
+  const imageElement = useMemo(() => {
+    if (!playerData?.char) return null;
+    return getImageComponent(playerData.char, {
+      className: "h-full w-full",
+      draggable: false,
+    });
+  }, [playerData?.char]);
+
+  const cardsMeta = (useCardsMetaDataState()[0] as CardsMetaData) ?? {};
   const { position, isVisible, handlersPinable, isPinned } = useTooltip();
   const locale = useSystemLocalization() as Record<string, string>;
-  const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
 
-  const tooltipContent: TooltipMessage[] = [
-    [{ type: "charCardRef", content: cardsMeta.charDeckMeta[playerData.char] }],
-  ];
+  const { char, isEliminated, color } = playerData ?? {
+    char: "",
+    isEliminated: false,
+    color: "",
+  };
+
+  const tooltipContent: TooltipMessage[] = useMemo(
+    () =>
+      cardsMeta.charDeckMeta
+        ? [[{ type: "charCardRef", content: cardsMeta.charDeckMeta[char] }]]
+        : [],
+    [cardsMeta.charDeckMeta, char],
+  );
+
+  if (!playerData) return null;
 
   return (
     <>
       <div
         className="h-full aspect-square rounded-[35%] bg-[var(--WHITE)] relative overflow-hidden outline cursor-pointer"
         style={{
-          borderColor: playerData.color,
+          borderColor: color,
           borderWidth: sizeAdaptive(180),
           outlineColor: "var(--BLACK)",
           outlineWidth: sizeAdaptive(400),
         }}
         {...handlersPinable}
       >
-        {playerData.char &&
-          getImageComponent(playerData.char, {
-            className: "h-full w-full",
-            draggable: false,
-          })}
+        {imageElement}
 
         {isEliminated && (
           <div className="absolute inset-0 bg-[var(--RED)]/60" />
@@ -58,4 +82,6 @@ export default function CharPortrait({
       )}
     </>
   );
-}
+});
+
+export default CharPortrait;

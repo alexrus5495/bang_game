@@ -1,6 +1,10 @@
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../lib/images";
+import { useMemo } from "react";
+
+const rangeSymbols = ["one", "two", "three", "four", "five"];
+const drawRangeSymbols = ["range_hearts", "range_spades_2-9"];
 
 export default function CardSymbolDescription({
   symbol,
@@ -10,11 +14,15 @@ export default function CardSymbolDescription({
   cardIsWeapon: boolean;
 }) {
   const locale = useSystemLocalization() as Record<string, string>;
-  const rangeSymbols = ["one", "two", "three", "four", "five"];
-  const drawRangeSymbols = ["range_hearts", "range_spades_2-9"];
 
   const symbolIsRange = rangeSymbols.some((value) => value === symbol);
   const symbolIsDrawRange = drawRangeSymbols.some((value) => value === symbol);
+  const symbolImageElement = useMemo(() => {
+    return getImageComponent(symbol, {
+      className: "pointer-events-none",
+      style: { height: sizeAdaptive(13) },
+    });
+  }, [symbol]);
 
   return (
     <div
@@ -36,10 +44,7 @@ export default function CardSymbolDescription({
             padding: sizeAdaptive(150),
           }}
         >
-          {getImageComponent(symbol, {
-            className: "pointer-events-none",
-            style: { height: sizeAdaptive(13) },
-          })}
+          {symbolImageElement}
         </div>
       </div>
 

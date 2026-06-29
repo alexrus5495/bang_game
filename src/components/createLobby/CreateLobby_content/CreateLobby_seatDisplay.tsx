@@ -1,7 +1,7 @@
 import type React from "react";
 import type { LobbyConfig } from "../../../types";
 import SeatLine from "./SeatLine";
-import { motion, AnimatePresence } from "motion/react";
+import { m, AnimatePresence } from "motion/react";
 import SeatLine_self from "./SeatLine_self";
 
 export default function CreateLobby_seatDisplay({
@@ -38,8 +38,8 @@ export default function CreateLobby_seatDisplay({
     <div className="h-[85%]">
       <AnimatePresence>
         {lobbyConfig.seats.map((item, index) => (
-          <motion.div
-            key={`lobbyname + ${index}`}
+          <m.div
+            key={`lobbyname + ${item.id}`}
             className="h-[14.3%]"
             animate={{ opacity: 1 }}
             initial={{ opacity: 0 }}
@@ -51,7 +51,7 @@ export default function CreateLobby_seatDisplay({
             ) : (
               <SeatLine seat={item} index={index} setSeatType={setSeatType} />
             )}
-          </motion.div>
+          </m.div>
         ))}
       </AnimatePresence>
     </div>

@@ -1,3 +1,4 @@
+import React from "react";
 import type { CardProps } from "../types";
 import type {
   BorderColor,
@@ -26,7 +27,7 @@ import {
 import { getImageComponent } from "../../../lib/images";
 import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
 
-export default function CardFace({ cardId, cardType }: CardProps) {
+const CardFace = React.memo(({ cardId, cardType }: CardProps) => {
   const cardsMetaData = useCardsMetaDataState()[0];
 
   if (!cardsMetaData) return null;
@@ -87,7 +88,7 @@ export default function CardFace({ cardId, cardType }: CardProps) {
       </CardContent>
     </div>
   );
-}
+});
 
 function SheriffExtraBulletSymbol() {
   return (
@@ -96,3 +97,5 @@ function SheriffExtraBulletSymbol() {
     </div>
   );
 }
+
+export default CardFace;

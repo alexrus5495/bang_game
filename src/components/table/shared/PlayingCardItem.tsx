@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import type { PlayingCardMeta } from "../../../types";
 import PlayingCard from "../../cards/PlayingCard";
 import InspectCardTooltip from "../Tooltip/InspectCardTooltip";
@@ -16,7 +16,7 @@ export default function PlayingCardItem({
   const { isVisible, handlersNonPinable } = useTooltip();
 
   return (
-    <motion.div className="h-full w-fit cursor-pointer" {...handlersNonPinable}>
+    <m.div className="h-full w-fit cursor-pointer" {...handlersNonPinable}>
       <PlayingCard cardId={cardId} initialIsFaceDown={false} />
 
       {isVisible && (
@@ -26,6 +26,6 @@ export default function PlayingCardItem({
           delay={tooltipDelay}
         />
       )}
-    </motion.div>
+    </m.div>
   );
 }

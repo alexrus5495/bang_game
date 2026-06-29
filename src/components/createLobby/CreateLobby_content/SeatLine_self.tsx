@@ -1,5 +1,5 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import type { LobbySeat } from "../../../types";
 
 export default function SeatLine_self({
@@ -24,13 +24,13 @@ export default function SeatLine_self({
       >
         1.
       </h3>
-      <motion.div
+      <m.div
         key={0}
         className="h-[70%] aspect-square cursor-pointer"
         style={{ background: seat.color, borderWidth: sizeAdaptive(200) }}
         whileTap={{ scale: 0.8 }}
         transition={{ duration: 0.15 }}
-      ></motion.div>
+      ></m.div>
       <div
         className="h-full flex items-center justify-center "
         style={{

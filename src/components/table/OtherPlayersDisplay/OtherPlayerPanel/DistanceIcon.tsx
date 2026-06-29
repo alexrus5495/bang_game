@@ -1,30 +1,20 @@
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
-import type {
-  CardsMetaData,
-  Player_PublicData,
-  TooltipMessage,
-} from "../../../../types";
-import { usePublicDataState } from "../../../../stores/hooks/usePublicDataState";
-import { processPlayersArray } from "../../../../lib/gameData/processPlayersArray";
-import { useEffect, useState } from "react";
+import type { CardsMetaData, TooltipMessage } from "../../../../types";
+import React, { useMemo } from "react";
 import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import Tooltip from "../../Tooltip/Tooltip";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { useCardsMetaDataState } from "../../../../stores/hooks/useCardsMetaDataState";
 import { useSocket } from "../../../../hooks/useSocket";
+import { useLocalStateStore } from "../../../../stores/localStateStore";
+import { useRotatedPlayerIds } from "../../../../hooks/useRotatedPlayerIds";
+import { useStore } from "zustand";
+import { useShallow } from "zustand/shallow";
 
-export default function DistanceIcon({
-  playerData,
-}: {
-  playerData: Player_PublicData;
-}) {
-  const publicData = usePublicDataState()[0];
-  const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
+const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
   const { socket } = useSocket();
-  const clientId = socket.id;
+  const clientId = socket.id!;
 
-  const [distance, setDistance] = useState<number | undefined>(undefined);
-  const [tooltipContent, setTooltipContent] = useState<TooltipMessage[]>([]);
   const {
     position,
     isVisible,
@@ -34,51 +24,80 @@ export default function DistanceIcon({
     hasCardRef,
   } = useTooltip();
   const locale = useSystemLocalization() as Record<string, string>;
+  const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
 
-  useEffect(() => {
-    const newTooltipContent: TooltipMessage[] = [];
+  // 1. Get ordered list of players
+  const ids = useRotatedPlayerIds();
 
-    const calculateDistance = () => {
-      if (!publicData?.playersPublicData || !clientId) return;
-
-      const playersArray = processPlayersArray(
-        publicData.playersPublicData,
-        clientId,
-      );
-      if (!playersArray) return;
-
-      //Distance clockwise
-      let distanceA = 0;
-      for (const player of playersArray) {
-        if (player.playerData.id !== playerData.id) {
-          if (!player.playerData.isEliminated) distanceA++;
-        } else break;
+  // 2. Map isEliminated for players
+  const eliminatedMap = useStore(
+    useLocalStateStore,
+    useShallow((state) => {
+      const map: Record<string, boolean> = {};
+      for (const p of state.players) {
+        map[p.id] = p.flags.isEliminated;
       }
+      return map;
+    }),
+  );
 
-      //Distance couter-clockwise
-      let distanceB = 1;
-      for (const player of playersArray) {
-        if (player.playerData.id !== playerData.id) {
-          if (!player.playerData.isEliminated) distanceB++;
-        } else distanceB = 1;
-      }
+  // 3. Get clinet data for bonuses
+  const clientData = useStore(
+    useLocalStateStore,
+    useShallow((state) => {
+      const p = state.players.find((p) => p.id === clientId);
+      if (!p) return null;
+      return { char: p.char, equipment: p.equipment };
+    }),
+  );
 
-      let shortestDistance = Math.min(distanceA, distanceB);
+  // 4. Calculate distance and fill the tooltip
+  const { distance, tooltipContent } = useMemo(() => {
+    if (!ids || !eliminatedMap) {
+      return { distance: undefined, tooltipContent: [] as TooltipMessage[] };
+    }
 
-      newTooltipContent.push([
+    const targetIndex = ids.indexOf(playerId);
+    if (targetIndex === -1 || targetIndex === 0) {
+      return { distance: 0, tooltipContent: [] as TooltipMessage[] };
+    }
+
+    // 1. Count alive players clockwise
+    let clockwise = 0;
+    for (let i = 1; i <= targetIndex; i++) {
+      // Если это не целевой игрок и он мертв — не считаем его
+      if (i !== targetIndex && eliminatedMap[ids[i]]) continue;
+      clockwise++;
+    }
+
+    // 2. Count alive players counterClockwise
+    let counterClockwise = 0;
+    for (let i = ids.length - 1; i >= targetIndex; i--) {
+      // Если это не целевой игрок и он мертв — не считаем его
+      if (i !== targetIndex && eliminatedMap[ids[i]]) continue;
+      counterClockwise++;
+    }
+
+    // 3. Pick the shortest distance
+    let result = Math.min(clockwise, counterClockwise);
+
+    const newTooltipContent: TooltipMessage[] = [
+      [
         {
           type: "plainText",
-          content: `${locale["tooltip_baseDistance"]}: ${shortestDistance}`,
+          content: `${locale["tooltip_baseDistance"]}: ${result}`,
         },
-      ]);
+      ],
+    ];
 
-      const mustangCard = playerData.equipment.find((item) =>
-        item.startsWith("mustang" + "_"),
+    // Check for bonuses
+    if (clientData) {
+      const mustangCard = clientData.equipment.find((item) =>
+        item.startsWith("mustang_"),
       );
 
       if (mustangCard) {
-        shortestDistance++;
-
+        result++;
         newTooltipContent.push([
           { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
           {
@@ -88,9 +107,8 @@ export default function DistanceIcon({
         ]);
       }
 
-      if (playerData.char === "paul_regret") {
-        shortestDistance++;
-
+      if (clientData.char === "paul_regret") {
+        result++;
         newTooltipContent.push([
           { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
           {
@@ -99,27 +117,27 @@ export default function DistanceIcon({
           },
         ]);
       }
+    }
 
-      setDistance(shortestDistance);
-      setTooltipContent(newTooltipContent);
+    return {
+      distance: result,
+      tooltipContent: newTooltipContent,
     };
-
-    calculateDistance();
-  }, [playerData, clientId, publicData, locale, cardsMeta]);
+  }, [ids, eliminatedMap, playerId, clientData, locale, cardsMeta]);
 
   return (
     <>
       <div
-        className="h-full aspect-sqare cursor-pointer"
+        className="h-full aspect-square cursor-pointer relative"
         {...(hasCardRef(tooltipContent) ? handlersPinable : handlersNonPinable)}
       >
         <div
-          className="h-[100%] aspect-square border rounded-[50%] bg-[var(--BEIGE)] relative z-2"
+          className="h-[100%] aspect-square border rounded-[50%] bg-paperTexture-yellow relative z-2"
           style={{
             borderWidth: sizeAdaptive(300),
           }}
         >
-          {distance && (
+          {distance !== undefined && (
             <div className="h-full w-full text-center">{distance}</div>
           )}
         </div>
@@ -131,7 +149,7 @@ export default function DistanceIcon({
         />
       </div>
 
-      {isVisible && tooltipContent && (
+      {isVisible && tooltipContent.length > 0 && (
         <Tooltip
           title={`${locale.distance} = ${distance}`}
           content={tooltipContent}
@@ -142,4 +160,6 @@ export default function DistanceIcon({
       )}
     </>
   );
-}
+});
+
+export default DistanceIcon;

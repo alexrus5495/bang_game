@@ -11,7 +11,7 @@ export default function InspectIcon({
   const { isVisible, handlersNonPinable } = useTooltip();
 
   return (
-    <>
+    <div>
       <div
         className="absolute h-auto aspect-square bg-[var(--BEIGE)] cursor-pointer border flex items-center"
         style={{
@@ -27,13 +27,11 @@ export default function InspectIcon({
         <img src="./icon-eye.png" alt="" style={{ height: sizeAdaptive(50) }} />
       </div>
 
-      {isVisible && (
-        <InspectCardTooltip
-          content={cardMeta}
-          type={"playingCardRef"}
-          delay={0.3}
-        />
-      )}
-    </>
+      <InspectCardTooltip
+        content={cardMeta}
+        type={"playingCardRef"}
+        isVisible={isVisible}
+      />
+    </div>
   );
 }

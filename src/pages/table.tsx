@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../hooks/useSocket";
 import { useCurrentLobbyState } from "../stores/hooks/useCurrentLobbyState";
 import OtherPlayersDisplay from "../components/table/OtherPlayersDisplay";
-import { usePublicDataState } from "../stores/hooks/usePublicDataState";
 import CharSelectPrompt from "../components/table/prompts/CharSelectPrompt";
 import CentralPanel from "../components/table/CentralPanel";
 import { useCardsMetaDataState } from "../stores/hooks/useCardsMetaDataState";
@@ -10,19 +9,18 @@ import PlayerArea from "../components/table/PlayerArea";
 import { sizeAdaptive } from "../lib/css/cssFunctions";
 import DragContainer from "../components/table/DragContainer";
 import { DragDropProvider } from "../contexts/DragDropContext";
-import CurrentTurnDisplay from "../components/table/CurrentTurnDisplay";
 import { AnchorsProvider } from "../contexts/AnchorsContext";
-import { LocalStateProvider } from "../contexts/LocalStateContext";
 import { useTableSocketHandlers } from "../hooks/useTableSocketHandlers";
-import { useInitializeDeckSizes } from "../contexts/LocalStateContext/useInitializeDeckSizes";
 import { EventProcessor } from "../components/table/EventProcessor";
 import { useGameEventsState } from "../stores/hooks/useGameEventsState";
+import DEV_CONTROLLER from "../DEV_CONTROLLER/DEV_CONTROLLER";
+import MainDisplay from "../components/table/MainDisplay";
+import { useLocalStateStore } from "../stores/localStateStore";
 
 function TableContent() {
   const { socket } = useSocket();
   const lobbyId = useCurrentLobbyState()[0];
   const setCardsMeta = useCardsMetaDataState()[1];
-  const [publicData, setPublicData] = usePublicDataState();
   const setGameEvents = useGameEventsState()[1];
 
   //Refs for key elements
@@ -31,32 +29,41 @@ function TableContent() {
 
   const [tableHeight, setTableHeight] = useState<number | null>(null);
 
-  //BUG: Probable cause of the incorrect sizes after changing the viewport size
-  // Update table height
   useEffect(() => {
     if (!tableRef.current) return;
-    setTableHeight(tableRef.current.getBoundingClientRect().height);
-  }, [tableRef]);
+
+    const updateHeight = () => {
+      if (tableRef.current) {
+        setTableHeight(tableRef.current.getBoundingClientRect().height);
+      }
+    };
+
+    updateHeight(); // Initial calculations
+
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
 
   //Setup Socket Events
   useTableSocketHandlers({
     socket,
     lobbyId,
     setCardsMeta,
-    setPublicData,
     setGameEvents,
   });
 
-  useInitializeDeckSizes();
+  const charSelected = useLocalStateStore((state) => {
+    const player = state.players.find((p) => p.id === socket.id);
+    return player ? player.char !== "" : undefined;
+  });
 
-  const player = publicData?.playersPublicData.find(
-    (player) => player.id === socket.id,
-  );
-  const charSelected = player ? player.char !== "" : undefined;
+  if (!socket.id) return null;
 
   return (
     <>
       {!charSelected && <CharSelectPrompt />}
+
+      <DEV_CONTROLLER />
 
       <DragContainer
         tableHeight={tableHeight}
@@ -69,7 +76,7 @@ function TableContent() {
         style={{ height: "min(51vw, 100vh)", width: "min(100vw, 196vh)" }}
       >
         <div className="w-[18%] h-auto absolute top-0 flex justify-center">
-          <CurrentTurnDisplay />
+          <MainDisplay />
         </div>
 
         <div className="w-full h-[60%]" style={{ marginTop: sizeAdaptive(50) }}>
@@ -78,7 +85,7 @@ function TableContent() {
 
         <div
           ref={centralPanelRef}
-          className="h-[35%] w-[40%] absolute top-[22%]"
+          className="h-[35%] w-[43%] absolute top-[26%]"
         >
           <CentralPanel />
         </div>
@@ -93,14 +100,12 @@ function TableContent() {
 
 export default function Table() {
   return (
-    <LocalStateProvider>
-      <DragDropProvider>
-        <AnchorsProvider>
-          <EventProcessor>
-            <TableContent />
-          </EventProcessor>
-        </AnchorsProvider>
-      </DragDropProvider>
-    </LocalStateProvider>
+    <DragDropProvider>
+      <AnchorsProvider>
+        <EventProcessor>
+          <TableContent />
+        </EventProcessor>
+      </AnchorsProvider>
+    </DragDropProvider>
   );
 }

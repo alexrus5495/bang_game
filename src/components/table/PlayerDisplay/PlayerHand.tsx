@@ -1,15 +1,20 @@
-import { useState } from "react";
 import { useResizeObserver } from "../../../hooks/useResizeObserver";
 import CardInHand from "./PlayerHand/CardInHand";
 import { useDinamicSpacing } from "../../../hooks/useDinamicSpacing";
 import LayoutSlots from "./PlayerHand/LayoutSlots";
 import { useCardScale } from "../../../hooks/useCardScale";
-import { useLocalState } from "../../../contexts/LocalStateContext";
+import { useLocalStateStore } from "../../../stores/localStateStore";
+import { useShallow } from "zustand/shallow";
+import { useStore } from "zustand";
 
 export default function PlayerHand({ clientId }: { clientId: string }) {
-  const localState = useLocalState();
-  const visibleCards = localState.visibleCards.cards[clientId]?.hand ?? [];
-  const pending = localState.pendingCard;
+  const pending = useLocalStateStore((state) => state.pendingCardId);
+  const cards = useStore(
+    useLocalStateStore,
+    useShallow(
+      (state) => state.playersController.getPlayerById(clientId)?.hand ?? [],
+    ),
+  );
 
   // Parent container ref, used in dynamic margin calculation
   const { ref: containerRef, width: containerWidth } =
@@ -17,35 +22,24 @@ export default function PlayerHand({ clientId }: { clientId: string }) {
 
   const { ref: scaleRef, scale } = useCardScale();
 
-  // Which card is user currenlty hovering over
-  const [highlightedCard, setHighlightedCard] = useState<number | null>(null);
-
-  const spacing = useDinamicSpacing(
-    visibleCards,
-    containerWidth,
-    pending.id,
-    scale,
-  );
+  const spacing = useDinamicSpacing(cards, containerWidth, pending, scale);
 
   return (
     <div ref={containerRef} className="h-full w-full relative">
       <LayoutSlots
-        quantity={visibleCards ? visibleCards.length + 1 : 1}
+        quantity={cards ? cards.length + 1 : 1}
         containerWidth={containerWidth}
       />
 
       <div className="h-full" ref={scaleRef}>
-        {visibleCards &&
-          visibleCards.map((cardId, index) => {
+        {cards &&
+          cards.map((cardId, index) => {
             return (
               <CardInHand
                 key={cardId}
                 cardId={cardId}
                 spacing={spacing}
                 index={index}
-                isHighlighted={highlightedCard === index}
-                onMouseMove={() => setHighlightedCard(index)}
-                onMouseLeave={() => setHighlightedCard(null)}
               />
             );
           })}

@@ -1,41 +1,36 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import React, { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 function usePortalRoot(portalId: string) {
-  const portalRootRef = useRef<HTMLDivElement>(null);
-
-  if (portalRootRef.current === null && typeof document !== "undefined") {
-    const portalRoot = document.createElement("div");
-    portalRoot.id = portalId;
-    document.body.appendChild(portalRoot);
-
-    portalRootRef.current = portalRoot;
-  }
+  const [portalRoot, setPortalRoot] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const element = document.createElement("div");
+    element.id = portalId;
+    document.body.appendChild(element);
+
+    setPortalRoot(element);
+
     return () => {
-      if (portalRootRef.current) {
-        document.body.removeChild(portalRootRef.current);
-        portalRootRef.current = null;
+      if (document.body.contains(element)) {
+        document.body.removeChild(element);
       }
     };
-  }, []);
+  }, [portalId]);
 
-  return portalRootRef.current;
+  return portalRoot;
 }
 
-export default function RootPortal({
-  children,
-  portalId,
-}: {
-  children: ReactNode;
-  portalId: string;
-}) {
-  const portalRoot = usePortalRoot(portalId);
+const RootPortal = React.memo(
+  ({ children, portalId }: { children: ReactNode; portalId: string }) => {
+    const portalRoot = usePortalRoot(portalId);
 
-  if (!portalRoot) {
-    return null;
-  }
+    if (!portalRoot) {
+      return null;
+    }
 
-  return createPortal(children, portalRoot);
-}
+    return createPortal(children, portalRoot);
+  },
+);
+
+export default RootPortal;
