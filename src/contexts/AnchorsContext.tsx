@@ -15,7 +15,8 @@ export type AnchorId =
   | { type: "opponent-equipment"; playerId: string }
   | { type: "player-hand"; index: number }
   | { type: "player-equipment"; index: number }
-  | { type: "player-hand-slot"; index: number };
+  | { type: "player-hand-slot"; index: number }
+  | { type: "drag-proxy" };
 
 type AnchorRegistry = Map<string, () => DOMRect | null>;
 
@@ -46,6 +47,8 @@ function serializeAnchor(id: AnchorId): string {
       return `player:equipment:${id.index}`;
     case "player-hand-slot":
       return `player:hand:slot:${id.index}`;
+    case "drag-proxy":
+      return "drag:proxy";
     default:
       return assertNever(id);
   }
@@ -106,6 +109,7 @@ export function AnchorsProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// Hook to register the element as an anchor
 export function useAnchorRef<T extends HTMLElement>(id: AnchorId) {
   const ref = useRef<T>(null);
   const context = use(AnchorsContext);
@@ -125,6 +129,7 @@ export function useAnchorRef<T extends HTMLElement>(id: AnchorId) {
   return ref;
 }
 
+// Hook to get the registry
 export function useAnchors() {
   const context = use(AnchorsContext);
 
