@@ -3,10 +3,7 @@ import { useLocalStateStore } from "../../stores/localStateStore";
 import type { EventType } from "../../types";
 
 export default function PLAYER_PLAYING_END() {
-  return (
-    _data: EventType["PLAYER_TURN_PLAYING_END"],
-    stage: StateUpdaterStage,
-  ) => {
+  return (_data: EventType["PLAYER_PLAYING_END"], stage: StateUpdaterStage) => {
     if (stage === "beforeAnimation") {
       const { flowController } = useLocalStateStore.getState();
       flowController.playingEnd();

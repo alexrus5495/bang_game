@@ -4,7 +4,7 @@ import type { EventType } from "../../types";
 
 export default function PLAYER_DISCARDING_START() {
   return (
-    _data: EventType["PLAYER_TURN_DISCARDING_START"],
+    _data: EventType["PLAYER_DISCARDING_START"],
     stage: StateUpdaterStage,
   ) => {
     if (stage === "beforeAnimation") {
