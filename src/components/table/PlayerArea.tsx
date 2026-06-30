@@ -1,12 +1,11 @@
-import { useSocket } from "../../hooks/useSocket";
 import PlayerDisplay from "./PlayerDisplay";
 import PlayerHand from "./PlayerDisplay/PlayerHand";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import EquipmentCardsPanel from "./shared/EquipmentCardsPanel";
 import React from "react";
+import { socket } from "../../lib/socket";
 
 const PlayerArea = React.memo(() => {
-  const { socket } = useSocket();
   if (!socket.id) return null;
 
   return (

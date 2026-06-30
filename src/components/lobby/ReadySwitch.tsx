@@ -1,5 +1,5 @@
-import { useSocket } from "../../hooks/useSocket";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
+import { socket } from "../../lib/socket";
 import { SocketEvents } from "../../lib/socketEvents";
 import type { LobbyPublicData, LobbySeat } from "../../types";
 
@@ -10,8 +10,6 @@ export default function ReadySwitch({
   lobbyData: LobbyPublicData;
   seat: LobbySeat;
 }) {
-  const { socket } = useSocket();
-
   const handleToggleReady = (seatId: number) => {
     if (lobbyData) socket.emit(SocketEvents.TOGGLE_READY, lobbyData.id, seatId);
   };

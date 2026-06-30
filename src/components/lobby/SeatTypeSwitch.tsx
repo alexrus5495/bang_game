@@ -1,8 +1,8 @@
-import { useSocket } from "../../hooks/useSocket";
 import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import { SocketEvents } from "../../lib/socketEvents";
 import type { LobbySeat } from "../../types";
+import { socket } from "../../lib/socket";
 
 export default function SeatTypeSwitch({
   seat,
@@ -12,7 +12,6 @@ export default function SeatTypeSwitch({
   lobbyId: string;
 }) {
   const locale = useSystemLocalization() as Record<string, string>;
-  const { socket } = useSocket();
 
   const toggleSeatType = () => {
     socket.emit(SocketEvents.TOGGLE_SEAT_TYPE, seat.id, lobbyId);

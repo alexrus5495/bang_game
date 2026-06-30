@@ -1,11 +1,9 @@
 import { useStore } from "zustand";
-import { useSocket } from "./useSocket";
 import { useShallow } from "zustand/shallow";
 import { useLocalStateStore } from "../stores/localStateStore";
+import { socket } from "../lib/socket";
 
 export function useRotatedPlayerIds() {
-  const { socket } = useSocket();
-
   const ids = useStore(
     useLocalStateStore,
     useShallow((state) =>

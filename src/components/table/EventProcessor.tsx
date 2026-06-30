@@ -33,8 +33,10 @@ export function EventProcessor({ children }: { children: React.ReactNode }) {
           if (!nextEvent) break;
 
           updateLocalState(nextEvent, "beforeAnimation");
+
           // react-doctor-disable-next-line async-await-in-loop
           await playAnimation(nextEvent);
+
           updateLocalState(nextEvent, "afterAnimation");
 
           lastProcessedIndexRef.current = nextIndex;

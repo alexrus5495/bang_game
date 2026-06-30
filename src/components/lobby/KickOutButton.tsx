@@ -2,9 +2,9 @@ import { useState } from "react";
 import Button from "../shared/Button";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import type { LobbyPublicData, LobbySeat } from "../../types";
-import { useSocket } from "../../hooks/useSocket";
 import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { SocketEvents } from "../../lib/socketEvents";
+import { socket } from "../../lib/socket";
 
 export default function KickOutButton({
   lobbyData,
@@ -17,7 +17,6 @@ export default function KickOutButton({
 }) {
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const locale = useSystemLocalization() as Record<string, string>;
-  const { socket } = useSocket();
 
   const handleKickOutPlayer = (seatId: number) => {
     socket.emit(SocketEvents.KICK_OUT_PLAYER, lobbyData.id, seatId);

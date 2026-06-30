@@ -3,12 +3,12 @@ import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization"
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import Button from "../shared/Button";
 import type { LobbyPublicData } from "../../types";
-import { useSocket } from "../../hooks/useSocket";
 import { useCurrentLobbyState } from "../../stores/hooks/useCurrentLobbyState";
 import SeatLine from "./SeatLine";
 import LobbyTitle from "./LobbyTitle";
 import { SocketEvents } from "../../lib/socketEvents";
 import { useCurrentPageState } from "../../stores/hooks/useCurrentPageState";
+import { socket } from "../../lib/socket";
 
 export default function Lobby_content({
   setExitAnimationType,
@@ -18,7 +18,6 @@ export default function Lobby_content({
   const locale = useSystemLocalization() as Record<string, string>;
   const [lobbyData, setLobbyData] = useState<LobbyPublicData | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
-  const { socket } = useSocket();
 
   const setCurrentPage = useCurrentPageState()[1];
   const currentLobbyId = useCurrentLobbyState()[0];

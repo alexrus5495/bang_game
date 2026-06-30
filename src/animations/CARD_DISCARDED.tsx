@@ -1,4 +1,4 @@
-import { useSocket } from "../hooks/useSocket";
+import { socket } from "../lib/socket";
 import type { EventType } from "../types";
 import ClientCardDiscarded from "./CARD_DISCARDED/ClientCardDiscarded";
 import OpponentCardDiscarded from "./CARD_DISCARDED/OpponentCardDiscarded";
@@ -11,7 +11,6 @@ export default function CARD_DISCARDED({
   onComplete: () => void;
   animationId: string;
 }) {
-  const { socket } = useSocket();
   const playerIsClient = data.playerId === socket.id;
 
   return (

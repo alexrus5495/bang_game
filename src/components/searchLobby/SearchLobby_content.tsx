@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
-import { useSocket } from "../../hooks/useSocket";
 import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import Button from "../shared/Button";
 import SearchLobby_lobbyTable from "./SearchLobby_content/SearchLobby_lobbyTable";
@@ -8,6 +7,7 @@ import type { LobbyPublicData } from "../../types";
 import SearchLobby_lobbyDetails from "./SearchLobby_content/SearchLobby_lobbyDetails";
 import { SocketEvents } from "../../lib/socketEvents";
 import { useCurrentPageState } from "../../stores/hooks/useCurrentPageState";
+import { socket } from "../../lib/socket";
 
 export default function SearchLobby_content() {
   const locale = useSystemLocalization() as Record<string, string>;
@@ -15,7 +15,6 @@ export default function SearchLobby_content() {
   const [selectedLobby, setSelectedLobby] = useState<string | null>(null);
   const [playerName, setPlayerName] = useState<string>("");
   const setCurrentPage = useCurrentPageState()[1];
-  const { socket } = useSocket();
 
   useEffect(() => {
     socket.emit(SocketEvents.SUBSCRIBE_LOBBIES);
@@ -31,7 +30,7 @@ export default function SearchLobby_content() {
       socket.emit(SocketEvents.UNSUBSCRIBE_LOBBIES);
       socket.off(SocketEvents.LOBBY_UPDATE, handler);
     };
-  }, [socket]);
+  }, []);
 
   return (
     <>

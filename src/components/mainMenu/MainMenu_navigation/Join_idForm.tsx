@@ -2,11 +2,11 @@ import { m } from "motion/react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Button from "../../shared/Button";
-import { useSocket } from "../../../hooks/useSocket";
 import { SocketEvents } from "../../../lib/socketEvents";
 import { useState } from "react";
 import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
 import { useCurrentLobbyState } from "../../../stores/hooks/useCurrentLobbyState";
+import { socket } from "../../../lib/socket";
 
 export default function Join_idForm({
   lobbyId,
@@ -23,7 +23,6 @@ export default function Join_idForm({
 }) {
   const locale = useSystemLocalization() as Record<string, string>;
   const [showNoLobbyMsg, setShowNoLobbyMsg] = useState<boolean>(false);
-  const { socket } = useSocket();
   const setCurrentPage = useCurrentPageState()[1];
   const setCurrentLobby = useCurrentLobbyState()[1];
 

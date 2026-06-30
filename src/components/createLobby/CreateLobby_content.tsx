@@ -5,12 +5,12 @@ import Button from "../shared/Button";
 import SeatController from "./CreateLobby_content/SeatController";
 import CreateLobby_form from "./CreateLobby_content/CreateLobby_form";
 import CreateLobby_seatDisplay from "./CreateLobby_content/CreateLobby_seatDisplay";
-import { useSocket } from "../../hooks/useSocket";
 import type { LobbyConfig } from "../../types";
 import { blankLobbyConfig } from "../../config/blankLobby.config";
 import { SocketEvents } from "../../lib/socketEvents";
 import { useCurrentPageState } from "../../stores/hooks/useCurrentPageState";
 import { useCurrentLobbyState } from "../../stores/hooks/useCurrentLobbyState";
+import { socket } from "../../lib/socket";
 
 export default function CreateLobby_content() {
   const locale = useSystemLocalization() as Record<string, string>;
@@ -20,7 +20,6 @@ export default function CreateLobby_content() {
   }));
   const setCurrentPage = useCurrentPageState()[1];
   const setCurrentLobby = useCurrentLobbyState()[1];
-  const { socket } = useSocket();
 
   const isFormReady =
     lobbyConfig.lobbyName.length !== 0 &&

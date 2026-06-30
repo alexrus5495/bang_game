@@ -35,7 +35,7 @@ const PlayingCard = React.memo(
             rotateY: isFaceDown ? 180 : 0,
           }}
           transition={{
-            duration: 0.4,
+            duration: 0.5,
           }}
           style={{ transformStyle: "preserve-3d" }}
         >

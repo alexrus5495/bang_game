@@ -3,11 +3,11 @@ import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalizati
 import Button from "../../shared/Button";
 import { useState } from "react";
 import FormTextInput from "../../createLobby/CreateLobby_content/FormTextInput";
-import { useSocket } from "../../../hooks/useSocket";
 import type { LobbyPublicData } from "../../../types";
 import { SocketEvents } from "../../../lib/socketEvents";
 import { useCurrentLobbyState } from "../../../stores/hooks/useCurrentLobbyState";
 import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
+import { socket } from "../../../lib/socket";
 
 export default function LobbyInfo_private({
   selectedLobbyData,
@@ -21,7 +21,6 @@ export default function LobbyInfo_private({
   const [showWrongPasswordMsg, setShowWrongPasswordMsg] =
     useState<boolean>(false);
 
-  const { socket } = useSocket();
   const setCurrentLobby = useCurrentLobbyState()[1];
   const setCurrentPage = useCurrentPageState()[1];
 

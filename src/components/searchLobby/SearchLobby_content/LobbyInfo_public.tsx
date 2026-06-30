@@ -2,10 +2,10 @@ import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import type { LobbyPublicData, LobbySeat } from "../../../types";
 import Button from "../../shared/Button";
-import { useSocket } from "../../../hooks/useSocket";
 import { SocketEvents } from "../../../lib/socketEvents";
 import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
 import { useCurrentLobbyState } from "../../../stores/hooks/useCurrentLobbyState";
+import { socket } from "../../../lib/socket";
 
 export default function LobbyInfo_public({
   selectedLobbyData,
@@ -17,7 +17,6 @@ export default function LobbyInfo_public({
   setPlayerName: (newName: string) => void;
 }) {
   const locale = useSystemLocalization() as Record<string, string>;
-  const { socket } = useSocket();
   const setCurrentPage = useCurrentPageState()[1];
   const setCurrentLobby = useCurrentLobbyState()[1];
 

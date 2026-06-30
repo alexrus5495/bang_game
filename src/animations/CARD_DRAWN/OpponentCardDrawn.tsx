@@ -17,13 +17,35 @@ export default function OpponentCardDrawn({
     playerId: data.playerId,
   });
 
-  if (!from || !to) return null;
+  if (!from || !to) {
+    // Safely defer onComplete to avoid triggering state updates during render
+    setTimeout(onComplete, 0);
+    return null;
+  }
 
   return (
     <m.div
-      initial={{ x: from.x, y: from.y, height: from.height }}
-      animate={{ x: to.x, y: to.y, height: to.height }}
-      transition={{ duration: 0.2 }}
+      style={{
+        position: "fixed",
+        left: 0,
+        top: 0,
+        width: from.width,
+      }}
+      initial={{
+        x: from.left,
+        y: from.top,
+        height: from.height,
+      }}
+      animate={{
+        x: to.left,
+        y: to.top,
+        height: to.height,
+      }}
+      transition={{
+        type: "tween",
+        ease: "linear",
+        duration: 0.18,
+      }}
       onAnimationComplete={onComplete}
     >
       <PlayingCard cardId={null} initialIsFaceDown={true} />

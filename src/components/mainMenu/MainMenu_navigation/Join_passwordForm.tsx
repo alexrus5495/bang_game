@@ -3,10 +3,10 @@ import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { m } from "motion/react";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Button from "../../shared/Button";
-import { useSocket } from "../../../hooks/useSocket";
 import { SocketEvents } from "../../../lib/socketEvents";
 import { useCurrentLobbyState } from "../../../stores/hooks/useCurrentLobbyState";
 import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
+import { socket } from "../../../lib/socket";
 
 export default function Join_passwordForm({
   lobbyId,
@@ -21,7 +21,6 @@ export default function Join_passwordForm({
   const setCurrentLobby = useCurrentLobbyState()[1];
   const setCurrentPage = useCurrentPageState()[1];
 
-  const { socket } = useSocket();
   const locale = useSystemLocalization() as Record<string, string>;
 
   const isFormReady = password.length > 0 && password.length <= 15;

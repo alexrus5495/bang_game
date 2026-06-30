@@ -24,7 +24,7 @@ export default function ClientCardDrawn({
       className="z-0"
       initial={{ x: from.x, y: from.y, height: from.height }}
       animate={{ x: to.x, y: to.y, height: to.height }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      transition={{ duration: 0.6, ease: "easeInOut" }}
       onAnimationComplete={onComplete}
     >
       <PlayingCard

@@ -7,10 +7,9 @@ import React from "react";
 import CurrentPlayerName from "./MainDisplay/CurrentPlayerName";
 import PhaseDisplay from "./MainDisplay/PhaseDisplay";
 import EndTurnButton from "./MainDisplay/EndTurnButton";
-import { useSocket } from "../../hooks/useSocket";
+import { socket } from "../../lib/socket";
 
 const MainDisplay = React.memo(() => {
-  const { socket } = useSocket();
   const curentPlayerId = useLocalStateStore(
     (state) => state.turn.playerId ?? state.turn.previousPlayerId,
   );

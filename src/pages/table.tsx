@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useSocket } from "../hooks/useSocket";
 import { useCurrentLobbyState } from "../stores/hooks/useCurrentLobbyState";
 import OtherPlayersDisplay from "../components/table/OtherPlayersDisplay";
 import CharSelectPrompt from "../components/table/prompts/CharSelectPrompt";
@@ -15,9 +14,9 @@ import { useGameEventsState } from "../stores/hooks/useGameEventsState";
 import DEV_CONTROLLER from "../DEV_CONTROLLER/DEV_CONTROLLER";
 import MainDisplay from "../components/table/MainDisplay";
 import { useLocalStateStore } from "../stores/localStateStore";
+import { socket } from "../lib/socket";
 
 function TableContent() {
-  const { socket } = useSocket();
   const lobbyId = useCurrentLobbyState()[0];
   const setCardsMeta = useCardsMetaDataState()[1];
   const setGameEvents = useGameEventsState()[1];

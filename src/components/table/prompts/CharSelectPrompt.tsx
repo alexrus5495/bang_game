@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSocket } from "../../../hooks/useSocket";
 import { m } from "motion/react";
 import { SocketEvents } from "../../../lib/socketEvents";
 import RoleCard from "../../cards/RoleCard";
@@ -10,6 +9,7 @@ import CardHighlight from "../shared/CardHighlight";
 import Button from "../../shared/Button";
 import RootPortal from "../../shared/RootPortal";
 import { useLocalStateStore } from "../../../stores/localStateStore";
+import { socket } from "../../../lib/socket";
 
 type CharOption = {
   id: string;
@@ -19,7 +19,6 @@ type CharOption = {
 type HighlightedOption = "a" | "b" | "none";
 
 const CharSelectPrompt = React.memo(() => {
-  const { socket } = useSocket();
   const locale = useSystemLocalization() as Record<string, string>;
 
   const [role, setRole] = useState<string>("");
@@ -49,12 +48,12 @@ const CharSelectPrompt = React.memo(() => {
       socket.off(SocketEvents.SEND_CHAR_OPTIONS, onSendCharOptions);
       socket.off(SocketEvents.SEND_ROLE, onSendRole);
     };
-  }, [socket]);
+  }, []);
 
   return (
     <RootPortal portalId={"char-select-prompt"}>
       <div className="w-full h-full bg-black/90 absolute z-30 flex flex-col">
-        <div className="w-full h-[20%] border border-white flex justify-center items-center">
+        <div className="w-full h-[20%] border flex justify-center items-center">
           <m.div
             initial={{ y: "-100%" }}
             animate={{ y: 0 }}
@@ -65,8 +64,8 @@ const CharSelectPrompt = React.memo(() => {
           </m.div>
         </div>
 
-        <div className="w-full h-[65%] border border-white flex justify-center">
-          <div className="border border-white h-[70%] flex justify-center relative">
+        <div className="w-full h-[65%] border flex justify-center">
+          <div className="border h-[70%] flex justify-center relative">
             {charOptions.length > 0 && (
               <CharOption
                 isHighlighted={highlightedOption === "a"}
@@ -106,7 +105,6 @@ const CharSelectPrompt = React.memo(() => {
 });
 
 function Timer() {
-  const { socket } = useSocket();
   const [remainingTime, setRemainingTime] = useState<number>(60);
 
   useEffect(() => {
@@ -119,7 +117,7 @@ function Timer() {
     return () => {
       socket.off(SocketEvents.SEND_TIMER_UPDATE, onSendTimerUpdate);
     };
-  }, [socket]);
+  }, []);
 
   return (
     <div
@@ -152,7 +150,6 @@ function CharOption({
   onMouseEnter: () => void;
   onMouseLeave: () => void;
 }) {
-  const { socket } = useSocket();
   const gameId = useLocalStateStore((state) => state.gameId);
 
   const handleSelectChar = (option: 0 | 1) => {

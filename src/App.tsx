@@ -14,10 +14,9 @@ import { SocketEvents } from "./lib/socketEvents";
 import { useLoadLocalization } from "./stores/hooks/useLoadLocalization";
 
 export default function App() {
-  const { isConnected, socketId } = useSocket();
+  const { isConnected, socketId, socket } = useSocket();
   const [currentPage, setCurrentPage] = useCurrentPageState();
   const loadLocalization = useLoadLocalization();
-  const { socket } = useSocket();
 
   useEffect(() => {
     const handleTestGame = () => {

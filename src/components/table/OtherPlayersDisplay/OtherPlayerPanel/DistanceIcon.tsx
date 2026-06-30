@@ -5,15 +5,14 @@ import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocaliz
 import Tooltip from "../../Tooltip/Tooltip";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { useCardsMetaDataState } from "../../../../stores/hooks/useCardsMetaDataState";
-import { useSocket } from "../../../../hooks/useSocket";
 import { useLocalStateStore } from "../../../../stores/localStateStore";
 import { useRotatedPlayerIds } from "../../../../hooks/useRotatedPlayerIds";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/shallow";
 import { useDragDropStore } from "../../../../stores/dragDropStore";
+import { socket } from "../../../../lib/socket";
 
 const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
-  const { socket } = useSocket();
   const clientId = socket.id!;
   const isDragging = useDragDropStore((state) => state.isDragging);
 
@@ -43,7 +42,7 @@ const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
     }),
   );
 
-  // 3. Get clinet data for bonuses
+  // 3. Get client data for bonuses
   const clientData = useStore(
     useLocalStateStore,
     useShallow((state) => {
@@ -67,15 +66,15 @@ const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
     // 1. Count alive players clockwise
     let clockwise = 0;
     for (let i = 1; i <= targetIndex; i++) {
-      // Если это не целевой игрок и он мертв — не считаем его
+      // If the player is not the target and they are dead, skip counting them
       if (i !== targetIndex && eliminatedMap[ids[i]]) continue;
       clockwise++;
     }
 
-    // 2. Count alive players counterClockwise
+    // 2. Count alive players counter-clockwise
     let counterClockwise = 0;
     for (let i = ids.length - 1; i >= targetIndex; i--) {
-      // Если это не целевой игрок и он мертв — не считаем его
+      // If the player is not the target and they are dead, skip counting them
       if (i !== targetIndex && eliminatedMap[ids[i]]) continue;
       counterClockwise++;
     }

@@ -1,10 +1,10 @@
-import { useSocket } from "../../hooks/useSocket";
 import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import type { LobbyPublicData, LobbySeat } from "../../types";
 import KickOutButton from "./KickOutButton";
 import ReadySwitch from "./ReadySwitch";
 import SeatTypeSwitch from "./SeatTypeSwitch";
+import { socket } from "../../lib/socket";
 
 export default function SeatLine({
   index,
@@ -18,7 +18,6 @@ export default function SeatLine({
   editMode: boolean;
 }) {
   const locale = useSystemLocalization() as Record<string, string>;
-  const { socket } = useSocket();
   const isLobbyOwner = () => {
     return lobbyData.ownerId === seat.playerId;
   };
