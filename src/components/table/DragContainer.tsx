@@ -1,15 +1,21 @@
-import { useCallback, useEffect, useRef } from "react";
-import { m, useDragControls, useMotionValue } from "framer-motion";
+import { m, useDragControls, type PanInfo } from "framer-motion";
 import PlayingCard from "../cards/PlayingCard";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import { useCardsMetaDataState } from "../../stores/hooks/useCardsMetaDataState";
-import { useSocketId } from "../../hooks/useSocketId";
 import RootPortal from "../shared/RootPortal";
 import { useLocalStateStore } from "../../stores/localStateStore";
 import type { CardInitialData } from "../../stores/localStateStore/types";
 import { calculateCardHeight } from "../../lib/utils/calculateCardHeight";
 import { useDragDropStore } from "../../stores/dragDropStore";
 import { useShallow } from "zustand/shallow";
+import { useDrag3DTilt } from "../../hooks/useDrag3DTilt";
+import { useDragOrchestration } from "../../hooks/useDragOrchestration";
+import { type AnchorId } from "../../contexts/AnchorsContext";
+import { useAnimationLayer } from "../../hooks/useAnimationLayer";
+import AnimationAnchor from "./shared/AnimationAnchor";
+import { useMemo } from "react";
+import type { GameEvent, Optional } from "../../types";
+import { socket } from "../../lib/socket";
 
 export default function DragContainer({
   tableHeight,
@@ -18,17 +24,15 @@ export default function DragContainer({
   tableHeight: number | null;
   centralPanelRef: React.RefObject<HTMLDivElement>;
 }) {
+  // Zustand States
   const players = useLocalStateStore((state) => state.players);
   const pendingController = useLocalStateStore(
     (state) => state.pendingController,
   );
   const tableController = useLocalStateStore((state) => state.tableController);
-
   const cardsMeta = useCardsMetaDataState()[0];
-  const clientId = useSocketId();
-
-  const player = players.find((player) => player.id === clientId);
-  const cards = player?.hand;
+  const clientId = socket.id;
+  const { playAnimation } = useAnimationLayer();
 
   const {
     isDragging,
@@ -38,6 +42,7 @@ export default function DragContainer({
     draggedCardOffset,
     isOverCentralPanel,
     setIsOverCentralPanel,
+    lastDraggedIndex,
   } = useDragDropStore(
     useShallow((state) => ({
       isDragging: state.isDragging,
@@ -47,111 +52,46 @@ export default function DragContainer({
       draggedCardOffset: state.draggedCardOffset,
       isOverCentralPanel: state.isOverCentralPanel,
       setIsOverCentralPanel: state.setIsOverCentralPanel,
+      lastDraggedIndex: state.lastDraggedIndex,
     })),
   );
 
+  // Framer Motion Core Initialization
   const dragControls = useDragControls();
-  const motionDivRef = useRef<HTMLDivElement>(null);
 
-  //--------------------------
-  // This is a fail safe for the drag system used in Motion.
-  // stopDragging is tied to the onDragStart function, which is only called if
-  // the pointer has been moved on whatever distance (even 1px). If the mouse
-  // hasn't been moved - the drag can't be stopped because it has never started.
-  //
-  // If we initialte drag and then try to end it without moving the pointer,
-  // stopDragging will never be called.
-  // So we have to manually call stopDragging in this scenario.
-  //
-  // 1. This flag is true when the mouse has been moved while dragging
-  const hasDragStarted = useRef(false);
+  // Custom Split Hooks logic
+  const { rotateX, rotateY, updateTilt, resetTilt } = useDrag3DTilt();
+  const { motionDivRef, handleMotionDivRef, hasDragStarted } =
+    useDragOrchestration({
+      isDragging,
+      pointerEvent,
+      dragControls,
+      stopDragging,
+    });
 
-  // 2. Reset the flag on drag end
-  // Removed: this is now handled in onDragEnd
-
-  // 3. Manually call stopDragging in the scenario described above.
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleGlobalPointerUp = () => {
-      if (!hasDragStarted.current) {
-        stopDragging();
-      }
-    };
-
-    window.addEventListener("pointerup", handleGlobalPointerUp);
-    window.addEventListener("pointercancel", handleGlobalPointerUp);
-
-    return () => {
-      window.removeEventListener("pointerup", handleGlobalPointerUp);
-      window.removeEventListener("pointercancel", handleGlobalPointerUp);
-    };
-  }, [isDragging, stopDragging]);
-  //
-  //--------------------------
-  //
-
+  // Derived Game States
+  const player = players.find((p) => p.id === clientId);
+  const cards = player?.hand;
   const draggedCardId =
     draggedCardIndex !== null && cards ? cards[draggedCardIndex] : "";
-
   const draggedCardMeta = cardsMeta?.deckMeta[draggedCardId as string];
 
-  // Храним событие для запуска драга после появления элемента в DOM
-  const pendingDragEvent = useRef<React.PointerEvent | null>(null);
+  // Boundaries & Panel Intersections
+  const checkIfOverCentralPanel = (mouseX: number, mouseY: number) => {
+    if (!centralPanelRef.current) return false;
+    const rect = centralPanelRef.current.getBoundingClientRect();
+    return !(
+      rect.right < mouseX ||
+      rect.left > mouseX ||
+      rect.top > mouseY ||
+      rect.bottom < mouseY
+    );
+  };
 
-  // Сохраняем событие при старте драга
-  useEffect(() => {
-    if (isDragging && pointerEvent) {
-      pendingDragEvent.current = pointerEvent;
-    }
-  }, [isDragging, pointerEvent]);
-
-  // Сбрасываем при завершении драга
-  useEffect(() => {
-    if (!isDragging) {
-      pendingDragEvent.current = null;
-    }
-  }, [isDragging]);
-
-  // Колбэк для ref — вызывается, когда m.div появляется в DOM
-  const handleMotionDivRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      motionDivRef.current = node;
-
-      if (node && pendingDragEvent.current) {
-        const event = pendingDragEvent.current;
-        pendingDragEvent.current = null;
-
-        // Небольшая задержка, чтобы framer-motion полностью инициализировал контроллы
-        setTimeout(() => {
-          dragControls.start(event);
-        }, 0);
-      }
-    },
-    [dragControls],
-  );
-
-  const checkIfOverCentralPanel = useCallback(
-    (mouseX: number, mouseY: number) => {
-      if (!centralPanelRef.current) return false;
-      const centralPanelRect = centralPanelRef.current.getBoundingClientRect();
-
-      return !(
-        centralPanelRect.right < mouseX ||
-        centralPanelRect.left > mouseX ||
-        centralPanelRect.top > mouseY ||
-        centralPanelRect.bottom < mouseY
-      );
-    },
-    [centralPanelRef],
-  );
-
-  // Is called when the card dropped in the playing zone.
-  const handleDragEndedOverCentralPanel = useCallback(() => {
-    pendingController.set(draggedCardId);
-
+  const getCardInitialData = (): CardInitialData | null => {
     const cardRect = motionDivRef.current?.getBoundingClientRect();
-    if (!cardRect) return;
+
+    if (!cardRect) return null;
 
     const cardInitialData: CardInitialData = {
       cardId: draggedCardId,
@@ -160,8 +100,19 @@ export default function DragContainer({
       initialY: cardRect.y,
     };
 
-    tableController.addCard(cardInitialData);
+    return cardInitialData;
+  };
 
+  const handleDragEndedOverCentralPanel = () => {
+    pendingController.set(draggedCardId);
+
+    const data = getCardInitialData();
+
+    if (!data) return;
+
+    tableController.addCard(data);
+
+    // Contextual handling for cards target effects
     switch (draggedCardMeta?.effect.target) {
       case "self":
       case "many":
@@ -174,22 +125,54 @@ export default function DragContainer({
       default:
         break;
     }
+  };
 
-    console.log(`Player played card ${draggedCardId}`);
-  }, [draggedCardId, draggedCardMeta, pendingController, tableController]);
+  const handleOnDragStart = () => {
+    hasDragStarted.current = true;
+  };
 
-  // ------------------
-  //
-  //
-  const rotateX = useMotionValue(0);
-  const rotateY = useMotionValue(0);
+  const handleOnDrag = (info: PanInfo) => {
+    const isOver = checkIfOverCentralPanel(info.point.x, info.point.y);
+    setIsOverCentralPanel(isOver);
+    updateTilt(info);
+  };
 
-  //
-  //
-  // ------------------
+  const handleOnDragEnd = () => {
+    hasDragStarted.current = false;
+    resetTilt();
 
-  // Adjust the card position
-  if (!isDragging) return null;
+    if (isOverCentralPanel) {
+      handleDragEndedOverCentralPanel();
+      stopDragging();
+    } else {
+      console.log("Player cancelled drag. Snapping back...");
+
+      // 1. SYNCHRONOUSLY reset the highlighted card index in the store.
+      // This ensures that all layout/rect calculations evaluate `isHighlighted` as false BEFORE the animation begins.
+      useDragDropStore.setState({ highlightedCardIndex: null });
+
+      const snapbackEvent: Optional<GameEvent, "id" | "timestamp"> = {
+        type: "CARD_SNAPBACK",
+        data: {
+          cardId: cards?.[lastDraggedIndex ?? 0] ?? "",
+          lastIndex: lastDraggedIndex ?? 0,
+        },
+      };
+
+      // 2. Trigger the animation. CardSnapback will now read the clean, un-highlighted bounding rect.
+      playAnimation(snapbackEvent);
+
+      // 3. Defer unmounting the proxy container to the end of the frame.
+      requestAnimationFrame(() => {
+        stopDragging();
+      });
+    }
+  };
+
+  const anchorId: AnchorId = useMemo(() => ({ type: "drag-proxy" }), []);
+
+  // Early Guard Clauses
+  if (!isDragging || !tableHeight) return null;
 
   const initialLeft = pointerEvent
     ? pointerEvent.clientX - draggedCardOffset.x
@@ -197,8 +180,6 @@ export default function DragContainer({
   const initialTop = pointerEvent
     ? pointerEvent.clientY - draggedCardOffset.y
     : 0;
-
-  if (!tableHeight) return;
 
   return (
     <RootPortal portalId={"dragContainer"}>
@@ -215,39 +196,25 @@ export default function DragContainer({
           ref={handleMotionDivRef}
           drag
           dragControls={dragControls}
-          dragListener={false} // The drag initiated by ref callback above
-          onDragStart={() => {
-            hasDragStarted.current = true;
-          }}
-          onDrag={(_, info) => {
-            const isOver = checkIfOverCentralPanel(info.point.x, info.point.y);
-            setIsOverCentralPanel(isOver);
-
-            rotateY.set(Math.max(-15, Math.min(15, info.velocity.x / 200)));
-            rotateX.set(Math.max(-15, Math.min(15, -info.velocity.y / 200)));
-          }}
-          onDragEnd={() => {
-            // Reset the flag directly in the event handler
-            hasDragStarted.current = false;
-
-            if (isOverCentralPanel) {
-              handleDragEndedOverCentralPanel();
-            } else {
-              console.log("Player cancelled drag");
-            }
-            stopDragging();
-          }}
+          dragListener={false}
+          onDragStart={() => handleOnDragStart()}
+          onDrag={(_, info) => handleOnDrag(info)}
+          onDragEnd={() => handleOnDragEnd()}
           className="fixed pointer-events-none w-auto"
           style={{
             transformStyle: "preserve-3d",
             rotateX,
             rotateY,
-
             height: calculateCardHeight(tableHeight),
           }}
         >
-          <PlayingCard cardId={draggedCardId} initialIsFaceDown={false} />
+          <AnimationAnchor id={anchorId} className="w-full h-full absolute" />
+          <PlayingCard
+            cardId={cards?.[lastDraggedIndex ?? 0] ?? ""}
+            initialIsFaceDown={false}
+          />
 
+          {/* Shadow Overlay */}
           <div
             className="bg-black h-full w-full relative"
             style={{
@@ -257,7 +224,7 @@ export default function DragContainer({
               opacity: 0.6,
               borderRadius: sizeAdaptive(55),
             }}
-          ></div>
+          />
         </m.div>
       </div>
     </RootPortal>

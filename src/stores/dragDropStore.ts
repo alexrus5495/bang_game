@@ -7,6 +7,8 @@ interface DragDropState {
   draggedCardOffset: Coordinates;
   isOverCentralPanel: boolean;
   isDragging: boolean;
+  lastDraggedIndex: null | number;
+  highlightedCardIndex: null | number;
 
   startDragging: (
     event: React.PointerEvent,
@@ -16,6 +18,8 @@ interface DragDropState {
   stopDragging: () => void;
   setIsOverCentralPanel: (isOver: boolean) => void;
   setDraggedCardOffset: (offset: Coordinates) => void;
+  clearLastDraggedIndex: () => void;
+  setHighlightedCardIndex: (index: null | number) => void;
 }
 
 export const useDragDropStore = create<DragDropState>((set) => ({
@@ -24,6 +28,8 @@ export const useDragDropStore = create<DragDropState>((set) => ({
   draggedCardOffset: { x: 0, y: 0 },
   isOverCentralPanel: false,
   isDragging: false,
+  lastDraggedIndex: null,
+  highlightedCardIndex: null,
 
   startDragging: (event, index, offset) =>
     set({
@@ -31,6 +37,8 @@ export const useDragDropStore = create<DragDropState>((set) => ({
       draggedCardIndex: index,
       draggedCardOffset: offset,
       isDragging: true,
+      lastDraggedIndex: index,
+      highlightedCardIndex: null,
     }),
 
   stopDragging: () =>
@@ -39,9 +47,14 @@ export const useDragDropStore = create<DragDropState>((set) => ({
       pointerEvent: null,
       isOverCentralPanel: false,
       isDragging: false,
+      highlightedCardIndex: null,
     }),
 
   setIsOverCentralPanel: (isOver) => set({ isOverCentralPanel: isOver }),
 
   setDraggedCardOffset: (offset) => set({ draggedCardOffset: offset }),
+
+  clearLastDraggedIndex: () => set({ lastDraggedIndex: null }),
+
+  setHighlightedCardIndex: (index) => set({ highlightedCardIndex: index }),
 }));
