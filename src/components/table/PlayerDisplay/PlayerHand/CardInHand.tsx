@@ -1,14 +1,15 @@
 import { m } from "motion/react";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
-import type { PlayingCardMeta } from "../../../../types";
+import type { EventType, PlayingCardMeta } from "../../../../types";
 import PlayingCard from "../../../cards/PlayingCard";
 import InspectIcon from "../InspectIcon";
 import AnimationAnchor from "../../shared/AnimationAnchor";
 import { useCardsMetaDataState } from "../../../../stores/hooks/useCardsMetaDataState";
-import { useMemo, useState } from "react";
+import { useMemo, useRef } from "react";
 import type { AnchorId } from "../../../../contexts/AnchorsContext";
 import { useDragDropStore } from "../../../../stores/dragDropStore";
 import { useShallow } from "zustand/shallow";
+import { useAnimationLayer } from "../../../../hooks/useAnimationLayer";
 
 type CardInHandProps = {
   cardId: string;
@@ -21,25 +22,54 @@ export default function CardInHand({
   spacing,
   index,
 }: CardInHandProps) {
-  const { draggedCardIndex, startDragging, isDragging } = useDragDropStore(
+  const {
+    startDragging,
+    isDragging,
+    lastDraggedIndex,
+    clearLastDraggedIndex,
+    highlightedCardIndex,
+    setHighlightedCardIndex,
+  } = useDragDropStore(
     useShallow((state) => ({
-      draggedCardIndex: state.draggedCardIndex,
       startDragging: state.startDragging,
       isDragging: state.isDragging,
+      lastDraggedIndex: state.lastDraggedIndex,
+      clearLastDraggedIndex: state.clearLastDraggedIndex,
+      highlightedCardIndex: state.highlightedCardIndex,
+      setHighlightedCardIndex: state.setHighlightedCardIndex,
     })),
   );
 
-  const [isHighlighted, setIsHighlighted] = useState(false);
-
+  const { currentAnimation } = useAnimationLayer();
   const cardsMeta = useCardsMetaDataState()[0];
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Evaluate the highlight state based on the global store
+  const isHighlighted = highlightedCardIndex === index;
+
+  // Clear the active drag index once all deferred procedures conclude
+  if (
+    !isDragging &&
+    lastDraggedIndex === index &&
+    currentAnimation?.Component?.name !== "CARD_SNAPBACK"
+  ) {
+    clearLastDraggedIndex();
+  }
+
+  const isThisCardAnimatingBack =
+    currentAnimation?.Component?.name === "CARD_SNAPBACK" &&
+    (currentAnimation.props.data as EventType["CARD_SNAPBACK"])?.lastIndex ===
+      index;
+
+  const isThisCardActiveInProxy = isDragging
+    ? lastDraggedIndex === index
+    : isThisCardAnimatingBack;
 
   const handleStartDrag = (
     event: React.PointerEvent<HTMLDivElement>,
     cardIndex: number,
   ) => {
     const cardElement = event.currentTarget;
-
-    //Calculate the offset for the proxy card so it renders in the exact same spot as the original
     const cardRect = cardElement.getBoundingClientRect();
     const offsetX = event.clientX - cardRect.left;
     const offsetY = event.clientY - cardRect.top;
@@ -47,17 +77,17 @@ export default function CardInHand({
     startDragging(event, cardIndex, { x: offsetX, y: offsetY });
   };
 
+  // Hover handlers interact directly with the centralized store
   const handleMouseEnter = () => {
     if (isDragging) return;
-    setIsHighlighted(true);
+    setHighlightedCardIndex(index);
   };
 
   const handleMouseLeave = () => {
     if (isDragging) return;
-    setIsHighlighted(false);
+    setHighlightedCardIndex(null);
   };
 
-  const isThisCardDragged = draggedCardIndex === index;
   const anchorId = useMemo<AnchorId>(
     () => ({ type: "player-hand", index }),
     [index],
@@ -66,33 +96,29 @@ export default function CardInHand({
   return (
     <m.div
       key={cardId}
+      ref={cardRef}
       className="isCard absolute h-full"
       style={{
         zIndex: isHighlighted ? 100 : 20 + index,
-        visibility: isThisCardDragged ? "hidden" : "visible",
+        visibility: isThisCardActiveInProxy ? "hidden" : "visible",
       }}
       initial={false}
       animate={{
         left: `${spacing * index}px`,
-        bottom: isHighlighted ? "15%" : 0,
-        scale: isHighlighted ? 1.2 : 1,
+        // If the card is currently animating back via snapback, reset its state to 0.
+        // This ensures the structural anchor immediately assumes its default, un-highlighted position.
+        bottom: isHighlighted && !isThisCardAnimatingBack ? "15%" : 0,
+        scale: isHighlighted && !isThisCardAnimatingBack ? 1.2 : 1,
       }}
       transition={{
-        scale: {
-          duration: 0.1,
-          ease: "easeInOut",
-        },
-        bottom: {
-          duration: 0.15,
-          ease: "easeInOut",
-        },
+        scale: { duration: 0.1, ease: "easeInOut" },
+        bottom: { duration: 0.15, ease: "easeInOut" },
       }}
       onPointerDown={(e) => handleStartDrag(e, index)}
-      onMouseEnter={() => handleMouseEnter()}
-      onMouseLeave={() => handleMouseLeave()}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <AnimationAnchor id={anchorId} className="w-full h-full absolute" />
-
       <PlayingCard cardId={cardId} initialIsFaceDown={false} />
 
       {isHighlighted && (

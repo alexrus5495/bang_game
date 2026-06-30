@@ -60,7 +60,7 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
       range: player.weaponRange,
     };
     const equipment = player.hasScope
-      ? ["scope_scope"] // заглушка для find
+      ? ["scope_scope"] // Mock value for finder operations
       : [];
 
     let currentRange = weapon.range;
