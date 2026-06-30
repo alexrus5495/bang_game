@@ -3,6 +3,11 @@ import type { CARDPACKS } from "./config/cardpacks";
 import type { CARD_DECORATIONS } from "./config/decorations.config";
 import type { ClientPlayer } from "./stores/localStateStore/types";
 
+/** Utility abstraction that combines Omit & Partial on the same properties.
+/Makes it possible to use at the same time both complete and uncomplete types 
+*/
+export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
 type Suit = "clubs" | "diamonds" | "hearts" | "spades";
 export type Role = "sheriff" | "deputy" | "outlaw" | "renegade";
 
@@ -160,12 +165,12 @@ export interface EventType {
     };
   };
   PLAYER_TURN_START: { playerId: string };
-  PLAYER_TURN_DRAWING_START: { playerId: string };
-  PLAYER_TURN_DRAWING_END: { playerId: string };
-  PLAYER_TURN_PLAYING_START: { playerId: string };
-  PLAYER_TURN_PLAYING_END: { playerId: string };
-  PLAYER_TURN_DISCARDING_START: { playerId: string };
-  PLAYER_TURN_DISCARDING_END: { playerId: string };
+  PLAYER_DRAWING_START: { playerId: string };
+  PLAYER_DRAWING_END: { playerId: string };
+  PLAYER_PLAYING_START: { playerId: string };
+  PLAYER_PLAYING_END: { playerId: string };
+  PLAYER_DISCARDING_START: { playerId: string };
+  PLAYER_DISCARDING_END: { playerId: string };
   PLAYER_TURN_END: { playerId: string };
   CARD_DRAWN: {
     playerId: string;
@@ -183,6 +188,7 @@ export interface EventType {
     };
     visibleTo: string[];
   };
+  CARD_SNAPBACK: { cardId: string; lastIndex: number };
   player_played_card: { playerId: string; cardId: string };
   player_player_card_against: {
     playerId: string;

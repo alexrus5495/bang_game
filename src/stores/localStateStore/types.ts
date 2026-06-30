@@ -18,6 +18,7 @@ export type ClientPlayer = {
   stats: {
     health: { current: number; max: number };
   };
+  handValidationData: CardValidationData[] | null;
 };
 
 export type CardInitialData = {
@@ -31,4 +32,11 @@ export type PlayedCard = CardInitialData & {
   offsetX: number;
   offsetY: number;
   rotation: number;
+};
+
+export type CardValidationData = {
+  cardId: string;
+  canPlay: boolean;
+  target: "self" | "many" | "one" | "all";
+  possibleTargets: string[] | null;
 };

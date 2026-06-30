@@ -16,6 +16,7 @@ export default function ClientCardDrawn({
     type: "player-hand-slot",
     index: data.card.index,
   });
+  console.log(`animation - drawn`);
 
   if (!from || !to) return null;
 

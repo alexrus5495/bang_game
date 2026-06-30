@@ -32,6 +32,8 @@ export function EventProcessor({ children }: { children: React.ReactNode }) {
 
           if (!nextEvent) break;
 
+          console.table(nextEvent);
+
           updateLocalState(nextEvent, "beforeAnimation");
 
           // react-doctor-disable-next-line async-await-in-loop

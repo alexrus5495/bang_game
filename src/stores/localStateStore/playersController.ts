@@ -1,7 +1,7 @@
 import type { StateCreator } from "zustand";
 import { getPlayerIndex } from "./helpers";
 import type { LocalState } from "../localStateStore";
-import type { ClientPlayer } from "./types";
+import type { CardValidationData, ClientPlayer } from "./types";
 import type { EventType } from "../../types";
 
 export type PlayersController = {
@@ -33,6 +33,8 @@ export type PlayersController = {
   ) => ClientPlayer["stats"]["health"] | { current: number; max: 0 };
   getPlayerWeaponRange: (playerId: string) => number;
   getPlayerWeapon: (playerId: string) => string;
+  setHandValidationData: (data: CardValidationData[], playerId: string) => void;
+  resetHandValidationData: (playerId: string) => void;
 };
 
 export const createPlayersController: StateCreator<
@@ -66,6 +68,7 @@ export const createPlayersController: StateCreator<
         stats: {
           health: { current: 0, max: 0 },
         },
+        handValidationData: null,
       };
 
       return { players: [...state.players, newPlayer] };
@@ -230,4 +233,27 @@ export const createPlayersController: StateCreator<
     const p = get().players.find((p) => p.id === playerId);
     return p?.weapon.card ?? "colt45";
   },
+
+  setHandValidationData: (data, playerId) =>
+    set((state) => {
+      const index = getPlayerIndex(state.players, playerId);
+
+      const updated = [...state.players];
+      updated[index] = {
+        ...updated[index],
+        handValidationData: data,
+      };
+      return { players: updated };
+    }),
+
+  resetHandValidationData: (playerId) =>
+    set((state) => {
+      const index = getPlayerIndex(state.players, playerId);
+      const updated = [...state.players];
+      updated[index] = {
+        ...updated[index],
+        handValidationData: null,
+      };
+      return { players: updated };
+    }),
 });
