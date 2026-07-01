@@ -7,8 +7,6 @@ export default function PLAYER_DRAWING_START() {
     _data: EventType["PLAYER_DRAWING_START"],
     stage: StateUpdaterStage,
   ) => {
-    console.log(`called drawingStart handler`);
-
     if (stage === "beforeAnimation") {
       const { flowController } = useLocalStateStore.getState();
       flowController.drawingStart();

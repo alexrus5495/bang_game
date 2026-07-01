@@ -26,7 +26,7 @@ export default function InspectIcon({
         {...handlersNonPinable}
       >
         <img
-          className="h-[90%] w-auto border border-white"
+          className="h-[90%] w-auto will-change-transform"
           src="./icon-inspect.png"
           alt=""
         />

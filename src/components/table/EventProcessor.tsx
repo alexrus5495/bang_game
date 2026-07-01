@@ -32,8 +32,6 @@ export function EventProcessor({ children }: { children: React.ReactNode }) {
 
           if (!nextEvent) break;
 
-          console.table(nextEvent);
-
           updateLocalState(nextEvent, "beforeAnimation");
 
           // react-doctor-disable-next-line async-await-in-loop
@@ -55,7 +53,7 @@ export function EventProcessor({ children }: { children: React.ReactNode }) {
     };
   }, [events, playAnimation, updateLocalState]);
 
-  // NOTE: DEBUG Remember to delete
+  //NOTE: DEBUG Remember to delete
   useEffect(() => {
     console.table(events);
   }, [events]);

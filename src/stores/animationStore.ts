@@ -4,9 +4,9 @@ import ANIMATIONS from "../animations";
 import type { EventType, GameEvent, Optional } from "../types";
 
 const ANIMATED_EVENTS: Set<keyof EventType> = new Set([
-  "CARD_DISCARDED",
-  "CARD_DRAWN",
-  "CARD_SNAPBACK",
+  // "CARD_DISCARDED",
+  // "CARD_DRAWN",
+  // "CARD_SNAPBACK",
 ]);
 
 interface AnimationState {

@@ -34,9 +34,11 @@ export default function PlayerHand({ clientId }: { clientId: string }) {
       <div className="h-full" ref={scaleRef}>
         {cards &&
           cards.map((cardId, index) => {
+            if (index >= 1) return null;
             return (
               <CardInHand
                 key={cardId}
+                clientId={clientId}
                 cardId={cardId}
                 spacing={spacing}
                 index={index}

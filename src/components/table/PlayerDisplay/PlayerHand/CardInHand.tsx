@@ -10,9 +10,17 @@ import type { AnchorId } from "../../../../contexts/AnchorsContext";
 import { useDragDropStore } from "../../../../stores/dragDropStore";
 import { useShallow } from "zustand/shallow";
 import { useAnimationLayer } from "../../../../hooks/useAnimationLayer";
+import { useLocalStateStore } from "../../../../stores/localStateStore";
+import CardScaler from "../../../cards/shared/CardScaler";
+import {
+  CARD_CONTAINER_BORDER_RADIUS,
+  CARD_CONTAINER_HEIGHT,
+  CARD_CONTAINER_WIDTH,
+} from "../../../cards/shared/constants";
 
 type CardInHandProps = {
   cardId: string;
+  clientId: string;
   spacing: number;
   index: number;
 };
@@ -20,6 +28,7 @@ type CardInHandProps = {
 export default function CardInHand({
   cardId,
   spacing,
+  clientId,
   index,
 }: CardInHandProps) {
   const {
@@ -43,6 +52,15 @@ export default function CardInHand({
   const { currentAnimation } = useAnimationLayer();
   const cardsMeta = useCardsMetaDataState()[0];
   const cardRef = useRef<HTMLDivElement>(null);
+  const canPlay = useLocalStateStore((state) => {
+    const validationData =
+      state.playersController.getPlayerById(clientId)?.handValidationData;
+    if (!validationData) {
+      return false;
+    } else {
+      return validationData[index].canPlay ?? false;
+    }
+  });
 
   // Evaluate the highlight state based on the global store
   const isHighlighted = highlightedCardIndex === index;
@@ -97,7 +115,7 @@ export default function CardInHand({
     <m.div
       key={cardId}
       ref={cardRef}
-      className="isCard absolute h-full"
+      className="absolute h-full"
       style={{
         zIndex: isHighlighted ? 100 : 20 + index,
         visibility: isThisCardActiveInProxy ? "hidden" : "visible",
@@ -119,6 +137,7 @@ export default function CardInHand({
       onMouseLeave={handleMouseLeave}
     >
       <AnimationAnchor id={anchorId} className="w-full h-full absolute" />
+      <AuraEffect />
       <PlayingCard cardId={cardId} initialIsFaceDown={false} />
 
       {isHighlighted && (
@@ -141,3 +160,85 @@ export default function CardInHand({
     </m.div>
   );
 }
+
+// const AuraEffect = () => {
+//   return (
+//     <div className="absolute h-full w-auto">
+//       <CardScaler>
+//         <m.div
+//           className="relative overflow-hidden z-[-1] border "
+//           style={{
+//             bottom: "1.5%",
+//             height: `${CARD_CONTAINER_HEIGHT * 0.98}px`,
+//             width: `${CARD_CONTAINER_WIDTH}px`,
+//             borderRadius: `${CARD_CONTAINER_BORDER_RADIUS}px`,
+//             backgroundColor: "#f3fec8",
+//             transform: "scale(1.03)",
+//             boxShadow: "0px -15px 30px 10px #41e831",
+//           }}
+//         />
+//       </CardScaler>
+//     </div>
+//   );
+// };
+
+export function SVGShaderFilters() {
+  return (
+    <svg
+      // Вместо hidden делаем его нулевого размера и прозрачным
+      style={{
+        position: "absolute",
+        width: 0,
+        height: 0,
+        pointerEvents: "none",
+        opacity: 0,
+      }}
+    >
+      <defs>
+        <filter
+          id="hearthstone-flame"
+          x="-50%"
+          y="-50%"
+          width="200%"
+          height="200%"
+        >
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.05 0.09"
+            numOctaves="3"
+            result="noise"
+          >
+            <animate
+              attributeName="baseFrequency"
+              values="0.05 0.09; 0.05 0.15; 0.05 0.09"
+              dur="4s"
+              repeatCount="indefinite"
+            />
+          </feTurbulence>
+
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale="25"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </defs>
+    </svg>
+  );
+}
+const AuraEffect = () => {
+  return (
+    <div
+      className="absolute inset-[-10px] z-[-1]"
+      style={{
+        background:
+          "radial-gradient(ellipse at center, #f3fec8 60%, #41e831 35%, #10b981 5%, transparent 85%)",
+        borderRadius: "20px",
+        filter: "url(#hearthstone-flame) blur(8px)", // Связываем CSS с SVG-шейдером
+        mixBlendMode: "screen",
+      }}
+    />
+  );
+};

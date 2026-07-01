@@ -9,11 +9,11 @@ export default function PLAYER_PLAYING_START() {
     _data: EventType["PLAYER_PLAYING_START"],
     stage: StateUpdaterStage,
   ) => {
-    socket.emit(SocketEvents.REQUEST_HAND_VALIDATION);
-
     if (stage === "beforeAnimation") {
       const { flowController } = useLocalStateStore.getState();
       flowController.playingStart();
+      console.log(`requesting hand validation`);
+      socket.emit(SocketEvents.REQUEST_HAND_VALIDATION);
     }
   };
 }
