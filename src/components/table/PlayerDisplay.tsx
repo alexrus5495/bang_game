@@ -22,7 +22,7 @@ export default function PlayerDisplay({ playerId }: { playerId: string }) {
   );
 
   return (
-    <div className="flex h-full w-full items-center">
+    <div className="flex h-full w-full items-center z-0">
       <div className="w-full h-[70%] relative">
         <div
           className="h-[50%] w-full bg-[var(--WHITE)] absolute flex items-center"
@@ -49,7 +49,7 @@ export default function PlayerDisplay({ playerId }: { playerId: string }) {
 
         {role && (
           <div
-            className="h-[50%] aspect-square absolute"
+            className="h-[50%] aspect-square absolute z-0"
             style={{ bottom: "-15%", left: "18%" }}
           >
             <RoleIcon role={role} />
