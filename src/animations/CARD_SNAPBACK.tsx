@@ -16,7 +16,7 @@ export default function CARD_SNAPBACK({
   const initialCoords = useMemo(() => {
     const fromRect = anchors.getRect({ type: "drag-proxy" });
     const toRect = anchors.getRect({
-      type: "player-hand",
+      type: "player-hand-card",
       index: data.lastIndex,
     });
 

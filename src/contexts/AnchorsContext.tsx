@@ -13,9 +13,10 @@ export type AnchorId =
   | { type: "discard" }
   | { type: "opponent-hand"; playerId: string }
   | { type: "opponent-equipment"; playerId: string }
-  | { type: "player-hand"; index: number }
-  | { type: "player-equipment"; index: number }
+  | { type: "player-hand-zero" }
+  | { type: "player-hand-card"; index: number }
   | { type: "player-hand-slot"; index: number }
+  | { type: "player-equipment"; index: number }
   | { type: "drag-proxy" };
 
 type AnchorRegistry = Map<string, () => DOMRect | null>;
@@ -41,8 +42,10 @@ function serializeAnchor(id: AnchorId): string {
       return `opponent:${id.playerId}:hand`;
     case "opponent-equipment":
       return `opponent:${id.playerId}:equipment`;
-    case "player-hand":
-      return `player:hand:${id.index}`;
+    case "player-hand-zero":
+      return `player:hand:zero`;
+    case "player-hand-card":
+      return `player:hand:card:${id.index}`;
     case "player-equipment":
       return `player:equipment:${id.index}`;
     case "player-hand-slot":
