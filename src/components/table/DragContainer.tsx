@@ -1,6 +1,5 @@
 import { m, useDragControls, type PanInfo } from "framer-motion";
 import PlayingCard from "../cards/PlayingCard";
-import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import { useCardsMetaDataState } from "../../stores/hooks/useCardsMetaDataState";
 import RootPortal from "../shared/RootPortal";
 import { useLocalStateStore } from "../../stores/localStateStore";
@@ -209,21 +208,10 @@ export default function DragContainer({
           }}
         >
           <AnimationAnchor id={anchorId} className="w-full h-full absolute" />
+
           <PlayingCard
             cardId={cards?.[lastDraggedIndex ?? 0] ?? ""}
             initialIsFaceDown={false}
-          />
-
-          {/* Shadow Overlay */}
-          <div
-            className="bg-black h-full w-full relative"
-            style={{
-              zIndex: -1,
-              top: "-96%",
-              right: "-5%",
-              opacity: 0.6,
-              borderRadius: sizeAdaptive(55),
-            }}
           />
         </m.div>
       </div>

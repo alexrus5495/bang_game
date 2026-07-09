@@ -26,77 +26,73 @@ import {
 import { getImageComponent } from "../../../lib/images";
 import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
 
-const CardFace = React.memo(
-  ({
-    cardId,
-    cardType,
-  }: {
-    cardId: string;
-    cardType: "playing" | "character" | "role";
-  }) => {
-    const cardsMetaData = useCardsMetaDataState()[0];
+export interface CardProps {
+  cardId: string;
+  cardType: "playing" | "character" | "role";
+}
 
-    if (!cardsMetaData) return null;
+const CardFace = React.memo(({ cardId, cardType }: CardProps) => {
+  const cardsMetaData = useCardsMetaDataState()[0];
 
-    const cardData =
-      cardType === "playing"
-        ? (cardsMetaData.deckMeta[cardId] as PlayingCardMeta)
-        : cardType === "character"
-          ? (cardsMetaData.charDeckMeta[cardId] as CharacterCardMeta)
-          : (cardsMetaData.roleDeckMeta[cardId] as RoleCardMeta);
+  if (!cardsMetaData) return null;
 
-    if (!cardData) return null;
+  const cardData =
+    cardType === "playing"
+      ? (cardsMetaData.deckMeta[cardId] as PlayingCardMeta)
+      : cardType === "character"
+        ? (cardsMetaData.charDeckMeta[cardId] as CharacterCardMeta)
+        : (cardsMetaData.roleDeckMeta[cardId] as RoleCardMeta);
 
-    const { cardTypeId, description, image, pack } = cardData;
+  if (!cardData) return null;
 
-    const hasBulletHoles = cardData.decorations.includes("bullet_holes");
+  const { cardTypeId, description, image, pack } = cardData;
 
-    const borderColor =
-      "borderColor" in cardData ? cardData.borderColor : undefined;
-    const borderType =
-      "borderType" in cardData ? cardData.borderType : undefined;
-    const rankAndSuit =
-      "rankAndSuit" in cardData ? cardData.rankAndSuit : undefined;
+  const hasBulletHoles = cardData.decorations.includes("bullet_holes");
 
-    const tooltipIcon =
-      "tooltipIcon" in cardData ? cardData.tooltipIcon : undefined;
+  const borderColor =
+    "borderColor" in cardData ? cardData.borderColor : undefined;
+  const borderType = "borderType" in cardData ? cardData.borderType : undefined;
+  const rankAndSuit =
+    "rankAndSuit" in cardData ? cardData.rankAndSuit : undefined;
 
-    const bullets = "bullets" in cardData ? cardData.bullets : undefined;
+  const tooltipIcon =
+    "tooltipIcon" in cardData ? cardData.tooltipIcon : undefined;
 
-    return (
-      <div
-        className="relative border-2 shadow"
-        style={{
-          height: `${CARD_CONTAINER_HEIGHT}px`,
-          width: `${CARD_CONTAINER_WIDTH}px`,
-          borderRadius: `${CARD_CONTAINER_BORDER_RADIUS}px`,
-        }}
-      >
-        {hasBulletHoles && <BulletHolesMask />}
+  const bullets = "bullets" in cardData ? cardData.bullets : undefined;
 
-        {borderColor && (
-          <Border
-            borderColor={borderColor as BorderColor}
-            borderType={borderType as BorderType}
-          />
+  return (
+    <div
+      className="relative"
+      style={{
+        height: `${CARD_CONTAINER_HEIGHT}px`,
+        width: `${CARD_CONTAINER_WIDTH}px`,
+        borderRadius: `${CARD_CONTAINER_BORDER_RADIUS}px`,
+      }}
+    >
+      {hasBulletHoles && <BulletHolesMask />}
+
+      {borderColor && (
+        <Border
+          borderColor={borderColor as BorderColor}
+          borderType={borderType as BorderType}
+        />
+      )}
+      <CardContent>
+        <Title pack={pack} cardTypeId={cardTypeId} cardType={cardType} />
+        <Image cardImage={image} />
+        <Description description={description} packKey={pack} />
+
+        {tooltipIcon === true && <TooltipIcon />}
+        {rankAndSuit !== undefined && (
+          <RankAndSuit rankAndSuit={rankAndSuit as RankAndSuitType} />
         )}
-        <CardContent>
-          <Title pack={pack} cardTypeId={cardTypeId} cardType={cardType} />
-          <Image cardImage={image} />
-          <Description description={description} packKey={pack} />
+        {bullets !== undefined && <Bullets count={bullets as number} />}
 
-          {tooltipIcon === true && <TooltipIcon />}
-          {rankAndSuit !== undefined && (
-            <RankAndSuit rankAndSuit={rankAndSuit as RankAndSuitType} />
-          )}
-          {bullets !== undefined && <Bullets count={bullets as number} />}
-
-          {cardId === "sheriff" && <SheriffExtraBulletSymbol />}
-        </CardContent>
-      </div>
-    );
-  },
-);
+        {cardId === "sheriff" && <SheriffExtraBulletSymbol />}
+      </CardContent>
+    </div>
+  );
+});
 
 function SheriffExtraBulletSymbol() {
   return (

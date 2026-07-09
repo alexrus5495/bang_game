@@ -58,15 +58,10 @@ function TableContent() {
   if (!socket.id) return null;
 
   return (
-    <>
+    <div className="absolute h-[100vh] w-[100vw] flex flex-row justify-center items-center ">
       {!charSelected && <CharSelectPrompt />}
 
       <DEV_CONTROLLER />
-
-      <DragContainer
-        tableHeight={tableHeight}
-        centralPanelRef={centralPanelRef as React.RefObject<HTMLDivElement>}
-      />
 
       <div
         ref={tableRef}
@@ -88,11 +83,11 @@ function TableContent() {
           <CentralPanel />
         </div>
 
-        <div className="w-full h-[40%]">
+        <div className="w-full h-[40%] z-[10]">
           <PlayerArea />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -5,12 +5,11 @@ import LayoutSlots from "./PlayerHand/LayoutSlots";
 import { useCardScale } from "../../../hooks/useCardScale";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useShallow } from "zustand/shallow";
-import { useStore } from "zustand";
+import HandZeroAnchor from "./PlayerHand/HandZeroAnchor";
 
 export default function PlayerHand({ clientId }: { clientId: string }) {
   const pending = useLocalStateStore((state) => state.pendingCardId);
-  const cards = useStore(
-    useLocalStateStore,
+  const cards = useLocalStateStore(
     useShallow(
       (state) => state.playersController.getPlayerById(clientId)?.hand ?? [],
     ),
@@ -31,14 +30,21 @@ export default function PlayerHand({ clientId }: { clientId: string }) {
         containerWidth={containerWidth}
       />
 
-      <div className="h-full" ref={scaleRef}>
+      <div className="h-full w-full" ref={scaleRef}>
+        <HandZeroAnchor />
+      </div>
+
+      <div className="fixed top-0 left-0 h-[100vh] w-[100vw] z-[-0] pointer-events-none">
         {cards &&
           cards.map((cardId, index) => {
-            if (index >= 1) return null;
+            {
+              {
+                /* if (index >= 1) return null; */
+              }
+            }
             return (
               <CardInHand
                 key={cardId}
-                clientId={clientId}
                 cardId={cardId}
                 spacing={spacing}
                 index={index}
