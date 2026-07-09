@@ -131,24 +131,3 @@
     scrollbar-width: auto;
   }
 }
-
-@keyframes rotateGlow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.gradient-glow-bg {
-  background: conic-gradient(
-    from 0deg,
-    #22c55e,
-    /* зеленый */ #4ade80,
-    /* светло-зеленый */ #15803d,
-    /* темно-зеленый */ #22c55e
-  );
-  animation: rotateGlow 4s linear infinite;
-  filter: blur(12px); /* Размываем, чтобы получить эффект свечения */
-}

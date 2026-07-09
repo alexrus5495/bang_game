@@ -12,7 +12,6 @@ import { useCurrentPageState } from "./stores/hooks/useCurrentPageState";
 import Table from "./pages/table";
 import { SocketEvents } from "./lib/socketEvents";
 import { useLoadLocalization } from "./stores/hooks/useLoadLocalization";
-import { SVGShaderFilters } from "./components/table/PlayerDisplay/PlayerHand/CardInHand";
 
 export default function App() {
   const { isConnected, socketId, socket } = useSocket();
@@ -122,8 +121,6 @@ export default function App() {
             <Table />
           </m.div>
         )}
-
-        <SVGShaderFilters />
       </AnimatePresence>
     </div>
   );
