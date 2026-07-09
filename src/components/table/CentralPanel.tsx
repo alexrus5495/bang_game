@@ -15,7 +15,7 @@ const CentralPanel = React.memo(() => {
       }}
     >
       <div
-        className="h-[70%] w-[30%] flex justify-center relative"
+        className="h-[70%] w-[30%] flex justify-center relative z-[3]"
         style={{ marginTop: sizeAdaptive(30) }}
       >
         <DeckPlacingMarker variation="a" />
@@ -27,7 +27,7 @@ const CentralPanel = React.memo(() => {
       </div>
 
       <div
-        className="h-[70%] w-[30%] flex justify-center relative"
+        className="h-[70%] w-[30%] flex justify-center relative z-[3]"
         style={{ marginTop: sizeAdaptive(30) }}
       >
         <DeckPlacingMarker variation="b" />

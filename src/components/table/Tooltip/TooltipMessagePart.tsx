@@ -21,6 +21,9 @@ const TooltipMessageCardRef = React.memo(
     const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
     const { isVisible, handlersNonPinable } = useTooltip();
 
+    const cardId =
+      "cardInstanceId" in meta ? meta.cardInstanceId : meta.cardTypeId;
+
     return (
       <>
         <span
@@ -42,7 +45,7 @@ const TooltipMessageCardRef = React.memo(
           onMouseMove={handlersNonPinable.onMouseMove}
         >{`[${cardTitle}]`}</span>
 
-        <InspectCardTooltip content={meta} type={type} isVisible={isVisible} />
+        <InspectCardTooltip cardId={cardId} type={type} isVisible={isVisible} />
       </>
     );
   },

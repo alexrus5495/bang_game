@@ -16,9 +16,7 @@ const PlayerArea = React.memo(() => {
           style={{
             padding: sizeAdaptive(100),
           }}
-        >
-          {/* <MessagesPanel /> */}
-        </div>
+        ></div>
       </div>
       <div
         className="h-full w-[25%] flex flex-col justify-end"

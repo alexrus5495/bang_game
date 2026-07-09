@@ -55,7 +55,7 @@ const Tooltip = React.memo(
       <RootPortal portalId="inspect_card_tooltip">
         <m.div
           ref={tooltipRef}
-          className="w-fit z-[990] flex flex-col border border-[var(--BLACK)] bg-paperTexture-yellow"
+          className="w-fit z-[999] flex flex-col border border-[var(--BLACK)] bg-paperTexture-yellow"
           style={{
             position: "fixed",
             left: coordinates.left,

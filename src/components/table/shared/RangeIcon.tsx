@@ -114,7 +114,7 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
     };
   }, [player, locale, cardsMeta]);
   return (
-    <>
+    <div className="">
       <div
         className="h-full aspect-square relative"
         style={{ cursor: isDragging ? "default" : "pointer" }}
@@ -147,7 +147,7 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
           isPinned={isPinned}
         />
       )}
-    </>
+    </div>
   );
 });
 

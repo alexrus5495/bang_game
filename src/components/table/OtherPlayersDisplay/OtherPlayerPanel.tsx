@@ -35,7 +35,7 @@ const OtherPlayerPanel = React.memo(({ playerId }: { playerId: string }) => {
 
   return (
     <div
-      className="h-full w-[23%] flex flex-col relative z-[2]"
+      className="h-full w-[23%] flex flex-col relative z-0"
       style={{
         paddingTop: sizeAdaptive(100),
         paddingBottom: sizeAdaptive(160),

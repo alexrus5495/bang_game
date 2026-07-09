@@ -1,9 +1,5 @@
 import { m } from "motion/react";
-import type {
-  CharacterCardMeta,
-  PlayingCardMeta,
-  RoleCardMeta,
-} from "../../../types";
+import type { PlayingCardMeta } from "../../../types";
 import RoleCard from "../../cards/RoleCard";
 import { CARD_CONTAINER_BORDER_RADIUS } from "../../cards/shared/constants";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
@@ -13,19 +9,38 @@ import DefaultWeaponCard from "../../cards/DefaultWeaponCard";
 import CardSymbolDescription from "./CardSymbolDescription";
 import RootPortal from "../../shared/RootPortal";
 import React from "react";
+import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
 
 const InspectCardTooltip = React.memo(
   ({
-    content,
+    cardId,
     type,
     isVisible,
     delay = 0.2,
   }: {
-    content: PlayingCardMeta | CharacterCardMeta | RoleCardMeta;
+    cardId: string;
     type: "playingCardRef" | "charCardRef" | "roleCardRef";
     isVisible: boolean;
     delay?: number;
   }) => {
+    const cardsMeta = useCardsMetaDataState()[0];
+    if (!cardsMeta) return null;
+
+    const content = (() => {
+      switch (type) {
+        case "playingCardRef":
+          return cardsMeta.deckMeta[cardId] ?? {};
+        case "charCardRef":
+          return cardsMeta.charDeckMeta[cardId];
+        case "roleCardRef":
+          return cardsMeta.roleDeckMeta[cardId];
+        default:
+          throw new Error("Unhandled type in InspectCardTooltip");
+      }
+    })();
+
+    if (!content) return null;
+
     const cardSymbols = extractSymbols(content as PlayingCardMeta);
 
     return (
@@ -58,28 +73,18 @@ const InspectCardTooltip = React.memo(
                 height: sizeAdaptive(1.6),
               }}
             >
-              {type === "roleCardRef" && (
-                <RoleCard cardId={content.cardTypeId} />
-              )}
-
-              {type === "charCardRef" && (
-                <CharacterCard cardId={content.cardTypeId} />
-              )}
+              {type === "roleCardRef" && <RoleCard cardId={cardId} />}
+              {type === "charCardRef" && <CharacterCard cardId={cardId} />}
               {type === "playingCardRef" &&
-                (content.cardTypeId !== "colt45" ? (
-                  "cardInstanceId" in content && (
-                    <PlayingCard
-                      cardId={content.cardInstanceId}
-                      initialIsFaceDown={false}
-                    />
-                  )
+                (cardId !== "colt45" ? (
+                  <PlayingCard cardId={cardId} initialIsFaceDown={false} />
                 ) : (
                   <DefaultWeaponCard />
                 ))}
             </div>
 
             {/* Legend */}
-            {Array.from(cardSymbols).length > 0 && (
+            {cardSymbols && Array.from(cardSymbols).length > 0 && (
               <div
                 className="flex flex-col h-fit pointer-events-none"
                 style={{ gap: sizeAdaptive(30), width: sizeAdaptive(1.7) }}
@@ -108,6 +113,8 @@ const extractSymbols = (meta: PlayingCardMeta) => {
   const symbols = new Set<string>();
 
   const cardDescription = meta.description;
+
+  if (!cardDescription) return null;
 
   for (const line of cardDescription) {
     for (const block of line) {

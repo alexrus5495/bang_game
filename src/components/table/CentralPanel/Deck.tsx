@@ -44,7 +44,7 @@ const Deck = React.memo(() => {
       {skeletonCards}
 
       <div
-        className="h-full w-auto absolute flex justify-center"
+        className="h-full w-auto absolute flex justify-center z-0"
         style={{ top: deckSize > 0 ? `-${deckSize / 2.5}%` : "0%" }}
         {...(deckSize > 0 ? handlersNonPinable : {})}
       >
@@ -56,6 +56,7 @@ const Deck = React.memo(() => {
           <PlayingCard cardId={null} initialIsFaceDown={true} />
         </div>
       </div>
+
       {isVisible && (
         <Tooltip
           title={"Deck"}

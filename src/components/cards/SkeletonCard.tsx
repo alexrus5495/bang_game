@@ -11,7 +11,7 @@ const SkeletonCard = React.memo(() => {
   return (
     <CardScaler>
       <div
-        className="shadow bg-[var(--WHITE)]"
+        className="shadow bg-[var(--WHITE)] relative"
         style={{
           height: `${CARD_CONTAINER_HEIGHT}px`,
           width: `${CARD_CONTAINER_WIDTH}px`,

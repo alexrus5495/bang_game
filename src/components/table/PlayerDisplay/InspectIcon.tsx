@@ -1,13 +1,8 @@
 import { useTooltip } from "../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import type { PlayingCardMeta } from "../../../types";
 import InspectCardTooltip from "../Tooltip/InspectCardTooltip";
 
-export default function InspectIcon({
-  cardMeta,
-}: {
-  cardMeta: PlayingCardMeta;
-}) {
+export default function InspectIcon({ cardId }: { cardId: string }) {
   const { isVisible, handlersNonPinable } = useTooltip();
 
   return (
@@ -26,14 +21,14 @@ export default function InspectIcon({
         {...handlersNonPinable}
       >
         <img
-          className="h-[90%] w-auto will-change-transform"
+          className="h-[90%] w-auto border border-white"
           src="./icon-inspect.png"
           alt=""
         />
       </div>
 
       <InspectCardTooltip
-        content={cardMeta}
+        cardId={cardId}
         type={"playingCardRef"}
         isVisible={isVisible}
       />

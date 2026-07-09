@@ -24,7 +24,7 @@ export default function RoleIcon({ role }: { role: string }) {
   );
 
   return (
-    <>
+    <div className="z-0">
       <div
         className="rounded-[50%] bg-paperTexture-yellow relative z-3"
         {...handlersPinable}
@@ -46,6 +46,6 @@ export default function RoleIcon({ role }: { role: string }) {
           isPinned={isPinned}
         />
       )}
-    </>
+    </div>
   );
 }

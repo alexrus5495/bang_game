@@ -30,8 +30,6 @@ export function setupTableSocketHandlers({
   const onSendHandValidationData = (data: CardValidationData[]) => {
     if (!socket.id) return;
     localStateStore.playersController.setHandValidationData(data, socket.id);
-    console.log(`validation data set`);
-    console.table(data);
   };
 
   //Emit after joining the game

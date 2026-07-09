@@ -16,7 +16,7 @@ export default function HandIcon({ playerId }: { playerId: string }) {
     ) ?? 0;
 
   return (
-    <>
+    <div className="z-[0]">
       <div
         className="h-full aspect-square"
         style={{ cursor: isDragging ? "default" : "pointer" }}
@@ -49,6 +49,6 @@ export default function HandIcon({ playerId }: { playerId: string }) {
           hasCardRef={false}
         />
       )}
-    </>
+    </div>
   );
 }

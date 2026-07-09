@@ -53,9 +53,9 @@ export function EventProcessor({ children }: { children: React.ReactNode }) {
     };
   }, [events, playAnimation, updateLocalState]);
 
-  //NOTE: DEBUG Remember to delete
+  // NOTE: DEBUG Remember to delete
   useEffect(() => {
-    console.table(events);
+    // console.table(events);
   }, [events]);
 
   return (
