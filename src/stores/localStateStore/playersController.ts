@@ -27,6 +27,7 @@ export type PlayersController = {
   setUnderSight: (playerId: string, value: boolean) => void;
   getRotatedPlayerIds: (clientId: string) => string[];
   getPlayerById: (playerId: string) => ClientPlayer | undefined;
+  getPlayerByIndex: (index: number) => ClientPlayer | undefined;
   getPlayerHandLength: (playerId: string) => number;
   getPlayerHealth: (
     playerId: string,
@@ -212,6 +213,10 @@ export const createPlayersController: StateCreator<
 
   getPlayerById: (playerId) => {
     return get().players.find((p) => p.id === playerId);
+  },
+
+  getPlayerByIndex: (index) => {
+    return get().players[index];
   },
 
   getPlayerHandLength: (playerId) => {
