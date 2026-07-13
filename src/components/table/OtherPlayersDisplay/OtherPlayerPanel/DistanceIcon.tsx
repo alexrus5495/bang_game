@@ -1,19 +1,12 @@
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
-import type { CardsMetaData, TooltipMessage } from "../../../../types";
-import React, { useMemo } from "react";
+import React from "react";
 import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import Tooltip from "../../Tooltip/Tooltip";
 import { useTooltip } from "../../../../hooks/useTooltip";
-import { useCardsMetaDataState } from "../../../../stores/hooks/useCardsMetaDataState";
-import { useLocalStateStore } from "../../../../stores/localStateStore";
-import { useRotatedPlayerIds } from "../../../../hooks/useRotatedPlayerIds";
-import { useStore } from "zustand";
-import { useShallow } from "zustand/shallow";
 import { useDragDropStore } from "../../../../stores/dragDropStore";
-import { socket } from "../../../../lib/socket";
+import { useDistanceInfo } from "./DistanceIcon.hooks";
 
 const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
-  const clientId = socket.id!;
   const isDragging = useDragDropStore((state) => state.isDragging);
 
   const {
@@ -25,106 +18,7 @@ const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
     hasCardRef,
   } = useTooltip();
   const locale = useSystemLocalization() as Record<string, string>;
-  const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
-
-  // 1. Get ordered list of players
-  const ids = useRotatedPlayerIds();
-
-  // 2. Map isEliminated for players
-  const eliminatedMap = useStore(
-    useLocalStateStore,
-    useShallow((state) => {
-      const map: Record<string, boolean> = {};
-      for (const p of state.players) {
-        map[p.id] = p.flags.isEliminated;
-      }
-      return map;
-    }),
-  );
-
-  // 3. Get client data for bonuses
-  const clientData = useStore(
-    useLocalStateStore,
-    useShallow((state) => {
-      const p = state.players.find((p) => p.id === clientId);
-      if (!p) return null;
-      return { char: p.char, equipment: p.equipment };
-    }),
-  );
-
-  // 4. Calculate distance and fill the tooltip
-  const { distance, tooltipContent } = useMemo(() => {
-    if (!ids || !eliminatedMap) {
-      return { distance: undefined, tooltipContent: [] as TooltipMessage[] };
-    }
-
-    const targetIndex = ids.indexOf(playerId);
-    if (targetIndex === -1 || targetIndex === 0) {
-      return { distance: 0, tooltipContent: [] as TooltipMessage[] };
-    }
-
-    // 1. Count alive players clockwise
-    let clockwise = 0;
-    for (let i = 1; i <= targetIndex; i++) {
-      // If the player is not the target and they are dead, skip counting them
-      if (i !== targetIndex && eliminatedMap[ids[i]]) continue;
-      clockwise++;
-    }
-
-    // 2. Count alive players counter-clockwise
-    let counterClockwise = 0;
-    for (let i = ids.length - 1; i >= targetIndex; i--) {
-      // If the player is not the target and they are dead, skip counting them
-      if (i !== targetIndex && eliminatedMap[ids[i]]) continue;
-      counterClockwise++;
-    }
-
-    // 3. Pick the shortest distance
-    let result = Math.min(clockwise, counterClockwise);
-
-    const newTooltipContent: TooltipMessage[] = [
-      [
-        {
-          type: "plainText",
-          content: `${locale["tooltip_baseDistance"]}: ${result}`,
-        },
-      ],
-    ];
-
-    // Check for bonuses
-    if (clientData) {
-      const mustangCard = clientData.equipment.find((item) =>
-        item.startsWith("mustang_"),
-      );
-
-      if (mustangCard) {
-        result++;
-        newTooltipContent.push([
-          { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
-          {
-            type: "playingCardRef",
-            content: cardsMeta.deckMeta[mustangCard],
-          },
-        ]);
-      }
-
-      if (clientData.char === "paul_regret") {
-        result++;
-        newTooltipContent.push([
-          { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
-          {
-            type: "charCardRef",
-            content: cardsMeta.charDeckMeta["paul_regret"],
-          },
-        ]);
-      }
-    }
-
-    return {
-      distance: result,
-      tooltipContent: newTooltipContent,
-    };
-  }, [ids, eliminatedMap, playerId, clientData, locale, cardsMeta]);
+  const { distance, tooltipContent } = useDistanceInfo(playerId);
 
   return (
     <>
@@ -146,7 +40,7 @@ const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
         <img
           src="./icon-distance.png"
           alt=""
-          className="absolute top-[-60%] right-[12.5%] h-[70%] z-0"
+          className="absolute top-[-60%] h-[70%] z-0"
           draggable={false}
         />
       </div>
