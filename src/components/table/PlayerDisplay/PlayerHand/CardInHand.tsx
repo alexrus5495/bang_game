@@ -12,6 +12,7 @@ import {
   useCardPosition,
   useIsCardPlayable,
 } from "./CardInHand.hooks";
+import useIsCurrentPlayer from "../../../../hooks/useIsCurrentPlayer";
 
 type CardInHandProps = {
   cardId: string;
@@ -101,6 +102,7 @@ function CardInHandInner({
   setIsDragging: (value: boolean) => void;
 }) {
   const { isHighlighted, onMouseLeave } = useCardHighlight(index);
+  const isCurrent = useIsCurrentPlayer();
   const isCardPlayable = useIsCardPlayable(index);
 
   const anchorId = useMemo<AnchorId>(
@@ -118,7 +120,7 @@ function CardInHandInner({
   return (
     <m.div
       className="w-full h-full cursor-grab active:cursor-grabbing relative"
-      drag
+      drag={isCurrent}
       dragConstraints={false}
       dragElastic={1}
       dragSnapToOrigin={true}

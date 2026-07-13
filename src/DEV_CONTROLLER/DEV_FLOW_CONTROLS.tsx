@@ -1,5 +1,6 @@
 import { useLocalStateStore, type LocalState } from "../stores/localStateStore";
 import { socket } from "../lib/socket";
+import useIsCurrentPlayer from "../hooks/useIsCurrentPlayer";
 
 export default function DevFlowControls() {
   return (
@@ -27,12 +28,15 @@ export default function DevFlowControls() {
 }
 
 function SeatButton({ seatIndex }: { seatIndex: number }) {
-  const players = useLocalStateStore((state) => state.players);
-  const turn = useLocalStateStore((state) => state.turn);
   const devController = useLocalStateStore((state) => state.devController);
 
-  const player = players[seatIndex];
-  const isCurrent = turn.playerId === player?.id;
+  const player = useLocalStateStore((state) =>
+    state.playersController.getPlayerByIndex(seatIndex),
+  );
+
+  const isCurrent = useIsCurrentPlayer(player?.id ?? "");
+
+  if (!player) return null;
 
   const onClick = () => {
     if (seatIndex !== -1) {

@@ -4,6 +4,8 @@ import { useHandValidation } from "../../../../hooks/useHandValidation";
 import { useDragDropStore } from "../../../../stores/dragDropStore";
 import { useCallback, useMemo, useRef } from "react";
 import { useAnimationFrame, useMotionValue } from "motion/react";
+import useIsCurrentPlayer from "../../../../hooks/useIsCurrentPlayer";
+import { useAnimationStore } from "../../../../stores/animationStore";
 
 export function useCardPosition(data: {
   spacing: number;
@@ -17,12 +19,13 @@ export function useCardPosition(data: {
   const isHighlighted = data.highlightedCardIndex === data.index;
   const anchor = useAnchors();
   const zeroAnchor = anchor.getRect({ type: "player-hand-zero" });
+  const isCurrent = useIsCurrentPlayer();
 
   const getTop = useCallback((): number => {
     if (!zeroAnchor) return 0;
     let currentTop = zeroAnchor.top;
 
-    if (!data.isCardPlayable) {
+    if (!data.isCardPlayable && isCurrent) {
       currentTop += zeroAnchor.height * 0.1;
     }
 
@@ -31,7 +34,7 @@ export function useCardPosition(data: {
     }
 
     return currentTop;
-  }, [data.isCardPlayable, isHighlighted, zeroAnchor]);
+  }, [data.isCardPlayable, isHighlighted, zeroAnchor, isCurrent]);
 
   const getTranslateX = useCallback((): string | number => {
     // 1. If no focus or it's on this card - no shift
@@ -88,6 +91,7 @@ export function useIsCardPlayable(index: number) {
 }
 
 export function useCardHighlight(index: number) {
+  const currentAnimation = useAnimationStore((state) => state.currentAnimation);
   const { highlightedCardIndex, setHighlightedCardIndex } = useDragDropStore(
     useShallow((state) => ({
       highlightedCardIndex: state.highlightedCardIndex,
@@ -98,8 +102,10 @@ export function useCardHighlight(index: number) {
   const isHighlighted = highlightedCardIndex === index;
 
   const onMouseEnter = useCallback(() => {
+    if (currentAnimation) return;
+
     setHighlightedCardIndex(index);
-  }, [index, setHighlightedCardIndex]);
+  }, [index, setHighlightedCardIndex, currentAnimation]);
 
   const onMouseLeave = useCallback(() => {
     setHighlightedCardIndex(null);
