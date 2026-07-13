@@ -13,7 +13,7 @@ const EndTurnButton = React.memo(() => {
         stiffness: 300,
         damping: 30,
       }}
-      className="relative top-0 left-0 right-0 flex justify-center z-[0]"
+      className="h-full w-full relative top-0 left-0 right-0 flex justify-center z-[0]"
     >
       <div className="w-[80%] relative" style={{ height: sizeAdaptive(30) }}>
         <img className="absolute z-0" src="./base_turn.png" alt="" />

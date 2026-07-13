@@ -4,11 +4,12 @@ import DeckPlacingMarker from "./CentralPanel/DeckPlacingMarker";
 import CardPlayingArea from "./CentralPanel/CardPlayingArea";
 import DiscardPile from "./CentralPanel/DiscardPile";
 import React from "react";
+import { twMerge } from "tailwind-merge";
 
-const CentralPanel = React.memo(() => {
+const CentralPanel = React.memo(({ className }: { className?: string }) => {
   return (
     <div
-      className="h-full w-full bg-fabricTexture border flex"
+      className={twMerge("bg-fabricTexture border flex", className)}
       style={{
         borderWidth: sizeAdaptive(200),
         borderColor: "var(--WHITE)",

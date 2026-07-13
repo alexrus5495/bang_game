@@ -8,12 +8,13 @@ import CurrentPlayerName from "./MainDisplay/CurrentPlayerName";
 import PhaseDisplay from "./MainDisplay/PhaseDisplay";
 import EndTurnButton from "./MainDisplay/EndTurnButton";
 import useIsCurrentPlayer from "../../hooks/useIsCurrentPlayer";
+import { twMerge } from "tailwind-merge";
 
-const MainDisplay = React.memo(() => {
+const MainDisplay = React.memo(({ className }: { className?: string }) => {
   const isCurrent = useIsCurrentPlayer();
 
   return (
-    <div>
+    <div className={twMerge(className)}>
       <Content />
       <Backdrop />
       <AnimatePresence>{isCurrent && <EndTurnButton />}</AnimatePresence>

@@ -4,12 +4,15 @@ import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import EquipmentCardsPanel from "./shared/EquipmentCardsPanel";
 import React from "react";
 import { socket } from "../../lib/socket";
+import { twMerge } from "tailwind-merge";
 
-const PlayerArea = React.memo(() => {
+const PlayerArea = React.memo(({ className }: { className?: string }) => {
   if (!socket.id) return null;
 
   return (
-    <div className="h-full w-full flex items-end relative">
+    <div
+      className={twMerge("h-full w-full flex items-end relative", className)}
+    >
       <div className="flex w-[30%] h-full items-center">
         <div
           className="w-[95%] h-[90%] mt-[4%]"
