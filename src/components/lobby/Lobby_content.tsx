@@ -84,7 +84,6 @@ export default function Lobby_content({
 
   const startGame = () => {
     socket.emit(SocketEvents.CREATE_GAME, currentLobbyId);
-    console.log("SENT CREATE_GAME");
     setExitAnimationType("up");
   };
 

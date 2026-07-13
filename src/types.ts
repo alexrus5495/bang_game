@@ -188,7 +188,6 @@ export interface EventType {
     };
     visibleTo: string[];
   };
-  CARD_SNAPBACK: { cardId: string; lastIndex: number };
   player_played_card: { playerId: string; cardId: string };
   player_player_card_against: {
     playerId: string;
