@@ -20,6 +20,9 @@ type CardInHandProps = {
   index: number;
 };
 
+const AURA_AVAILABLE = "#09e510";
+const AURA_ACTIVE = "#a9b0fc";
+
 const CardInHand = React.memo(({ cardId, spacing, index }: CardInHandProps) => {
   const [isDragging, setIsDragging] = useState(false);
 
@@ -151,7 +154,7 @@ function CardInHandInner({
       </div>
 
       {isCardPlayable && (
-        <CardAuraEffect color={isDragging ? "#a9b0fc " : "#09e510"} />
+        <CardAuraEffect color={isDragging ? AURA_ACTIVE : AURA_AVAILABLE} />
       )}
 
       {isHighlighted && !isDragging && <InspectIcon cardId={cardId} />}
