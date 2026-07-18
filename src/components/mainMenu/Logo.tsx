@@ -2,26 +2,8 @@ import { m, useAnimation } from "motion/react";
 import { useEffect } from "react";
 
 export default function Logo() {
-  const logoControls = useAnimation();
-  const shadowControls = useAnimation();
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    animateStartUp(logoControls, shadowControls, controller.signal);
-
-    return () => controller.abort();
-  }, [logoControls, shadowControls]);
-
-  function handleClickLogo() {
-    const controller = new AbortController();
-
-    stopAnimation(logoControls, shadowControls);
-    animateSwing(logoControls, shadowControls);
-    setTimeout(() => {
-      animateStartUp(logoControls, shadowControls, controller.signal);
-    }, 4000);
-  }
+  const { shadowControls, logoControls, handleClickLogo } =
+    useInteractiveLogo();
 
   return (
     <>
@@ -54,6 +36,31 @@ export default function Logo() {
       />
     </>
   );
+}
+
+function useInteractiveLogo() {
+  const logoControls = useAnimation();
+  const shadowControls = useAnimation();
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    animateStartUp(logoControls, shadowControls, controller.signal);
+
+    return () => controller.abort();
+  }, [logoControls, shadowControls]);
+
+  function handleClickLogo() {
+    const controller = new AbortController();
+
+    stopAnimation(logoControls, shadowControls);
+    animateSwing(logoControls, shadowControls);
+    setTimeout(() => {
+      animateStartUp(logoControls, shadowControls, controller.signal);
+    }, 4000);
+  }
+
+  return { logoControls, shadowControls, handleClickLogo };
 }
 
 function animateStartUp(

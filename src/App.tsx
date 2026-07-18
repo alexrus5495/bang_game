@@ -12,32 +12,19 @@ import { useCurrentPageState } from "./stores/hooks/useCurrentPageState";
 import Table from "./pages/table";
 import { SocketEvents } from "./lib/socketEvents";
 import { useLoadLocalization } from "./stores/hooks/useLoadLocalization";
+import { socket } from "./lib/socket";
+import type { CurrentPage } from "./types";
 
 export default function App() {
-  const { isConnected, socketId, socket } = useSocket();
+  const { isConnected, socketId } = useSocket();
   const [currentPage, setCurrentPage] = useCurrentPageState();
-  const loadLocalization = useLoadLocalization();
-
-  useEffect(() => {
-    const handleTestGame = () => {
-      setCurrentPage("table");
-    };
-    socket.emit("TEST_GAME");
-    socket.once(SocketEvents.GAME_CREATED, handleTestGame);
-  }, [socket, setCurrentPage]);
-
-  const [isFirstRender, setIsFirstRender] = useState(true);
   const [exitAnimationType, setExitAnimationType] = useState<"left" | "up">(
     "left",
   );
+  const isFirstRender = useFirstRenderSwitch();
+  useLoadDefaultLocale();
 
-  useEffect(() => {
-    loadLocalization("enEN");
-  }, [loadLocalization]);
-
-  useEffect(() => {
-    setIsFirstRender(false);
-  }, []);
+  useTestGame(setCurrentPage);
 
   return (
     <div className="h-[100vh] w-[100vw] flex items-center bg-woodenTexture select-none absolute overflow-hidden">
@@ -124,4 +111,32 @@ export default function App() {
       </AnimatePresence>
     </div>
   );
+}
+
+function useTestGame(setCurrentPage: (v: CurrentPage) => void) {
+  useEffect(() => {
+    const handleTestGame = () => {
+      setCurrentPage("table");
+    };
+    socket.emit("TEST_GAME");
+    socket.once(SocketEvents.GAME_CREATED, handleTestGame);
+  }, [socket, setCurrentPage]);
+}
+
+function useLoadDefaultLocale() {
+  const loadLocalization = useLoadLocalization();
+
+  useEffect(() => {
+    loadLocalization("enEN");
+  }, [loadLocalization]);
+}
+
+function useFirstRenderSwitch() {
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  useEffect(() => {
+    setIsFirstRender(false);
+  }, []);
+
+  return isFirstRender;
 }
