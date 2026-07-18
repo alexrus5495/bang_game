@@ -1,14 +1,18 @@
 import { AnimatePresence, m } from "motion/react";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
-import { useLocalStateStore } from "../../stores/localStateStore";
 import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import Carousel from "./MainDisplay/Carousel";
 import React from "react";
 import CurrentPlayerName from "./MainDisplay/CurrentPlayerName";
 import PhaseDisplay from "./MainDisplay/PhaseDisplay";
 import EndTurnButton from "./MainDisplay/EndTurnButton";
-import useIsCurrentPlayer from "../../hooks/useIsCurrentPlayer";
 import { twMerge } from "tailwind-merge";
+import {
+  useCurrentPlayerId,
+  useIsCurrentPlayer,
+  useIsPreparing,
+  usePreviousPlayerId,
+} from "../../stores/hooks/localStateStore.hooks";
 
 const MainDisplay = React.memo(({ className }: { className?: string }) => {
   const isCurrent = useIsCurrentPlayer();
@@ -34,10 +38,11 @@ function Backdrop() {
 }
 
 function Content() {
-  const turn = useLocalStateStore((state) => state.turn);
   const locale = useSystemLocalization() as Record<string, string>;
-  const currentPlayer = turn.playerId ?? turn.previousPlayerId;
-  const isReady = currentPlayer !== null;
+  const currentPlayerId = useCurrentPlayerId();
+  const previousPlayerId = usePreviousPlayerId();
+  const currentPlayer = currentPlayerId ?? previousPlayerId;
+  const isPreparing = useIsPreparing();
 
   return (
     <div
@@ -45,9 +50,9 @@ function Content() {
       style={{ height: sizeAdaptive(4.6), width: sizeAdaptive(2.95) }}
     >
       <AnimatePresence mode="wait">
-        {!isReady && <PreparationCurtain />}
+        {isPreparing && <PreparationCurtain />}
 
-        {isReady && (
+        {!isPreparing && (
           <m.div
             className="h-full w-full flex flex-col justify-center items-center overflow-hidden"
             initial={{ opacity: 0 }}

@@ -8,7 +8,7 @@ import React from "react";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useShallow } from "zustand/shallow";
 import { useStore } from "zustand";
-import useIsCurrentPlayer from "../../../hooks/useIsCurrentPlayer";
+import { useIsCurrentPlayer } from "../../../stores/hooks/localStateStore.hooks";
 
 const OtherPlayerPanel = React.memo(({ playerId }: { playerId: string }) => {
   const locale = useSystemLocalization() as Record<string, string>;

@@ -1,8 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../lib/images";
-import { useLocalStateStore } from "../../../stores/localStateStore";
+import {
+  useCurrentPlayerId,
+  usePlayers,
+  usePreviousPlayerId,
+} from "../../../stores/hooks/localStateStore.hooks";
 
 interface CarouselItem {
   id: string; // Unique and stable id for layout animations
@@ -21,7 +25,7 @@ export default function Carousel() {
   );
 }
 
-function Frame({ char, index }: { char: string; index: number }) {
+const Frame = React.memo(({ char, index }: { char: string; index: number }) => {
   const isCurrent = useMemo(() => index === 4, [index]);
   const imageElement = useMemo(() => {
     return getImageComponent(char, {
@@ -54,11 +58,12 @@ function Frame({ char, index }: { char: string; index: number }) {
       {char !== "" && imageElement}
     </m.div>
   );
-}
+});
 
 function useCarousel() {
-  const turn = useLocalStateStore((state) => state.turn);
-  const players = useLocalStateStore((state) => state.players);
+  const currentPlayerId = useCurrentPlayerId();
+  const previousPlayerId = usePreviousPlayerId();
+  const players = usePlayers();
   const prevPlayerId = useRef<string | null>(null);
   const keyCounter = useRef(0);
 
@@ -69,9 +74,9 @@ function useCarousel() {
       .map((_, i) => ({ id: `empty-${i}`, char: "" })),
   );
 
-  const currentPlayerId = useMemo(
-    () => turn.playerId ?? turn.previousPlayerId,
-    [turn.playerId, turn.previousPlayerId],
+  const playerId = useMemo(
+    () => currentPlayerId ?? previousPlayerId,
+    [currentPlayerId, previousPlayerId],
   );
 
   const alivePlayers = useMemo(
@@ -167,18 +172,18 @@ function useCarousel() {
     };
 
     // react-doctor-disable-next-line no-cascading-set-state
-    if (!turn.playerId) return;
+    if (!currentPlayerIndex) return;
 
     if (prevPlayerId.current === null) {
       initializeCarousel();
-    } else if (prevPlayerId.current !== turn.playerId) {
+    } else if (prevPlayerId.current !== playerId) {
       handleTurnChange();
     } else {
       handleMidTurnDeath();
     }
 
-    prevPlayerId.current = turn.playerId;
-  }, [currentPlayerId, alivePlayers, turn.playerId]);
+    prevPlayerId.current = playerId;
+  }, [currentPlayerId, alivePlayers, playerId]);
 
   return items;
 }

@@ -1,6 +1,11 @@
-import { useLocalStateStore, type LocalState } from "../stores/localStateStore";
+import { type LocalState } from "../stores/localStateStore";
 import { socket } from "../lib/socket";
-import useIsCurrentPlayer from "../hooks/useIsCurrentPlayer";
+import {
+  useDevController,
+  useIsCurrentPlayer,
+  usePlayersController,
+  useTurnPhase,
+} from "../stores/hooks/localStateStore.hooks";
 
 export default function DevFlowControls() {
   return (
@@ -18,22 +23,19 @@ export default function DevFlowControls() {
       </div>
       <div className="flex flex-col gap-2 items-center">
         <div className="text-3xl">PHASE:</div>
-        <PhaseButton phase={"idle"} />
-        <PhaseButton phase={"drawing"} />
-        <PhaseButton phase={"playing"} />
-        <PhaseButton phase={"discarding"} />
+        <PhaseButton phase={"IDLE"} />
+        <PhaseButton phase={"DRAWING"} />
+        <PhaseButton phase={"PLAYING"} />
+        <PhaseButton phase={"DISCARDING"} />
       </div>
     </div>
   );
 }
 
 function SeatButton({ seatIndex }: { seatIndex: number }) {
-  const devController = useLocalStateStore((state) => state.devController);
-
-  const player = useLocalStateStore((state) =>
-    state.playersController.getPlayerByIndex(seatIndex),
-  );
-
+  const devController = useDevController();
+  const playersController = usePlayersController();
+  const player = playersController.getPlayerByIndex(seatIndex);
   const isCurrent = useIsCurrentPlayer(player?.id ?? "");
 
   if (!player) return null;
@@ -56,10 +58,9 @@ function SeatButton({ seatIndex }: { seatIndex: number }) {
   );
 }
 
-function PhaseButton({ phase }: { phase: LocalState["turn"]["phase"] }) {
-  const turn = useLocalStateStore((state) => state.turn);
-  const devController = useLocalStateStore((state) => state.devController);
-  const currentPhase = turn.phase;
+function PhaseButton({ phase }: { phase: LocalState["turnPhase"] }) {
+  const currentPhase = useTurnPhase();
+  const devController = useDevController();
   const isCurrent = currentPhase === phase;
 
   const onClick = () => {

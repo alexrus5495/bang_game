@@ -6,11 +6,11 @@ import { getImageComponent } from "../../../../lib/images";
 import type { CardsMetaData, TooltipMessage } from "../../../../types";
 import Tooltip from "../../Tooltip/Tooltip";
 import { useMemo } from "react";
-import { useDragDropStore } from "../../../../stores/dragDropStore";
+import { useIsDragging } from "../../../../stores/hooks/localStateStore.hooks";
 
 export default function RoleIcon({ role }: { role: string }) {
   const { position, isVisible, handlersPinable, isPinned } = useTooltip();
-  const isDragging = useDragDropStore((state) => state.isDragging);
+  const isDragging = useIsDragging();
   const locale = useSystemLocalization() as Record<string, string>;
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
 

@@ -1,5 +1,10 @@
 import type { StateCreator } from "zustand";
-import type { LocalState } from "../localStateStore";
+import type {
+  GameFlowPhase,
+  InteractionPhase,
+  LocalState,
+} from "../localStateStore";
+import { socket } from "../../lib/socket";
 
 export type DevController = {
   setTurn: (playerId: string | null) => void;
@@ -14,13 +19,30 @@ export const createDevController: StateCreator<
   DevController
 > = (set) => ({
   setTurn: (playerId) =>
-    set((state) => ({
-      turn: {
-        ...state.turn,
-        previousPlayerId: playerId,
-        playerId,
-      },
-    })),
+    set((state) => {
+      const clientId = socket.id ?? "";
+      const isClientTurn = playerId === clientId;
+
+      const gameFlowPhase: GameFlowPhase = isClientTurn
+        ? "CLIENT_TURN"
+        : "OPPONENT_TURN";
+      const interactionPhase: InteractionPhase = isClientTurn
+        ? "AWAITING_ACTION"
+        : "IDLE";
+
+      return {
+        turn: {
+          ...state.turn,
+          previousPlayerId: playerId,
+          playerId,
+        },
+        ui: {
+          ...state.ui,
+          gameFlowPhase,
+          interactionPhase,
+        },
+      };
+    }),
 
   setPhase: (phase) =>
     set((state) => ({

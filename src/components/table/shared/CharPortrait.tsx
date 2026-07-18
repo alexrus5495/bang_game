@@ -7,15 +7,13 @@ import { getImageComponent } from "../../../lib/images";
 import type { CardsMetaData, TooltipMessage } from "../../../types";
 import Tooltip from "../Tooltip/Tooltip";
 import { useLocalStateStore } from "../../../stores/localStateStore";
-import { useStore } from "zustand";
 import { useShallow } from "zustand/shallow";
-import { useDragDropStore } from "../../../stores/dragDropStore";
+import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
 
 const CharPortrait = React.memo(({ playerId }: { playerId: string }) => {
-  const playerData = useStore(
-    useLocalStateStore,
+  const playerData = useLocalStateStore(
     useShallow((state) => {
-      const p = state.playersController.getPlayerById(playerId);
+      const p = state.players.find((player) => player.id === playerId);
       if (!p) return null;
       return {
         char: p.char,
@@ -25,7 +23,7 @@ const CharPortrait = React.memo(({ playerId }: { playerId: string }) => {
     }),
   );
 
-  const isDragging = useDragDropStore((state) => state.isDragging);
+  const isDragging = useIsDragging();
 
   const imageElement = useMemo(() => {
     if (!playerData?.char) return null;

@@ -5,12 +5,12 @@ import type { TooltipMessage } from "../../../../types";
 import Tooltip from "../../Tooltip/Tooltip";
 import { useLocalStateStore } from "../../../../stores/localStateStore";
 import React from "react";
-import { useDragDropStore } from "../../../../stores/dragDropStore";
+import { useIsDragging } from "../../../../stores/hooks/localStateStore.hooks";
 
 const PlayerTypeIcon = React.memo(({ playerId }: { playerId: string }) => {
   const { position, isVisible, handlersNonPinable } = useTooltip();
   const locale = useSystemLocalization() as Record<string, string>;
-  const isDragging = useDragDropStore((state) => state.isDragging);
+  const isDragging = useIsDragging();
 
   const isAI = useLocalStateStore(
     (state) => state.playersController.getPlayerById(playerId)?.isAI,

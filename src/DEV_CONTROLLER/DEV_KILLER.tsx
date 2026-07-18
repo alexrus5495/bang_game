@@ -1,5 +1,8 @@
-import { useLocalStateStore } from "../stores/localStateStore";
 import { socket } from "../lib/socket";
+import {
+  useDevController,
+  usePlayers,
+} from "../stores/hooks/localStateStore.hooks";
 
 export default function DevKiller() {
   return (
@@ -19,8 +22,8 @@ export default function DevKiller() {
 }
 
 function SeatButton({ seatIndex }: { seatIndex: number }) {
-  const players = useLocalStateStore((state) => state.players);
-  const devController = useLocalStateStore((state) => state.devController);
+  const players = usePlayers();
+  const devController = useDevController();
   const player = players[seatIndex];
   const isAlive = !player.flags.isEliminated;
 

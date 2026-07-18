@@ -1,18 +1,11 @@
-// REFACTORING ON v1
 import { m } from "motion/react";
 import PlayingCard from "../../../cards/PlayingCard";
 import InspectIcon from "../InspectIcon";
 import AnimationAnchor from "../../shared/AnimationAnchor";
-import React, { useMemo, useState, type ReactNode } from "react";
-import { type AnchorId } from "../../../../contexts/AnchorsContext";
+import React, { type ReactNode } from "react";
 import CardAuraEffect from "../../../../shaders/cardAuraEffect";
-import {
-  use3dTilt,
-  useCardHighlight,
-  useCardPosition,
-  useIsCardPlayable,
-} from "./CardInHand.hooks";
-import useIsCurrentPlayer from "../../../../hooks/useIsCurrentPlayer";
+import { CardInHandProvider, useCardInHandContext } from "./CardInHand.context";
+import { useCardPosition } from "./CardInHand.hooks";
 
 type CardInHandProps = {
   cardId: string;
@@ -20,144 +13,115 @@ type CardInHandProps = {
   index: number;
 };
 
+// Colors for card's aura effect
 const AURA_AVAILABLE = "#09e510";
 const AURA_ACTIVE = "#a9b0fc";
 
+//
+// MAIN COMPONENT
 const CardInHand = React.memo(({ cardId, spacing, index }: CardInHandProps) => {
-  const [isDragging, setIsDragging] = useState(false);
-
-  return (
-    <CardInHandOuter isDragging={isDragging} spacing={spacing} index={index}>
-      <CardInHandInner
-        isDragging={isDragging}
-        index={index}
-        cardId={cardId}
-        setIsDragging={setIsDragging}
-      />
-    </CardInHandOuter>
-  );
-});
-
-export default CardInHand;
-
-function CardInHandOuter({
-  isDragging,
-  spacing,
-  index,
-  children,
-}: {
-  isDragging: boolean;
-  spacing: number;
-  index: number;
-  children: ReactNode;
-}) {
-  const { highlightedCardIndex, onMouseLeave, onMouseEnter } =
-    useCardHighlight(index);
-  const isCardPlayable = useIsCardPlayable(index);
-
   const position = useCardPosition({
     spacing,
     index,
-    highlightedCardIndex,
-    isCardPlayable,
   });
 
   if (!position) return null;
 
   return (
+    <CardInHandProvider
+      cardId={cardId}
+      index={index}
+      spacing={spacing}
+      position={position}
+    >
+      <CardInHandOuter>
+        <CardInHandInner />
+      </CardInHandOuter>
+    </CardInHandProvider>
+  );
+});
+
+export default CardInHand;
+
+//
+// OUTER COMPONENT
+const CardInHandOuter = React.memo(({ children }: { children: ReactNode }) => {
+  const { position, drag, handlers } = useCardInHandContext();
+
+  return (
     <m.div
       className="absolute will-change-transform pointer-events-auto"
       style={{
-        zIndex: isDragging ? 999 : position.currentZIndex,
+        zIndex: drag.isDragged ? 999 : position.zIndex,
         transformOrigin: "top right",
         perspective: 600,
       }}
       initial={false}
       animate={{
-        left: position.currentLeft,
-        height: position.currentHeight,
-        top: position.currentTop,
-        translateX: position.currentTranslateX,
-        scale: isDragging ? 1 : position.currentScale,
+        left: `${position.left}px`,
+        height: `${position.height}px`,
+        top: position.top,
+        translateX: position.translateX,
       }}
       transition={{
         scale: { duration: 0.1, ease: "easeInOut" },
         top: { duration: 0.15, ease: "easeInOut" },
       }}
-      // Block hover triggers on the neighbor cards during drag
-      onMouseEnter={isDragging ? undefined : onMouseEnter}
-      onMouseLeave={isDragging ? undefined : onMouseLeave}
+      onMouseEnter={drag.isDragging ? undefined : handlers.onMouseEnter}
+      onMouseLeave={drag.isDragging ? undefined : handlers.onMouseLeave}
     >
       {children}
     </m.div>
   );
-}
+});
 
-function CardInHandInner({
-  index,
-  cardId,
-  isDragging,
-  setIsDragging,
-}: {
-  index: number;
-  cardId: string;
-  isDragging: boolean;
-  setIsDragging: (value: boolean) => void;
-}) {
-  const { isHighlighted, onMouseLeave } = useCardHighlight(index);
-  const isCurrent = useIsCurrentPlayer();
-  const isCardPlayable = useIsCardPlayable(index);
-
-  const anchorId = useMemo<AnchorId>(
-    () => ({ type: "player-hand-card", index }),
-    [index],
-  );
-
-  const { dragX, dragY, rotateX, rotateY } = use3dTilt(isDragging);
-
-  const handleDragStart = () => {
-    setIsDragging(true);
-    onMouseLeave();
-  };
+//
+//  INNER COMPONENT
+const CardInHandInner = React.memo(() => {
+  const { card, drag, misc, highlight, handlers, position } =
+    useCardInHandContext();
 
   return (
     <m.div
       className="w-full h-full cursor-grab active:cursor-grabbing relative"
-      drag={isCurrent}
+      drag={misc.isCurrent && card.isPlayable}
       dragConstraints={false}
       dragElastic={1}
       dragSnapToOrigin={true}
       dragTransition={{ bounceStiffness: 400, bounceDamping: 25 }}
       style={{
-        x: dragX,
-        y: dragY,
-        rotateX: rotateX,
-        rotateY: rotateY,
+        x: drag.x,
+        y: drag.y,
+        transformOrigin: "top right",
+        rotateX: position.rotateX,
+        rotateY: position.rotateY,
         transformStyle: "preserve-3d",
+        pointerEvents: drag.isDragged ? "none" : "auto",
       }}
-      onDragStart={handleDragStart}
-      onDragEnd={() => {
-        setIsDragging(false);
-        onMouseLeave();
-      }}
-      whileDrag={{
-        scale: 1.2,
-      }}
+      onDragStart={() => handlers.onDragStart(card.index)}
+      onDragEnd={() => handlers.onDragEnd()}
     >
-      <AnimationAnchor id={anchorId} className="w-full h-full absolute" />
+      <AnimationAnchor id={misc.anchorId} className="w-full h-full absolute" />
 
-      <div
+      <m.div
         style={{ transform: "translateZ(0px)", backfaceVisibility: "hidden" }}
         className="w-full h-full"
+        animate={{
+          scale: drag.isDragged ? 1.2 : position.scale,
+        }}
       >
-        <PlayingCard cardId={cardId} initialIsFaceDown={false} />
-      </div>
+        <PlayingCard cardId={card.id} initialIsFaceDown={false} />
 
-      {isCardPlayable && (
-        <CardAuraEffect color={isDragging ? AURA_ACTIVE : AURA_AVAILABLE} />
+        {card.isPlayable && (
+          <CardAuraEffect
+            color={drag.isDragged ? AURA_ACTIVE : AURA_AVAILABLE}
+          />
+        )}
+      </m.div>
+
+      {highlight.isHighlighted && !drag.isDragging && (
+        <InspectIcon cardId={card.id} />
       )}
-
-      {isHighlighted && !isDragging && <InspectIcon cardId={cardId} />}
     </m.div>
   );
-}
+});

@@ -3,11 +3,11 @@ import React from "react";
 import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import Tooltip from "../../Tooltip/Tooltip";
 import { useTooltip } from "../../../../hooks/useTooltip";
-import { useDragDropStore } from "../../../../stores/dragDropStore";
 import { useDistanceInfo } from "./DistanceIcon.hooks";
+import { useIsDragging } from "../../../../stores/hooks/localStateStore.hooks";
 
 const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
-  const isDragging = useDragDropStore((state) => state.isDragging);
+  const isDragging = useIsDragging();
 
   const {
     position,

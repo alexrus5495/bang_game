@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { m } from "motion/react";
-import {
-  useLocalStateStore,
-  type LocalState,
-} from "../../../stores/localStateStore";
+import { type LocalState } from "../../../stores/localStateStore";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
+import { useTurnPhase } from "../../../stores/hooks/localStateStore.hooks";
 
 const PhaseDisplay = React.memo(() => {
-  const phase = useLocalStateStore((state) => state.turn.phase);
+  const phase = useTurnPhase();
 
   return (
     <m.div layout className="h-full w-full flex">
@@ -18,11 +16,7 @@ const PhaseDisplay = React.memo(() => {
   );
 });
 
-const PlayingIndicator = ({
-  phase,
-}: {
-  phase: LocalState["turn"]["phase"];
-}) => {
+const PlayingIndicator = ({ phase }: { phase: LocalState["turnPhase"] }) => {
   return (
     <m.div layout className="h-full w-[30%] flex justify-end items-center">
       <m.img
@@ -30,7 +24,7 @@ const PlayingIndicator = ({
         className="h-[80%] w-auto border"
         src="./phase_play.png"
         alt=""
-        animate={{ opacity: phase === "playing" ? 1 : 0.5 }}
+        animate={{ opacity: phase === "PLAYING" ? 1 : 0.5 }}
         transition={{ duration: 0.3 }}
       />
     </m.div>
@@ -76,11 +70,7 @@ const TurnTimer = () => {
   );
 };
 
-const DiscardIndicator = ({
-  phase,
-}: {
-  phase: LocalState["turn"]["phase"];
-}) => {
+const DiscardIndicator = ({ phase }: { phase: LocalState["turnPhase"] }) => {
   return (
     <m.div layout className="h-full w-[30%] flex justify-start items-center">
       <m.img
@@ -88,7 +78,7 @@ const DiscardIndicator = ({
         className="h-[80%]"
         src="./phase_discard.png"
         alt=""
-        animate={{ opacity: phase === "discarding" ? 1 : 0.5 }}
+        animate={{ opacity: phase === "DISCARDING" ? 1 : 0.5 }}
         transition={{ duration: 0.3 }}
       />
     </m.div>

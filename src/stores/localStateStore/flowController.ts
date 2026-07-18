@@ -1,5 +1,10 @@
 import type { StateCreator } from "zustand";
-import type { LocalState } from "../localStateStore";
+import type {
+  GameFlowPhase,
+  InteractionPhase,
+  LocalState,
+} from "../localStateStore";
+import { socket } from "../../lib/socket";
 
 export type FlowController = {
   turnStart: (playerId: string) => void;
@@ -10,6 +15,7 @@ export type FlowController = {
   playingEnd: () => void;
   discardingStart: () => void;
   discardingEnd: () => void;
+  initiateCardPlayAttempt: () => void;
 };
 
 export const createFlowController: StateCreator<
@@ -19,67 +25,71 @@ export const createFlowController: StateCreator<
   FlowController
 > = (set) => ({
   turnStart: (playerId) =>
-    set((state) => ({
-      turn: {
-        ...state.turn,
-        playerId,
-      },
-    })),
+    set((state) => {
+      const clientId = socket.id ?? "";
+      const isClientTurn = playerId === clientId;
+
+      const gameFlowPhase: GameFlowPhase = isClientTurn
+        ? "CLIENT_TURN"
+        : "OPPONENT_TURN";
+      const interactionPhase: InteractionPhase = isClientTurn
+        ? "AWAITING_ACTION"
+        : "IDLE";
+
+      return {
+        ...state,
+        currentPlayerId: playerId,
+        gameFlowPhase,
+        interactionPhase,
+      };
+    }),
 
   turnEnd: () =>
     set((state) => ({
-      turn: {
-        ...state.turn,
-        previousPlayerId: state.turn.playerId,
-        playerId: null,
-      },
+      ...state,
+      previousPlayerId: state.currentPlayerId,
+      currentPlayerId: null,
+      phase: "IDLE",
+      gameFlowPhase: "TURN_TRANSITION",
     })),
 
   drawingStart: () =>
     set((state) => ({
-      turn: {
-        ...state.turn,
-        phase: "drawing",
-      },
+      ...state,
+      phase: "DRAWING",
     })),
 
   drawingEnd: () =>
     set((state) => ({
-      turn: {
-        ...state.turn,
-        phase: "idle",
-      },
+      ...state,
+      phase: "IDLE",
     })),
 
   playingStart: () =>
     set((state) => ({
-      turn: {
-        ...state.turn,
-        phase: "playing",
-      },
+      ...state,
+      phase: "PLAYING",
     })),
 
   playingEnd: () =>
     set((state) => ({
-      turn: {
-        ...state.turn,
-        phase: "idle",
-      },
+      ...state,
+      phase: "IDLE",
     })),
 
   discardingStart: () =>
     set((state) => ({
-      turn: {
-        ...state.turn,
-        phase: "discarding",
-      },
+      ...state,
+      phase: "DISCARDING",
     })),
 
   discardingEnd: () =>
     set((state) => ({
-      turn: {
-        ...state.turn,
-        phase: "idle",
-      },
+      ...state,
+      phase: "IDLE",
     })),
+
+  initiateCardPlayAttempt: () => {
+    return;
+  },
 });

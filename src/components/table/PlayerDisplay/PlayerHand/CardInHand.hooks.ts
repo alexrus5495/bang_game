@@ -1,72 +1,79 @@
-import { useShallow } from "zustand/shallow";
 import { useAnchors } from "../../../../contexts/AnchorsContext";
 import { useHandValidation } from "../../../../hooks/useHandValidation";
-import { useDragDropStore } from "../../../../stores/dragDropStore";
 import { useCallback, useMemo, useRef } from "react";
-import { useAnimationFrame, useMotionValue } from "motion/react";
-import useIsCurrentPlayer from "../../../../hooks/useIsCurrentPlayer";
-import { useAnimationStore } from "../../../../stores/animationStore";
+import { MotionValue, useAnimationFrame, useMotionValue } from "motion/react";
+import {
+  useHighlightedCardIndex,
+  useIsCurrentPlayer,
+  useIsDragged,
+  useIsDragging,
+  useUiController,
+} from "../../../../stores/hooks/localStateStore.hooks";
 
-export function useCardPosition(data: {
-  spacing: number;
-  index: number;
-  highlightedCardIndex: number | null;
-  isCardPlayable: boolean;
-}) {
-  const SHIFT_OFFSET = 70;
-  const NEGATIVE_SHIFT_OFFSET = -70;
+export type CardPositionData = null | {
+  top: number;
+  translateX: number;
+  zIndex: number;
+  left: number;
+  height: number;
+  scale: number;
+};
 
-  const isHighlighted = data.highlightedCardIndex === data.index;
+export function useCardPosition(data: { spacing: number; index: number }) {
+  const SHIFT_OFFSET = 50;
+  const NEGATIVE_SHIFT_OFFSET = -50;
+
+  const highlightedCardIndex = useHighlightedCardIndex();
+  const isCardPlayable = useIsCardPlayable(data.index);
+  const isHighlighted = highlightedCardIndex === data.index;
   const anchor = useAnchors();
   const zeroAnchor = anchor.getRect({ type: "player-hand-zero" });
   const isCurrent = useIsCurrentPlayer();
+  const isDragged = useIsDragged(data.index);
 
   const getTop = useCallback((): number => {
     if (!zeroAnchor) return 0;
     let currentTop = zeroAnchor.top;
 
-    if (!data.isCardPlayable && isCurrent) {
+    if (!isCardPlayable && isCurrent) {
       currentTop += zeroAnchor.height * 0.1;
     }
 
-    if (isHighlighted) {
+    if (isHighlighted || isDragged) {
       currentTop -= zeroAnchor.height * 0.15;
     }
 
     return currentTop;
-  }, [data.isCardPlayable, isHighlighted, zeroAnchor, isCurrent]);
+  }, [isCardPlayable, isHighlighted, zeroAnchor, isCurrent, isDragged]);
 
-  const getTranslateX = useCallback((): string | number => {
+  const getTranslateX = useCallback((): number => {
     // 1. If no focus or it's on this card - no shift
-    if (
-      data.highlightedCardIndex === null ||
-      data.highlightedCardIndex === data.index
-    ) {
+    if (highlightedCardIndex === null || highlightedCardIndex === data.index) {
       return 0;
     }
 
     // 2. If focus to the left - shift right
-    if (data.highlightedCardIndex < data.index) {
+    if (highlightedCardIndex < data.index) {
       return SHIFT_OFFSET;
     }
 
     // 3. If focus to the right - shift left
     return NEGATIVE_SHIFT_OFFSET;
-  }, [data.highlightedCardIndex, data.index, NEGATIVE_SHIFT_OFFSET]);
+  }, [highlightedCardIndex, data.index, NEGATIVE_SHIFT_OFFSET]);
 
-  const position = useMemo(() => {
+  const position = useMemo((): CardPositionData => {
     if (!zeroAnchor) return null;
     const currentZIndex = isHighlighted ? 100 : 20 + data.index;
-    const currentLeft = `${zeroAnchor.left + data.spacing * data.index}px`;
-    const currentHeight = `${zeroAnchor.height}px`;
+    const currentLeft = zeroAnchor.left + data.spacing * data.index;
+    const currentHeight = zeroAnchor.height;
     const currentScale = isHighlighted ? 1.2 : 1;
     return {
-      currentTop: getTop(),
-      currentTranslateX: getTranslateX(),
-      currentZIndex,
-      currentLeft,
-      currentHeight,
-      currentScale,
+      top: getTop(),
+      translateX: getTranslateX(),
+      zIndex: currentZIndex,
+      left: currentLeft,
+      height: currentHeight,
+      scale: currentScale,
     };
   }, [
     data.index,
@@ -90,47 +97,67 @@ export function useIsCardPlayable(index: number) {
   return isCardPlayable;
 }
 
-export function useCardHighlight(index: number) {
-  const currentAnimation = useAnimationStore((state) => state.currentAnimation);
-  const { highlightedCardIndex, setHighlightedCardIndex } = useDragDropStore(
-    useShallow((state) => ({
-      highlightedCardIndex: state.highlightedCardIndex,
-      setHighlightedCardIndex: state.setHighlightedCardIndex,
-    })),
-  );
+export function useCardDrag(index: number) {
+  const isDragging = useIsDragging();
+  const isDragged = useIsDragged(index);
+  const uiController = useUiController();
 
+  const dragX = useMotionValue(0);
+  const dragY = useMotionValue(0);
+
+  const onDragStart = useCallback(() => {
+    uiController.startDrag(index);
+  }, [index, uiController]);
+
+  const onDragEnd = useCallback(() => {
+    uiController.endDrag();
+  }, [uiController]);
+
+  return {
+    isDragging,
+    isDragged,
+    dragX,
+    dragY,
+    onDragStart,
+    onDragEnd,
+  };
+}
+
+export function useCardHighlight(index: number) {
+  const uiController = useUiController();
+  const isDragging = useIsDragging();
+  const highlightedCardIndex = useHighlightedCardIndex();
   const isHighlighted = highlightedCardIndex === index;
 
   const onMouseEnter = useCallback(() => {
-    if (currentAnimation) return;
-
-    setHighlightedCardIndex(index);
-  }, [index, setHighlightedCardIndex, currentAnimation]);
+    if (isDragging) return;
+    uiController.setHighlightedCardIndex(index);
+  }, [index, uiController, isDragging]);
 
   const onMouseLeave = useCallback(() => {
-    setHighlightedCardIndex(null);
-  }, [setHighlightedCardIndex]);
+    uiController.setHighlightedCardIndex(null);
+  }, [uiController]);
 
   return { highlightedCardIndex, isHighlighted, onMouseEnter, onMouseLeave };
 }
 
-export function use3dTilt(isDragging: boolean) {
-  // 1. Создаем MotionValues для отслеживания физических координат драга
-  const dragX = useMotionValue(0);
-  const dragY = useMotionValue(0);
-
-  // 2. Создаем MotionValues для углов наклона
+export function use3dTilt(
+  isDragging: boolean,
+  dragX: MotionValue,
+  dragY: MotionValue,
+) {
+  // Motion values to store tilt angles
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
 
-  // Рефы для хранения предыдущих значений, чтобы считать скорость
+  // Reft to store previous values, used to calculate drag speed
   const prevX = useRef(0);
   const prevY = useRef(0);
 
-  // 3. Каждый кадр анимации считаем скорость движения и переводим её в наклон
+  // Calculate drag speed on each frame and translate it into tilt angle
   useAnimationFrame(() => {
     if (!isDragging) {
-      // Если не тащим, плавно возвращаем наклон в ноль
+      // If stopped moving smoothly reset tilt angles
       rotateX.set(rotateX.get() * 0.85);
       rotateY.set(rotateY.get() * 0.85);
       return;
@@ -139,24 +166,23 @@ export function use3dTilt(isDragging: boolean) {
     const currentX = dragX.get();
     const currentY = dragY.get();
 
-    // Скорость — это разница между текущим и прошлым кадром
+    // Velocity is a difference between current frame and previous frame
     const velocityX = currentX - prevX.current;
     const velocityY = currentY - prevY.current;
 
-    // Ограничиваем максимальный угол наклона (например, в пределах -15 до 15 градусов)
-    // Движение по оси X наклоняет карту по вертикальной оси (rotateY)
-    // Движение по оси Y наклоняет карту по горизонтальной оси (rotateX)
+    // Clamp tilt angles between -15deg and 15deg
+    // Horisontal speed rotate the card on Y axis, vertical speed - on X axis
     const targetRotateY = Math.min(Math.max(velocityX * 0.4, -15), 15);
     const targetRotateX = Math.min(Math.max(-velocityY * 0.4, -15), 15);
 
-    // Применяем небольшое сглаживание (линейную интерполяцию), чтобы наклон не был дерганым
+    // Linear interpolation to smooth out the rotation
     rotateX.set(rotateX.get() + (targetRotateX - rotateX.get()) * 0.2);
     rotateY.set(rotateY.get() + (targetRotateY - rotateY.get()) * 0.2);
 
-    // Запоминаем текущие координаты для следующего кадра
+    // Store current coordinates to use in the next frame
     prevX.current = currentX;
     prevY.current = currentY;
   });
 
-  return { rotateX, rotateY, dragX, dragY };
+  return { rotateX, rotateY };
 }

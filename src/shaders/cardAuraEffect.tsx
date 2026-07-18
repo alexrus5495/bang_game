@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useRef } from "react";
 import { FractalNoise, Neon, Shader } from "shaders/react";
-import useIsCurrentPlayer from "../hooks/useIsCurrentPlayer";
 import { m } from "motion/react";
+import useAnimateColor from "../hooks/useAnimateColor";
+import { useIsCurrentPlayer } from "../stores/hooks/localStateStore.hooks";
 
 const CardAuraEffect = React.memo(({ color }: { color: string }) => {
-  const randomSeed = Math.random() * 100;
+  const randomSeedRef = useRef(Math.random() * 100);
   const isCurrent = useIsCurrentPlayer();
+  const animatedColor = useAnimateColor(color, 0.5);
 
   return (
     <m.div
@@ -27,7 +29,7 @@ const CardAuraEffect = React.memo(({ color }: { color: string }) => {
           contrast={4}
           angle={15}
           speed={1.5}
-          seed={randomSeed}
+          seed={randomSeedRef.current}
         />
 
         <Neon
@@ -38,7 +40,7 @@ const CardAuraEffect = React.memo(({ color }: { color: string }) => {
             rounding: 0.03,
             rotation: 0,
           })}
-          glowColor={color}
+          glowColor={animatedColor}
           intensity={4}
           maskSource="noise"
           maskType="luminance"

@@ -1,25 +1,19 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import type {
-  CardsMetaData,
-  PlayingCardMeta,
-  TooltipMessage,
-} from "../../../types";
 import { useTooltip } from "../../../hooks/useTooltip";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Tooltip from "../Tooltip/Tooltip";
-import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
-import { defaultWeaponMeta } from "../../../config/defaultWeaponMeta";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/shallow";
-import { useDragDropStore } from "../../../stores/dragDropStore";
+import { useRangeInfo } from "./RangeIcon.hooks";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
+import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
 
-type PlayerSlice = {
+export type PlayerSlice = {
   char: string;
   weaponCard: string;
   weaponRange: number;
-  hasScope: boolean;
+  equipment: string[];
 };
 
 const RangeIcon = React.memo(({ playerId }: { playerId: string }) => {
@@ -32,7 +26,7 @@ const RangeIcon = React.memo(({ playerId }: { playerId: string }) => {
         char: p.char,
         weaponCard: p.weapon.card,
         weaponRange: p.weapon.range,
-        hasScope: p.equipment.some((item) => item.startsWith("scope_")),
+        equipment: p.equipment,
       };
     }),
   );
@@ -50,71 +44,13 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
     handlersPinable,
     hasCardRef,
   } = useTooltip();
+
   const locale = useSystemLocalization() as Record<string, string>;
-  const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
-  const isDragging = useDragDropStore((state) => state.isDragging);
+  const isDragging = useIsDragging();
+  const { range, tooltipContent } = useRangeInfo(player);
 
-  const { range, tooltipContent } = useMemo(() => {
-    const weapon = {
-      card: player.weaponCard,
-      range: player.weaponRange,
-    };
-    const equipment = player.hasScope
-      ? ["scope_scope"] // Mock value for finder operations
-      : [];
-
-    let currentRange = weapon.range;
-
-    const newTooltipContent: TooltipMessage[] = [];
-
-    // 1. Add base weapon range details
-    newTooltipContent.push([
-      {
-        type: "plainText",
-        content: `+${currentRange} ${locale["tooltip_from"]} `,
-      },
-      {
-        type: "playingCardRef",
-        content:
-          weapon.card === "colt45"
-            ? (defaultWeaponMeta as Omit<
-                PlayingCardMeta,
-                "rankAndSuit" | "cardInstanceId" | "effect" | "_range"
-              >)
-            : cardsMeta.deckMeta[weapon.card],
-      },
-    ]);
-
-    // 2. Check if the player has a Scope equipped
-    const scopeCard = equipment.find((item) => item.startsWith("scope_"));
-
-    if (scopeCard) {
-      currentRange++;
-      newTooltipContent.push([
-        { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
-        { type: "playingCardRef", content: cardsMeta.deckMeta[scopeCard] },
-      ]);
-    }
-
-    // 3. Check for Rose Doolan character passive ability
-    if (player!.char === "rose_doolan") {
-      currentRange++;
-      newTooltipContent.push([
-        { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
-        {
-          type: "charCardRef",
-          content: cardsMeta.charDeckMeta["rose_doolan"],
-        },
-      ]);
-    }
-
-    return {
-      range: currentRange,
-      tooltipContent: newTooltipContent,
-    };
-  }, [player, locale, cardsMeta]);
   return (
-    <div className="">
+    <div className="z-0">
       <div
         className="h-full aspect-square relative"
         style={{ cursor: isDragging ? "default" : "pointer" }}
