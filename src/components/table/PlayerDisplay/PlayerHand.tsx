@@ -1,14 +1,13 @@
 import { useResizeObserver } from "../../../hooks/useResizeObserver";
 import CardInHand from "./PlayerHand/CardInHand";
-import { useDinamicSpacing } from "../../../hooks/useDinamicSpacing";
 import LayoutSlots from "./PlayerHand/LayoutSlots";
 import { useCardScale } from "../../../hooks/useCardScale";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useShallow } from "zustand/shallow";
 import HandZeroAnchor from "./PlayerHand/HandZeroAnchor";
+import { useDinamicHandSpacing } from "../../../hooks/useDinamicHandSpacing";
 
 export default function PlayerHand({ clientId }: { clientId: string }) {
-  const pending = useLocalStateStore((state) => state.pendingCardId);
   const cards = useLocalStateStore(
     useShallow(
       (state) => state.playersController.getPlayerById(clientId)?.hand ?? [],
@@ -21,7 +20,7 @@ export default function PlayerHand({ clientId }: { clientId: string }) {
 
   const { ref: scaleRef, scale } = useCardScale();
 
-  const spacing = useDinamicSpacing(cards, containerWidth, pending, scale);
+  const spacing = useDinamicHandSpacing(cards, containerWidth, scale);
 
   return (
     <div ref={containerRef} className="h-full w-full relative">
@@ -37,11 +36,6 @@ export default function PlayerHand({ clientId }: { clientId: string }) {
       <div className="fixed top-0 left-0 h-[100vh] w-[100vw] z-[-0] pointer-events-none">
         {cards &&
           cards.map((cardId, index) => {
-            {
-              {
-                /* if (index >= 1) return null; */
-              }
-            }
             return (
               <CardInHand
                 key={cardId}

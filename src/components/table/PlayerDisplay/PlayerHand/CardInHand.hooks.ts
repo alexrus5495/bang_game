@@ -1,14 +1,18 @@
 import { useAnchors } from "../../../../contexts/AnchorsContext";
 import { useHandValidation } from "../../../../hooks/useHandValidation";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { MotionValue, useAnimationFrame, useMotionValue } from "motion/react";
 import {
   useHighlightedCardIndex,
+  useInteractionPhase,
   useIsCurrentPlayer,
   useIsDragged,
   useIsDragging,
+  useIsOverPlayArea,
+  useIsPending,
   useUiController,
 } from "../../../../stores/hooks/localStateStore.hooks";
+import { animate } from "motion";
 
 export type CardPositionData = null | {
   top: number;
@@ -19,17 +23,23 @@ export type CardPositionData = null | {
   scale: number;
 };
 
-export function useCardPosition(data: { spacing: number; index: number }) {
-  const SHIFT_OFFSET = 50;
-  const NEGATIVE_SHIFT_OFFSET = -50;
+const DRAG_TRANSITION_TYPE = "spring";
+const DRAG_TRANSITION_STIFFNESS = 400;
+const DRAG_TRANSITION_DAMPING = 24;
 
-  const highlightedCardIndex = useHighlightedCardIndex();
-  const isCardPlayable = useIsCardPlayable(data.index);
-  const isHighlighted = highlightedCardIndex === data.index;
+const SHIFT_OFFSET = 50;
+const NEGATIVE_SHIFT_OFFSET = -50;
+
+export function useCardPosition(data: { spacing: number; index: number }) {
   const anchor = useAnchors();
   const zeroAnchor = anchor.getRect({ type: "player-hand-zero" });
+
   const isCurrent = useIsCurrentPlayer();
-  const isDragged = useIsDragged(data.index);
+  const isPending = useIsPending(data.index);
+  const isCardPlayable = useIsCardPlayable(data.index);
+  const highlightedCardIndex = useHighlightedCardIndex();
+
+  const isHighlighted = highlightedCardIndex === data.index;
 
   const getTop = useCallback((): number => {
     if (!zeroAnchor) return 0;
@@ -39,12 +49,12 @@ export function useCardPosition(data: { spacing: number; index: number }) {
       currentTop += zeroAnchor.height * 0.1;
     }
 
-    if (isHighlighted || isDragged) {
+    if (isHighlighted || isPending) {
       currentTop -= zeroAnchor.height * 0.15;
     }
 
     return currentTop;
-  }, [isCardPlayable, isHighlighted, zeroAnchor, isCurrent, isDragged]);
+  }, [isCardPlayable, isHighlighted, zeroAnchor, isCurrent, isPending]);
 
   const getTranslateX = useCallback((): number => {
     // 1. If no focus or it's on this card - no shift
@@ -59,7 +69,7 @@ export function useCardPosition(data: { spacing: number; index: number }) {
 
     // 3. If focus to the right - shift left
     return NEGATIVE_SHIFT_OFFSET;
-  }, [highlightedCardIndex, data.index, NEGATIVE_SHIFT_OFFSET]);
+  }, [highlightedCardIndex, data.index]);
 
   const position = useMemo((): CardPositionData => {
     if (!zeroAnchor) return null;
@@ -100,6 +110,10 @@ export function useIsCardPlayable(index: number) {
 export function useCardDrag(index: number) {
   const isDragging = useIsDragging();
   const isDragged = useIsDragged(index);
+  const isCurrent = useIsCurrentPlayer();
+  const isCardPlayable = useIsCardPlayable(index);
+  const interactionPhase = useInteractionPhase();
+  const isOverPlayArea = useIsOverPlayArea();
   const uiController = useUiController();
 
   const dragX = useMotionValue(0);
@@ -113,26 +127,77 @@ export function useCardDrag(index: number) {
     uiController.endDrag();
   }, [uiController]);
 
+  useManualSnapToOrigin(dragX, dragY);
+
+  const shouldSnapToOrigin =
+    interactionPhase === "AWAITING_ACTION" ||
+    (interactionPhase === "DRAGGING" && !isOverPlayArea);
+
+  const shouldDrag =
+    isCurrent &&
+    isCardPlayable &&
+    (interactionPhase === "DRAGGING" || interactionPhase === "AWAITING_ACTION");
+
   return {
     isDragging,
     isDragged,
     dragX,
     dragY,
+    shouldSnapToOrigin,
+    shouldDrag,
+    stiffness: DRAG_TRANSITION_STIFFNESS,
+    damping: DRAG_TRANSITION_DAMPING,
     onDragStart,
     onDragEnd,
   };
 }
 
+function useManualSnapToOrigin(dragX: MotionValue, dragY: MotionValue) {
+  const interactionPhase = useInteractionPhase();
+  // Manual snapback to hand after server rejected cardPlay, or player cancelled
+  // an attempt during target selection.
+  const prevPhaseRef = useRef(interactionPhase);
+  useEffect(() => {
+    const prevPhase = prevPhaseRef.current;
+    const hasOffset = dragX.get() !== 0 || dragY.get() !== 0;
+    if (!hasOffset) return;
+
+    const isResetting =
+      interactionPhase === "AWAITING_ACTION" &&
+      (prevPhase === "WAITING_FOR_SERVER" || prevPhase === "AWAITING_TARGET");
+
+    if (isResetting && hasOffset) {
+      animate(dragX, 0, {
+        type: DRAG_TRANSITION_TYPE,
+        stiffness: DRAG_TRANSITION_STIFFNESS,
+        damping: DRAG_TRANSITION_DAMPING,
+      });
+      animate(dragY, 0, {
+        type: DRAG_TRANSITION_TYPE,
+        stiffness: DRAG_TRANSITION_STIFFNESS,
+        damping: DRAG_TRANSITION_DAMPING,
+      });
+    }
+    prevPhaseRef.current = interactionPhase;
+  }, [interactionPhase, dragX, dragY]);
+}
+
 export function useCardHighlight(index: number) {
   const uiController = useUiController();
+  const interactionPhase = useInteractionPhase();
   const isDragging = useIsDragging();
   const highlightedCardIndex = useHighlightedCardIndex();
   const isHighlighted = highlightedCardIndex === index;
 
+  const shouldHighlight = useMemo(
+    () => !isDragging && interactionPhase === "AWAITING_ACTION",
+    [interactionPhase, isDragging],
+  );
+
   const onMouseEnter = useCallback(() => {
-    if (isDragging) return;
+    if (!shouldHighlight) return;
     uiController.setHighlightedCardIndex(index);
-  }, [index, uiController, isDragging]);
+  }, [index, uiController, shouldHighlight]);
 
   const onMouseLeave = useCallback(() => {
     uiController.setHighlightedCardIndex(null);
@@ -185,4 +250,21 @@ export function use3dTilt(
   });
 
   return { rotateX, rotateY };
+}
+
+export function useCardAuraEffect(index: number) {
+  // Colors for card's aura effect
+  const AURA_AVAILABLE = "#09e510";
+  const AURA_ACTIVE = "#a9b0fc";
+
+  const interactionPhase = useInteractionPhase();
+  const isPending = useIsPending(index);
+  const isCardPlayable = useIsCardPlayable(index);
+
+  const color = isPending ? AURA_ACTIVE : AURA_AVAILABLE;
+  const isVisible =
+    isCardPlayable &&
+    (interactionPhase === "AWAITING_ACTION" || interactionPhase === "DRAGGING");
+
+  return { color, isVisible };
 }

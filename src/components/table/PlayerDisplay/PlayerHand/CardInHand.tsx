@@ -6,16 +6,17 @@ import React, { type ReactNode } from "react";
 import CardAuraEffect from "../../../../shaders/cardAuraEffect";
 import { CardInHandProvider, useCardInHandContext } from "./CardInHand.context";
 import { useCardPosition } from "./CardInHand.hooks";
+import {
+  useInteractionPhase,
+  useIsPending,
+} from "../../../../stores/hooks/localStateStore.hooks";
+import TargetSelectPrompt from "../../prompts/TargetSelectPrompt";
 
 type CardInHandProps = {
   cardId: string;
   spacing: number;
   index: number;
 };
-
-// Colors for card's aura effect
-const AURA_AVAILABLE = "#09e510";
-const AURA_ACTIVE = "#a9b0fc";
 
 //
 // MAIN COMPONENT
@@ -78,17 +79,26 @@ const CardInHandOuter = React.memo(({ children }: { children: ReactNode }) => {
 //
 //  INNER COMPONENT
 const CardInHandInner = React.memo(() => {
-  const { card, drag, misc, highlight, handlers, position } =
+  const interactionPhase = useInteractionPhase();
+  const { card, aura, drag, misc, highlight, handlers, position } =
     useCardInHandContext();
+  const isPending = useIsPending(card.index);
+
+  const showTargetSelector =
+    isPending && interactionPhase === "AWAITING_TARGET";
 
   return (
     <m.div
-      className="w-full h-full cursor-grab active:cursor-grabbing relative"
-      drag={misc.isCurrent && card.isPlayable}
+      className="w-full h-full active:cursor-grabbing relative"
+      drag={drag.shouldDrag}
       dragConstraints={false}
       dragElastic={1}
-      dragSnapToOrigin={true}
-      dragTransition={{ bounceStiffness: 400, bounceDamping: 25 }}
+      dragMomentum={drag.shouldSnapToOrigin}
+      dragSnapToOrigin={drag.shouldSnapToOrigin}
+      dragTransition={{
+        bounceStiffness: drag.stiffness,
+        bounceDamping: drag.damping,
+      }}
       style={{
         x: drag.x,
         y: drag.y,
@@ -97,6 +107,11 @@ const CardInHandInner = React.memo(() => {
         rotateY: position.rotateY,
         transformStyle: "preserve-3d",
         pointerEvents: drag.isDragged ? "none" : "auto",
+        cursor:
+          interactionPhase === "AWAITING_ACTION" ||
+          interactionPhase === "DRAGGING"
+            ? "grab"
+            : "auto",
       }}
       onDragStart={() => handlers.onDragStart(card.index)}
       onDragEnd={() => handlers.onDragEnd()}
@@ -107,16 +122,16 @@ const CardInHandInner = React.memo(() => {
         style={{ transform: "translateZ(0px)", backfaceVisibility: "hidden" }}
         className="w-full h-full"
         animate={{
-          scale: drag.isDragged ? 1.2 : position.scale,
+          scale: isPending ? 1.2 : position.scale,
         }}
       >
         <PlayingCard cardId={card.id} initialIsFaceDown={false} />
 
-        {card.isPlayable && (
-          <CardAuraEffect
-            color={drag.isDragged ? AURA_ACTIVE : AURA_AVAILABLE}
-          />
-        )}
+        <CardAuraEffect color={aura.color} isVisible={aura.isVisible} />
+
+        <div style={{ opacity: showTargetSelector ? 1 : 0 }}>
+          <TargetSelectPrompt cardIndex={card.index} />
+        </div>
       </m.div>
 
       {highlight.isHighlighted && !drag.isDragging && (

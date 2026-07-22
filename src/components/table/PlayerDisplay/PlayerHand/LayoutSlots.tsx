@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { useDinamicSpacing } from "../../../../hooks/useDinamicSpacing";
 import SkeletonCard from "../../../cards/SkeletonCard";
 import AnimationAnchor from "../../shared/AnimationAnchor";
 import { useCardScale } from "../../../../hooks/useCardScale";
 import type { AnchorId } from "../../../../contexts/AnchorsContext";
+import { useDinamicHandSpacing } from "../../../../hooks/useDinamicHandSpacing";
 
 export default function LayoutSlots({
   quantity,
@@ -19,7 +19,7 @@ export default function LayoutSlots({
 
   const { ref: scaleRef, scale } = useCardScale();
 
-  const spacing = useDinamicSpacing(slotIds, containerWidth, null, scale);
+  const spacing = useDinamicHandSpacing(slotIds, containerWidth, scale);
 
   return (
     <div className="w-full h-full absolute z-0" ref={scaleRef}>

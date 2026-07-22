@@ -6,6 +6,7 @@ import {
   useIsCardPlayable,
   use3dTilt,
   type CardPositionData,
+  useCardAuraEffect,
 } from "./CardInHand.hooks";
 import type { AnchorId } from "../../../../contexts/AnchorsContext";
 import {
@@ -32,8 +33,17 @@ interface CardContextValue {
     isDragged: boolean;
     isDragging: boolean;
     isOverPlayArea: boolean;
+    shouldSnapToOrigin: boolean;
+    shouldDrag: boolean;
+    stiffness: number;
+    damping: number;
     x: MotionValue;
     y: MotionValue;
+  };
+
+  aura: {
+    color: string;
+    isVisible: boolean;
   };
 
   misc: {
@@ -80,10 +90,21 @@ export const CardInHandProvider = ({
   const isOverPlayArea = useIsOverPlayArea();
   const isCardPlayable = useIsCardPlayable(index);
 
-  const { isDragging, dragX, dragY, onDragStart, onDragEnd, isDragged } =
-    useCardDrag(index);
+  const {
+    isDragging,
+    dragX,
+    dragY,
+    onDragStart,
+    onDragEnd,
+    stiffness,
+    damping,
+    isDragged,
+    shouldSnapToOrigin,
+    shouldDrag,
+  } = useCardDrag(index);
   const { isHighlighted, onMouseEnter, onMouseLeave } = useCardHighlight(index);
   const { rotateX, rotateY } = use3dTilt(isDragging, dragX, dragY);
+  const aura = useCardAuraEffect(index);
 
   const anchorId: AnchorId = useMemo(
     () => ({ type: "player-hand-card", index }),
@@ -100,9 +121,17 @@ export const CardInHandProvider = ({
       drag: {
         isDragging,
         isDragged,
+        shouldSnapToOrigin,
+        shouldDrag,
+        stiffness,
+        damping,
         isOverPlayArea,
         x: dragX,
         y: dragY,
+      },
+      aura: {
+        color: aura.color,
+        isVisible: aura.isVisible,
       },
       highlight: {
         isHighlighted,
@@ -142,6 +171,12 @@ export const CardInHandProvider = ({
       onMouseLeave,
       onDragStart,
       onDragEnd,
+      aura.color,
+      aura.isVisible,
+      shouldDrag,
+      shouldSnapToOrigin,
+      stiffness,
+      damping,
     ],
   );
 
