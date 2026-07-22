@@ -13,17 +13,17 @@
 
 @font-face {
   font-family: "OldTownLT";
-  src: url("./assets/fonts/old_town_lt.otf") format("opentype");
+  src: url("./assets/fonts/old_town_lt.woff2") format("woff2");
 }
 
 @font-face {
   font-family: "Palatino";
-  src: url("./assets/fonts/palatino.ttf") format("truetype");
+  src: url("./assets/fonts/palatino.woff2") format("woff2");
 }
 
 @font-face {
   font-family: "Gabriela";
-  src: url("./assets/fonts/gabriela.ttf") format("truetype");
+  src: url("./assets/fonts/gabriela.woff2") format("woff2");
 }
 
 @layer base {
@@ -109,6 +109,11 @@
 
   .bg-paperTexture-yellow {
     background-image: url(./assets/images/core/paperTexture_yellow.png);
+    background-size: 300%;
+  }
+
+  .bg-paperTexture-stockalike {
+    background-image: url(./assets/images/core/paperTexture_stockalike.png);
     background-size: 300%;
   }
 
