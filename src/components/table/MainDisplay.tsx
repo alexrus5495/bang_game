@@ -13,6 +13,7 @@ import {
   useIsPreparing,
   usePreviousPlayerId,
 } from "../../stores/hooks/localStateStore.hooks";
+import { getImageComponent } from "../../lib/images";
 
 const MainDisplay = React.memo(({ className }: { className?: string }) => {
   const isCurrent = useIsCurrentPlayer();
@@ -32,7 +33,7 @@ function Backdrop() {
       className="absolute h-full w-full left-0 z-1"
       style={{ bottom: sizeAdaptive(110) }}
     >
-      <img className="" src="./base.png" alt="" />
+      {getImageComponent("mainDisplay-base")}
     </div>
   );
 }
@@ -108,22 +109,18 @@ function PreparationCurtain() {
       exit={{ opacity: 0 }}
       transition={{ duration: 1.5 }}
     >
-      <img
-        src="./decoration_c.png"
-        alt=""
-        style={{ width: sizeAdaptive(4.5) }}
-      />
+      {getImageComponent("decoration_c", {
+        style: { width: sizeAdaptive(4.5) },
+      })}
       <div
         className="text-center"
         style={{ fontSize: sizeAdaptive(20), lineHeight: sizeAdaptive(17) }}
       >
         PREPARING...
       </div>
-      <img
-        src="./decoration_c.png"
-        alt=""
-        style={{ width: sizeAdaptive(4.5) }}
-      />
+      {getImageComponent("decoration_c", {
+        style: { width: sizeAdaptive(4.5) },
+      })}
     </m.div>
   );
 }

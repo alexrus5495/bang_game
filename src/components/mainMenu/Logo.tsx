@@ -1,5 +1,6 @@
 import { m, useAnimation } from "motion/react";
 import { useEffect } from "react";
+import { getImageComponent } from "../../lib/images";
 
 export default function Logo() {
   const { shadowControls, logoControls, handleClickLogo } =
@@ -7,33 +8,34 @@ export default function Logo() {
 
   return (
     <>
-      <m.img
+      <m.div
         initial={{ scale: 5, opacity: 0 }}
         animate={shadowControls}
-        src="./title_shadow.png"
-        className="h-[23%] w-auto absolute z-1 top-[2%] left-[29.8%] select-none"
-        draggable="false"
-        alt=""
+        className="h-[23%] w-auto absolute z-1 top-[2%] left-[29.8%] select-none will-change-transform transform-gpu"
         style={{
           originX: 0.2,
           originY: 0.2,
           cursor: "pointer",
         }}
-      />
-      <m.img
+      >
+        {getImageComponent("title-shadow", {
+          draggable: false,
+        })}
+      </m.div>
+
+      <m.div
         initial={{ scale: 3, opacity: 0 }}
         animate={logoControls}
         onClick={handleClickLogo}
-        src="./title-text.png"
-        className="h-[22%] w-auto absolute z-2 top-[2%] left-[30%] select-none"
-        draggable="false"
-        alt=""
+        className="h-[22%] w-auto absolute z-2 top-[2%] left-[30%] select-none will-change-transform transform-gpu"
         style={{
           originX: 0.2,
           originY: 0.2,
           cursor: "pointer",
         }}
-      />
+      >
+        {getImageComponent("title-text", { draggable: false })}
+      </m.div>
     </>
   );
 }
@@ -97,7 +99,7 @@ function animateStartUp(
     });
 
     shadowControls.start({
-      y: [0, -10, 0],
+      y: [0, 10, 0],
       scale: [1, 1.15, 1],
       transition: {
         duration: 4,

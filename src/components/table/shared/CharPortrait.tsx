@@ -10,80 +10,88 @@ import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useShallow } from "zustand/shallow";
 import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
 
-const CharPortrait = React.memo(({ playerId }: { playerId: string }) => {
-  const playerData = useLocalStateStore(
-    useShallow((state) => {
-      const p = state.players.find((player) => player.id === playerId);
-      if (!p) return null;
-      return {
-        char: p.char,
-        isEliminated: p.flags.isEliminated,
-        color: p.color,
-      };
-    }),
-  );
+const CharPortrait = React.memo(
+  ({
+    playerId,
+    tooltipDisabled = false,
+  }: {
+    playerId: string;
+    tooltipDisabled?: boolean;
+  }) => {
+    const playerData = useLocalStateStore(
+      useShallow((state) => {
+        const p = state.players.find((player) => player.id === playerId);
+        if (!p) return null;
+        return {
+          char: p.char,
+          isEliminated: p.flags.isEliminated,
+          color: p.color,
+        };
+      }),
+    );
 
-  const isDragging = useIsDragging();
+    const isDragging = useIsDragging();
 
-  const imageElement = useMemo(() => {
-    if (!playerData?.char) return null;
-    return getImageComponent(playerData.char, {
-      className: "h-full w-full",
-      draggable: false,
-    });
-  }, [playerData?.char]);
+    const imageElement = useMemo(() => {
+      if (!playerData?.char) return null;
+      return getImageComponent(playerData.char, {
+        className: "h-full w-full",
+        draggable: false,
+      });
+    }, [playerData?.char]);
 
-  const cardsMeta = (useCardsMetaDataState()[0] as CardsMetaData) ?? {};
-  const { position, isVisible, handlersPinable, isPinned } = useTooltip();
-  const locale = useSystemLocalization() as Record<string, string>;
+    const cardsMeta = (useCardsMetaDataState()[0] as CardsMetaData) ?? {};
+    const { position, isVisible, handlersPinable, isPinned } = useTooltip();
+    const locale = useSystemLocalization() as Record<string, string>;
 
-  const { char, isEliminated, color } = playerData ?? {
-    char: "",
-    isEliminated: false,
-    color: "",
-  };
+    const { char, isEliminated, color } = playerData ?? {
+      char: "",
+      isEliminated: false,
+      color: "",
+    };
 
-  const tooltipContent: TooltipMessage[] = useMemo(
-    () =>
-      cardsMeta.charDeckMeta
-        ? [[{ type: "charCardRef", content: cardsMeta.charDeckMeta[char] }]]
-        : [],
-    [cardsMeta.charDeckMeta, char],
-  );
+    const tooltipContent: TooltipMessage[] = useMemo(
+      () =>
+        cardsMeta.charDeckMeta
+          ? [[{ type: "charCardRef", content: cardsMeta.charDeckMeta[char] }]]
+          : [],
+      [cardsMeta.charDeckMeta, char],
+    );
 
-  if (!playerData) return null;
+    if (!playerData) return null;
 
-  return (
-    <>
-      <div
-        className="h-full aspect-square rounded-[35%] bg-[var(--WHITE)] relative overflow-hidden outline"
-        style={{
-          cursor: isDragging ? "default" : "pointer",
-          borderColor: color,
-          borderWidth: sizeAdaptive(180),
-          outlineColor: "var(--BLACK)",
-          outlineWidth: sizeAdaptive(400),
-        }}
-        {...handlersPinable}
-      >
-        {imageElement}
+    return (
+      <>
+        <div
+          className="h-full aspect-square rounded-[35%] bg-[var(--WHITE)] relative overflow-hidden outline"
+          style={{
+            cursor: isDragging || tooltipDisabled ? "default" : "pointer",
+            borderColor: color,
+            borderWidth: sizeAdaptive(180),
+            outlineColor: "var(--BLACK)",
+            outlineWidth: sizeAdaptive(400),
+          }}
+          {...handlersPinable}
+        >
+          {imageElement}
 
-        {isEliminated && (
-          <div className="absolute inset-0 bg-[var(--RED)]/60" />
+          {isEliminated && (
+            <div className="absolute inset-0 bg-[var(--RED)]/60" />
+          )}
+        </div>
+
+        {isVisible && !tooltipDisabled && (
+          <Tooltip
+            title={locale.character}
+            content={tooltipContent}
+            position={position}
+            hasCardRef={true}
+            isPinned={isPinned}
+          />
         )}
-      </div>
-
-      {isVisible && (
-        <Tooltip
-          title={locale.character}
-          content={tooltipContent}
-          position={position}
-          hasCardRef={true}
-          isPinned={isPinned}
-        />
-      )}
-    </>
-  );
-});
+      </>
+    );
+  },
+);
 
 export default CharPortrait;

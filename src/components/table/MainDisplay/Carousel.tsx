@@ -48,12 +48,10 @@ const Frame = React.memo(({ char, index }: { char: string; index: number }) => {
       }}
       className="h-full aspect-square relative outline will-change-transform"
     >
-      <img
-        src="./frame.png"
-        alt=""
-        className="absolute pointer-none"
-        draggable={false}
-      />
+      {getImageComponent("frame", {
+        className: "absolute pointer-none",
+        draggable: false,
+      })}
 
       {char !== "" && imageElement}
     </m.div>

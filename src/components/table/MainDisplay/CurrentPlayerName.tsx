@@ -3,6 +3,7 @@ import { m } from "motion/react";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
+import { getImageComponent } from "../../../lib/images";
 
 const CurrentPlayerName = React.memo(
   ({ playerId }: { playerId: string | null }) => {
@@ -23,12 +24,10 @@ const CurrentPlayerName = React.memo(
           layoutDependency={name}
           className="h-full flex items-center justify-center will-change-transform"
         >
-          <img
-            key="decoration-left"
-            className="h-[50%]"
-            src="./decoration_b.png"
-            alt=""
-          />
+          {getImageComponent("decoration_b", {
+            key: "decoration-left",
+            className: "h-[50%]",
+          })}
         </m.div>
 
         <m.div
@@ -50,12 +49,10 @@ const CurrentPlayerName = React.memo(
           layoutDependency={name}
           className="h-full flex items-center justify-center will-change-transform"
         >
-          <img
-            key="decoration-right"
-            className="h-[50%] rotate-180"
-            src="./decoration_b.png"
-            alt=""
-          />
+          {getImageComponent("decoration_b", {
+            key: "decoration-right",
+            className: "h-[50%] rotate-180",
+          })}
         </m.div>
       </m.div>
     );

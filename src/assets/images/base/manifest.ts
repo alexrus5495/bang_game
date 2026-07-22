@@ -32,6 +32,10 @@ const weapons = import.meta.glob("./weapons/*.{png,svg,webp}", {
   eager: true,
 }) as Record<string, { default: string }>;
 
+const icons = import.meta.glob("./icons/*.{png,svg,webp}", {
+  eager: true,
+}) as Record<string, { default: string }>;
+
 const IMAGES_BASE = {
   BORDERS: createObjectsFromMassImport(borders),
   CARDBACKS: createObjectsFromMassImport(cardbacks),
@@ -41,6 +45,7 @@ const IMAGES_BASE = {
   ROLES: createObjectsFromMassImport(roles),
   SYMBOLS: createObjectsFromMassImport(symbols),
   WEAPONS: createObjectsFromMassImport(weapons),
+  ICONS: createObjectsFromMassImport(icons),
 } as const;
 
 export default IMAGES_BASE;

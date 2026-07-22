@@ -7,6 +7,7 @@ import { checkBounds } from "../../../lib/utils/checkBounds";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import RootPortal from "../../shared/RootPortal";
 import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
+import { getImageComponent } from "../../../lib/images";
 
 const Tooltip = React.memo(
   ({
@@ -76,14 +77,13 @@ const Tooltip = React.memo(
         >
           {hasCardRef && isPinned && (
             <div className="absolute top-0 right-0">
-              <img
-                src="./icon-pin.png"
-                alt=""
-                style={{
+              {getImageComponent("icon-pin", {
+                style: {
                   height: sizeAdaptive(40),
                   margin: sizeAdaptive(120),
-                }}
-              />
+                },
+                draggable: false,
+              })}
             </div>
           )}
 
@@ -155,14 +155,13 @@ const HoldToInspectMessage = React.memo(() => {
       {parts[0]}
 
       <div>
-        <img
-          src="./lmb.png"
-          alt=""
-          style={{
+        {getImageComponent("icon-lmb", {
+          draggable: false,
+          style: {
             height: sizeAdaptive(35),
             margin: sizeAdaptive(120),
-          }}
-        />
+          },
+        })}
       </div>
 
       {parts[1]}

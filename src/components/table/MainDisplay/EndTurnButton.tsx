@@ -1,8 +1,11 @@
 import React from "react";
 import { m } from "motion/react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
+import { getImageComponent } from "../../../lib/images";
+import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 
 const EndTurnButton = React.memo(() => {
+  const locale = useSystemLocalization() as Record<string, string>;
   return (
     <m.div
       initial={{ y: "-100%", opacity: 0 }}
@@ -16,11 +19,11 @@ const EndTurnButton = React.memo(() => {
       className="h-full w-full relative top-0 left-0 right-0 flex justify-center z-[0]"
     >
       <div className="w-[80%] relative" style={{ height: sizeAdaptive(30) }}>
-        <img className="absolute z-0" src="./base_turn.png" alt="" />
+        {getImageComponent("mainDisplay-turn", { className: "absolute z-0" })}
 
         <div className="h-full w-full z-1 relative flex justify-center items-center">
           <div className="h-full flex items-center justify-center will-change-transform">
-            <img className="h-[50%]" src="./decoration_b.png" alt="" />
+            {getImageComponent("decoration_b", { className: "h-[50%]" })}
           </div>
 
           <div
@@ -32,15 +35,13 @@ const EndTurnButton = React.memo(() => {
               marginRight: sizeAdaptive(70),
             }}
           >
-            END TURN
+            {locale["end_turn"]}
           </div>
 
           <div className="h-full flex items-center justify-center will-change-transform">
-            <img
-              className="h-[50%] rotate-180"
-              src="./decoration_b.png"
-              alt=""
-            />
+            {getImageComponent("decoration_b", {
+              className: "h-[50%] rotate-180",
+            })}
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import Tooltip from "../../Tooltip/Tooltip";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { useDistanceInfo } from "./DistanceIcon.hooks";
 import { useIsDragging } from "../../../../stores/hooks/localStateStore.hooks";
+import { getImageComponent } from "../../../../lib/images";
 
 const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
   const isDragging = useIsDragging();
@@ -37,12 +38,11 @@ const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
             <div className="h-full w-full text-center">{distance}</div>
           )}
         </div>
-        <img
-          src="./icon-distance.png"
-          alt=""
-          className="absolute top-[-60%] h-[70%] z-0"
-          draggable={false}
-        />
+
+        {getImageComponent("icon-distance", {
+          className: "absolute top-[-60%] h-[70%] z-0",
+          draggable: false,
+        })}
       </div>
 
       {isVisible && tooltipContent.length > 0 && (

@@ -6,6 +6,7 @@ import Tooltip from "../../Tooltip/Tooltip";
 import { useLocalStateStore } from "../../../../stores/localStateStore";
 import React from "react";
 import { useIsDragging } from "../../../../stores/hooks/localStateStore.hooks";
+import { getImageComponent } from "../../../../lib/images";
 
 const PlayerTypeIcon = React.memo(({ playerId }: { playerId: string }) => {
   const { position, isVisible, handlersNonPinable } = useTooltip();
@@ -37,11 +38,15 @@ const PlayerTypeIcon = React.memo(({ playerId }: { playerId: string }) => {
         }}
         {...handlersNonPinable}
       >
-        {isAI ? (
-          <img alt="robot icon" src="./icon-bot.png" draggable={false} />
-        ) : (
-          <img alt="person icon" src="./icon-person.png" draggable={false} />
-        )}
+        {isAI
+          ? getImageComponent("icon-bot", {
+              draggable: false,
+              alt: "robot icon",
+            })
+          : getImageComponent("icon-person", {
+              draggable: false,
+              alt: "person icon",
+            })}
       </div>
 
       {isVisible && (

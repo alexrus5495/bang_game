@@ -24,7 +24,10 @@ export function getImageComponent(
   }
 
   //Integrating special rules
-  const combinedClassName = twMerge(options?.className, extraProps?.className);
+  let combinedClassName = twMerge(options?.className, extraProps?.className);
+
+  // Make images unselectable
+  combinedClassName = twMerge(combinedClassName, "select-none");
 
   if (!resource) {
     return <div>Image failed to load</div>;
@@ -38,7 +41,7 @@ export function getImageComponent(
     const imgOptions = {
       ...options,
       className: combinedClassName,
-      draggable: "false",
+      draggable: false,
     } as React.ImgHTMLAttributes<HTMLImageElement> &
       RegularImageComponentCustomProps;
 

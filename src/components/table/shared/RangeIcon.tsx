@@ -8,6 +8,7 @@ import { useShallow } from "zustand/shallow";
 import { useRangeInfo } from "./RangeIcon.hooks";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
+import { getImageComponent } from "../../../lib/images";
 
 export type PlayerSlice = {
   char: string;
@@ -66,12 +67,10 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
             <div className="h-full w-full text-center">{range}</div>
           )}
         </div>
-        <img
-          src="./icon-crosshair.png"
-          alt=""
-          className="absolute z-0 top-[-65%] h-[100%]"
-          draggable={false}
-        />
+        {getImageComponent("icon-crosshair", {
+          className: "absolute z-0 top-[-65%] h-[100%]",
+          draggable: false,
+        })}
       </div>
 
       {isVisible && tooltipContent.length > 0 && (

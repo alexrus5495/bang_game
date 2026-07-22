@@ -4,6 +4,7 @@ import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import Tooltip from "../Tooltip/Tooltip";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
+import { getImageComponent } from "../../../lib/images";
 
 export default function HandIcon({ playerId }: { playerId: string }) {
   const { position, isVisible, handlersNonPinable } = useTooltip();
@@ -32,13 +33,11 @@ export default function HandIcon({ playerId }: { playerId: string }) {
             {handLength}
           </div>
         </div>
-        <img
-          src="./icon-cards.png"
-          alt=""
-          className="absolute h-[90%] border border-white object-contain z-0"
-          style={{ top: "-60%", right: "-1.5%" }}
-          draggable={false}
-        />
+
+        {getImageComponent("icon-cards", {
+          className: "absolute h-[90%] border border-white object-contain z-0",
+          style: { top: "-60%", right: "-1.5%" },
+        })}
       </div>
 
       {isVisible && (

@@ -3,6 +3,7 @@ import { m } from "motion/react";
 import { type LocalState } from "../../../stores/localStateStore";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useTurnPhase } from "../../../stores/hooks/localStateStore.hooks";
+import { getImageComponent } from "../../../lib/images";
 
 const PhaseDisplay = React.memo(() => {
   const phase = useTurnPhase();
@@ -19,14 +20,14 @@ const PhaseDisplay = React.memo(() => {
 const PlayingIndicator = ({ phase }: { phase: LocalState["turnPhase"] }) => {
   return (
     <m.div layout className="h-full w-[30%] flex justify-end items-center">
-      <m.img
+      <m.div
         layout
-        className="h-[80%] w-auto border"
-        src="./phase_play.png"
-        alt=""
+        className="h-[80%] w-auto"
         animate={{ opacity: phase === "PLAYING" ? 1 : 0.5 }}
         transition={{ duration: 0.3 }}
-      />
+      >
+        {getImageComponent("icon-phase-play", { className: "h-full w-full" })}
+      </m.div>
     </m.div>
   );
 };
@@ -53,7 +54,7 @@ const TurnTimer = () => {
         gap: sizeAdaptive(150),
       }}
     >
-      <img className="h-[80%]" src="./icon_hourglass.png" alt="" />
+      {getImageComponent("icon-hourglass", { className: "h-[80%]" })}
       <m.div
         layout
         className="h-full w-auto text-center"
@@ -73,14 +74,16 @@ const TurnTimer = () => {
 const DiscardIndicator = ({ phase }: { phase: LocalState["turnPhase"] }) => {
   return (
     <m.div layout className="h-full w-[30%] flex justify-start items-center">
-      <m.img
+      <m.div
         layout
         className="h-[80%]"
-        src="./phase_discard.png"
-        alt=""
         animate={{ opacity: phase === "DISCARDING" ? 1 : 0.5 }}
         transition={{ duration: 0.3 }}
-      />
+      >
+        {getImageComponent("icon-phase-discard", {
+          className: "h-full w-full",
+        })}
+      </m.div>
     </m.div>
   );
 };
