@@ -9,7 +9,7 @@ export type PlayersController = {
     playerData: Pick<ClientPlayer, "id" | "nickname" | "color" | "isAI">,
   ) => void;
   addToHand: (playerId: string, cardId: string | null) => void;
-  removeFromHand: (playerId: string, cardId: string | null) => void;
+  removeFromHand: (playerId: string, cardIndex: number) => void;
   addToEquipment: (playerId: string, cardId: string) => void;
   reorderPlayers: (newOrder: string[]) => void;
   assignRole: (playerId: string, role: string) => void;
@@ -120,14 +120,12 @@ export const createPlayersController: StateCreator<
       return { players: updated };
     }),
 
-  removeFromHand: (playerId, cardId) =>
+  removeFromHand: (playerId, cardIndex) =>
     set((state) => {
       const index = getPlayerIndex(state.players, playerId);
       const player = state.players[index];
-      const handIndex = player.hand.findIndex((c) => c === (cardId ?? "?"));
-      if (handIndex === -1) return {};
       const newHand = [...player.hand];
-      newHand.splice(handIndex, 1);
+      newHand.splice(cardIndex, 1);
       const updated = [...state.players];
       updated[index] = { ...player, hand: newHand };
       return { players: updated };

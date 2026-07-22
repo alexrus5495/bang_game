@@ -1,7 +1,7 @@
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
+import CardPlayArea from "./CentralPanel/CardPlayArea";
 import Deck from "./CentralPanel/Deck";
 import DeckPlacingMarker from "./CentralPanel/DeckPlacingMarker";
-import CardPlayingArea from "./CentralPanel/CardPlayingArea";
 import DiscardPile from "./CentralPanel/DiscardPile";
 import React from "react";
 import { twMerge } from "tailwind-merge";
@@ -24,7 +24,7 @@ const CentralPanel = React.memo(({ className }: { className?: string }) => {
       </div>
 
       <div className="h-[70%] w-[40%]" style={{ marginTop: sizeAdaptive(30) }}>
-        <CardPlayingArea />
+        <CardPlayArea />
       </div>
 
       <div

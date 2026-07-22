@@ -11,7 +11,7 @@ export function useHandlers() {
   return useMemo(() => {
     const result: Record<
       string,
-      (data: unknown, stage: StateUpdaterStage) => void
+      (data: unknown, stage: StateUpdaterStage, eventId?: number) => void
     > = {};
 
     for (const [path, module] of Object.entries(handlerCreators)) {

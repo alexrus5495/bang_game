@@ -6,7 +6,7 @@ import type { EventType, GameEvent, Optional } from "../types";
 const ANIMATED_EVENTS: Set<keyof EventType> = new Set([
   // "CARD_DISCARDED",
   // "CARD_DRAWN",
-  // "CARD_SNAPBACK",
+  "CARD_PLAYED",
 ]);
 
 interface AnimationState {
@@ -41,6 +41,7 @@ export const useAnimationStore = create<AnimationState>((set) => {
           currentAnimation: {
             Component,
             props: {
+              id: event.id,
               data: event.data,
               onComplete: () => {
                 set({ currentAnimation: null });

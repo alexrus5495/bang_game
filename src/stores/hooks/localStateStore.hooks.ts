@@ -101,11 +101,19 @@ export function useIsDragging(): boolean {
   return useLocalStateStore((state) => state.interactionPhase === "DRAGGING");
 }
 
+export function useIsPending(index: number): boolean {
+  return useLocalStateStore((state) => state.pendingCardIndex === index);
+}
+
 export function useIsDragged(index: number): boolean {
   return useLocalStateStore(
     (state) =>
       state.interactionPhase === "DRAGGING" && state.pendingCardIndex === index,
   );
+}
+
+export function useIsUiBlocked() {
+  return useLocalStateStore((state) => state.isUIblocked);
 }
 
 export function useIsPreparing(): boolean {
@@ -118,6 +126,10 @@ export function useIsPreparing(): boolean {
 
 export function usePlayersController(): LocalState["playersController"] {
   return useLocalStateStore((state) => state.playersController);
+}
+
+export function useCardActionsController(): LocalState["cardActionsController"] {
+  return useLocalStateStore((state) => state.cardActionsController);
 }
 
 export function useFlowController(): LocalState["flowController"] {

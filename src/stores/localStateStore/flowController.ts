@@ -15,7 +15,6 @@ export type FlowController = {
   playingEnd: () => void;
   discardingStart: () => void;
   discardingEnd: () => void;
-  initiateCardPlayAttempt: () => void;
 };
 
 export const createFlowController: StateCreator<
@@ -49,47 +48,43 @@ export const createFlowController: StateCreator<
       ...state,
       previousPlayerId: state.currentPlayerId,
       currentPlayerId: null,
-      phase: "IDLE",
+      turnPhase: "IDLE",
       gameFlowPhase: "TURN_TRANSITION",
     })),
 
   drawingStart: () =>
     set((state) => ({
       ...state,
-      phase: "DRAWING",
+      turnPhase: "DRAWING",
     })),
 
   drawingEnd: () =>
     set((state) => ({
       ...state,
-      phase: "IDLE",
+      turnPhase: "IDLE",
     })),
 
   playingStart: () =>
     set((state) => ({
       ...state,
-      phase: "PLAYING",
+      turnPhase: "PLAYING",
     })),
 
   playingEnd: () =>
     set((state) => ({
       ...state,
-      phase: "IDLE",
+      turnPhase: "IDLE",
     })),
 
   discardingStart: () =>
     set((state) => ({
       ...state,
-      phase: "DISCARDING",
+      turnPhase: "DISCARDING",
     })),
 
   discardingEnd: () =>
     set((state) => ({
       ...state,
-      phase: "IDLE",
+      turnPhase: "IDLE",
     })),
-
-  initiateCardPlayAttempt: () => {
-    return;
-  },
 });

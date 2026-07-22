@@ -1,21 +1,21 @@
 import { m } from "motion/react";
 import { FractalNoise, Neon, Shader } from "shaders/react";
 import useAnimateColor from "../hooks/useAnimateColor";
-import { useIsCurrentPlayer } from "../stores/hooks/localStateStore.hooks";
 
-export default function CardPlayingAreaAuraEffect({
+export default function CardPlayAreaAuraEffect({
   color,
+  isShown,
 }: {
   color: string;
+  isShown: boolean;
 }) {
   const animatedColor = useAnimateColor(color, 0.4);
-  const isCurrent = useIsCurrentPlayer();
 
   return (
     <m.div
       className="w-[140%] h-[140%] absolute z-[0] pointer-events-none"
       animate={{
-        opacity: isCurrent ? 1 : 0,
+        opacity: isShown ? 1 : 0,
       }}
       transition={{ duration: 0.5 }}
     >

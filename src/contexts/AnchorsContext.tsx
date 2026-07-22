@@ -17,6 +17,8 @@ export type AnchorId =
   | { type: "player-hand-card"; index: number }
   | { type: "player-hand-slot"; index: number }
   | { type: "player-equipment"; index: number }
+  | { type: "card-play-area" }
+  | { type: "table-card"; index: number }
   | { type: "drag-proxy" };
 
 type AnchorRegistry = Map<string, () => DOMRect | null>;
@@ -52,6 +54,10 @@ function serializeAnchor(id: AnchorId): string {
       return `player:hand:slot:${id.index}`;
     case "drag-proxy":
       return "drag:proxy";
+    case "card-play-area":
+      return "card:play:area";
+    case "table-card":
+      return "table:card";
     default:
       return assertNever(id);
   }

@@ -144,6 +144,7 @@ export interface GameEvent {
 }
 
 export interface EventType {
+  // Pre-launch events
   GAME_CREATED: { gameId: string; deckSize: number; numberOfSeats: number };
   INITIALIZATION_STARTED: null;
   INITIALIZATION_COMPLETED: null;
@@ -164,6 +165,8 @@ export interface EventType {
       max: number;
     };
   };
+
+  // Game flow events
   PLAYER_TURN_START: { playerId: string };
   PLAYER_DRAWING_START: { playerId: string };
   PLAYER_DRAWING_END: { playerId: string };
@@ -172,6 +175,8 @@ export interface EventType {
   PLAYER_DISCARDING_START: { playerId: string };
   PLAYER_DISCARDING_END: { playerId: string };
   PLAYER_TURN_END: { playerId: string };
+
+  // Card events
   CARD_DRAWN: {
     playerId: string;
     card: {
@@ -188,11 +193,12 @@ export interface EventType {
     };
     visibleTo: string[];
   };
-  player_played_card: { playerId: string; cardId: string };
-  player_player_card_against: {
+  CARD_PLAYED: {
     playerId: string;
-    targetPlayerId: string;
-    cardId: string;
+    card: {
+      id: string;
+      index: number;
+    };
   };
 }
 

@@ -9,7 +9,7 @@ export function useLocalStateUpdater() {
 
   const updateLocalState = useCallback(
     (event: GameEvent, stage: StateUpdaterStage): void => {
-      handlers[event.type]?.(event.data, stage);
+      handlers[event.type]?.(event.data, stage, event.id);
     },
     [handlers],
   );

@@ -21,19 +21,6 @@ export type ClientPlayer = {
   handValidationData: CardValidationData[] | null;
 };
 
-export type CardInitialData = {
-  cardId: string;
-  initialHeight: number;
-  initialX: number;
-  initialY: number;
-};
-
-export type PlayedCard = CardInitialData & {
-  offsetX: number;
-  offsetY: number;
-  rotation: number;
-};
-
 export type CardValidationData = {
   cardId: string;
   canPlay: boolean;

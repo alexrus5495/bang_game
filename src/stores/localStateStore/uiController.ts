@@ -13,6 +13,7 @@ export type UIController = {
   resetInteractionPhase: () => void;
   startDrag: (index: number) => void;
   endDrag: () => void;
+  setIsUiBlocked: (v: boolean) => void;
 };
 
 export const createUIController: StateCreator<
@@ -73,9 +74,13 @@ export const createUIController: StateCreator<
     set({ highlightedCardIndex: null });
 
     if (isOverPlayArea && pendingCardIndex !== null) {
-      get().flowController.initiateCardPlayAttempt();
+      get().cardActionsController.initiateCardPlayAttempt();
     } else {
       get().uiController.resetInteractionPhase();
     }
+  },
+
+  setIsUiBlocked: (v) => {
+    set((state) => ({ ...state, isUIblocked: v }));
   },
 });

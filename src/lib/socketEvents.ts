@@ -1,3 +1,5 @@
+export type SocketEventName = (typeof SocketEvents)[keyof typeof SocketEvents];
+
 function createEvents<T extends readonly string[]>(
   events: T,
 ): { [K in T[number]]: K } {
@@ -46,4 +48,5 @@ export const SocketEvents = createEvents([
   "SEND_TIMER_UPDATE",
   "REQUEST_HAND_VALIDATION",
   "SEND_HAND_VALIDATION_DATA",
+  "PLAY_CARD",
 ] as const);

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { ClientPlayer, PlayedCard } from "./localStateStore/types";
+import type { ClientPlayer } from "./localStateStore/types";
 import {
   createPlayersController,
   type PlayersController,
@@ -17,10 +17,6 @@ import {
   type InitController,
 } from "./localStateStore/initController";
 import {
-  createPendingController,
-  type PendingController,
-} from "./localStateStore/pendingController";
-import {
   createFlowController,
   type FlowController,
 } from "./localStateStore/flowController";
@@ -32,6 +28,10 @@ import {
   createUIController,
   type UIController,
 } from "./localStateStore/uiController";
+import {
+  createCardActionsController,
+  type CardActionsController,
+} from "./localStateStore/cardActionsController";
 
 export type TurnPhase = "IDLE" | "DRAWING" | "PLAYING" | "DISCARDING";
 export type GameFlowPhase =
@@ -47,6 +47,7 @@ export type InteractionPhase =
   | "IDLE"
   | "AWAITING_ACTION"
   | "DRAGGING"
+  | "WAITING_FOR_SERVER"
   | "AWAITING_TARGET"
   | "RESOLVING_EFFECTS";
 
@@ -58,7 +59,7 @@ export type LocalState = {
   totalDeckLength: number;
   deckCurrentSize: number;
   discardCurrentSize: number;
-  cardsOnTheTable: PlayedCard[];
+  cardsOnTheTable: { id: string; eventId: number }[];
 
   // Domain turn status (game rules)
   currentPlayerId: string | null;
@@ -66,6 +67,7 @@ export type LocalState = {
   turnPhase: TurnPhase;
 
   // UI data
+  isUIblocked: boolean;
   gameFlowPhase: GameFlowPhase;
   interactionPhase: InteractionPhase;
   pendingCardIndex: number | null;
@@ -74,10 +76,10 @@ export type LocalState = {
 
   //Controllers
   playersController: PlayersController;
+  cardActionsController: CardActionsController;
   flowController: FlowController;
   deckController: DeckController;
   tableController: TableController;
-  pendingController: PendingController;
   initController: InitController;
   uiController: UIController;
   devController: DevController;
@@ -96,6 +98,7 @@ export const useLocalStateStore = create<LocalState>()((...args) => ({
   previousPlayerId: null,
   turnPhase: "IDLE",
 
+  isUIblocked: false,
   gameFlowPhase: "PREPARATION",
   interactionPhase: "IDLE",
   pendingCardIndex: null,
@@ -103,10 +106,10 @@ export const useLocalStateStore = create<LocalState>()((...args) => ({
   isOverPlayArea: false,
 
   playersController: createPlayersController(...args),
+  cardActionsController: createCardActionsController(...args),
   flowController: createFlowController(...args),
   deckController: createDeckController(...args),
   tableController: createTableController(...args),
-  pendingController: createPendingController(...args),
   uiController: createUIController(...args),
   initController: createInitController(...args),
   devController: createDevController(...args),

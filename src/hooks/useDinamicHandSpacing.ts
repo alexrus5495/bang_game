@@ -1,10 +1,9 @@
 import { useLayoutEffect, useMemo, useState } from "react";
 import { CARD_CONTAINER_WIDTH } from "../components/cards/shared/constants";
 
-export function useDinamicSpacing(
+export function useDinamicHandSpacing(
   cardIds: string[],
   containerWidth: number,
-  pendingCardId: string | null,
   scale: number,
 ) {
   const [cardWidth, setCardWidth] = useState(0);
@@ -17,7 +16,7 @@ export function useDinamicSpacing(
     const width = CARD_CONTAINER_WIDTH * scale;
 
     setCardWidth(width);
-  }, [cardIds, containerWidth, scale, pendingCardId]);
+  }, [cardIds, containerWidth, scale]);
 
   const spacing = useMemo(() => {
     const cardsTotal = cardIds.length;
