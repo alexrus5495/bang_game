@@ -25,7 +25,6 @@ const CurrentPlayerName = React.memo(
           className="h-full flex items-center justify-center will-change-transform"
         >
           {getImageComponent("decoration_b", {
-            key: "decoration-left",
             className: "h-[50%]",
           })}
         </m.div>
@@ -50,7 +49,6 @@ const CurrentPlayerName = React.memo(
           className="h-full flex items-center justify-center will-change-transform"
         >
           {getImageComponent("decoration_b", {
-            key: "decoration-right",
             className: "h-[50%] rotate-180",
           })}
         </m.div>
