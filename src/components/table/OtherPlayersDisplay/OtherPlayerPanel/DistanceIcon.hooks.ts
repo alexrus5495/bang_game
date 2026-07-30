@@ -12,7 +12,8 @@ export function useDistanceInfo(playerId: string) {
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
   const locale = useSystemLocalization() as Record<string, string>;
 
-  const { ids, eliminatedMap, clientData } = usePreparePlayersData();
+  const { ids, eliminatedMap, clientData, playerData } =
+    usePreparePlayersData(playerId);
 
   return useMemo(() => {
     if (!ids || !eliminatedMap) {
@@ -24,13 +25,19 @@ export function useDistanceInfo(playerId: string) {
       return { distance: 0, tooltipContent: [] as TooltipMessage[] };
     }
 
-    const result = calculateBaseDistance(targetIndex, eliminatedMap, ids);
+    const baseDistance = calculateBaseDistance(targetIndex, eliminatedMap, ids);
 
-    return applyDistanceBonuses(result, locale, clientData, cardsMeta);
-  }, [cardsMeta, ids, locale, clientData, eliminatedMap, playerId]);
+    return applyDistanceBonuses({
+      baseDistance,
+      locale,
+      clientData,
+      cardsMeta,
+      playerData,
+    });
+  }, [cardsMeta, ids, locale, clientData, eliminatedMap, playerId, playerData]);
 }
 
-function usePreparePlayersData() {
+function usePreparePlayersData(playerId: string) {
   // 1. Get ordered list of players
   const ids = useRotatedPlayerIds();
 
@@ -56,7 +63,16 @@ function usePreparePlayersData() {
     }),
   );
 
-  return { ids, eliminatedMap, clientData };
+  const playerData = useStore(
+    useLocalStateStore,
+    useShallow((state) => {
+      const p = state.players.find((p) => p.id === playerId);
+      if (!p) return null;
+      return { char: p.char, equipment: p.equipment };
+    }),
+  );
+
+  return { ids, eliminatedMap, clientData, playerData };
 }
 
 function calculateBaseDistance(
@@ -84,13 +100,20 @@ function calculateBaseDistance(
   return Math.min(clockwise, counterClockwise);
 }
 
-function applyDistanceBonuses(
-  result: number,
-  locale: Record<string, string>,
-  clientData: { char: string; equipment: string[] } | null,
-  cardsMeta: CardsMetaData,
-) {
-  let distance = result;
+function applyDistanceBonuses({
+  baseDistance,
+  locale,
+  clientData,
+  cardsMeta,
+  playerData,
+}: {
+  baseDistance: number;
+  locale: Record<string, string>;
+  clientData: { char: string; equipment: string[] } | null;
+  cardsMeta: CardsMetaData;
+  playerData: { char: string; equipment: string[] } | null;
+}) {
+  let distance = baseDistance;
   const tooltipContent: TooltipMessage[] = [
     [
       {
@@ -100,8 +123,10 @@ function applyDistanceBonuses(
     ],
   ];
 
-  if (clientData) {
-    const mustangCard = clientData.equipment.find((item) =>
+  // 1. Apply opponent-side bonuses
+  if (playerData) {
+    // Mustang card
+    const mustangCard = playerData.equipment.find((item) =>
       item.startsWith("mustang_"),
     );
 
@@ -116,7 +141,8 @@ function applyDistanceBonuses(
       ]);
     }
 
-    if (clientData.char === "paul_regret") {
+    // Paul Regret char
+    if (playerData.char === "paul_regret") {
       distance++;
       tooltipContent.push([
         { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
@@ -128,8 +154,36 @@ function applyDistanceBonuses(
     }
   }
 
+  //2. Apply client-side bonuses
+  if (clientData) {
+    // Scope card
+    const scopeCard = clientData.equipment.find((item) =>
+      item.startsWith("scope_"),
+    );
+
+    if (scopeCard) {
+      distance--;
+      tooltipContent.push([
+        { type: "plainText", content: `-1 ${locale["tooltip_from"]} ` },
+        { type: "playingCardRef", content: cardsMeta.deckMeta[scopeCard] },
+      ]);
+    }
+
+    // Rose Doolan char
+    if (clientData.char === "rose_doolan") {
+      distance--;
+      tooltipContent.push([
+        { type: "plainText", content: `-1 ${locale["tooltip_from"]} ` },
+        {
+          type: "charCardRef",
+          content: cardsMeta.charDeckMeta["rose_doolan"],
+        },
+      ]);
+    }
+  }
+
   return {
-    distance,
+    distance: distance >= 0 ? distance : 0,
     tooltipContent,
   };
 }

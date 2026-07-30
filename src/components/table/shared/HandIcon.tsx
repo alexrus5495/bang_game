@@ -5,6 +5,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
 import { getImageComponent } from "../../../lib/images";
+import { m } from "motion/react";
 
 export default function HandIcon({ playerId }: { playerId: string }) {
   const { position, isVisible, handlersNonPinable } = useTooltip();
@@ -23,7 +24,15 @@ export default function HandIcon({ playerId }: { playerId: string }) {
         style={{ cursor: isDragging ? "default" : "pointer" }}
         {...handlersNonPinable}
       >
-        <div
+        <m.div
+          key={handLength}
+          initial={{ scale: 1 }}
+          animate={{ scale: [1, 1.35, 1] }}
+          transition={{
+            duration: 0.35,
+            times: [0, 0.5, 1],
+            ease: "easeInOut",
+          }}
           className="h-full aspect-square border rounded-[50%] bg-paperTexture-yellow relative z-1"
           style={{
             borderWidth: sizeAdaptive(300),
@@ -32,7 +41,7 @@ export default function HandIcon({ playerId }: { playerId: string }) {
           <div className="h-full w-full text-center" style={{}}>
             {handLength}
           </div>
-        </div>
+        </m.div>
 
         {getImageComponent("icon-cards", {
           className: "absolute h-[90%] border border-white object-contain z-0",

@@ -8,11 +8,12 @@ import React from "react";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useShallow } from "zustand/shallow";
 import { useStore } from "zustand";
-import { useIsCurrentPlayer } from "../../../stores/hooks/localStateStore.hooks";
+import { useHighlightedOpponent } from "../../../stores/hooks/localStateStore.hooks";
 
 const OtherPlayerPanel = React.memo(({ playerId }: { playerId: string }) => {
   const locale = useSystemLocalization() as Record<string, string>;
-  const isCurrent = useIsCurrentPlayer(playerId);
+  const highlightedOpponent = useHighlightedOpponent();
+  const isCurrent = highlightedOpponent === playerId;
 
   const player = useStore(
     useLocalStateStore,

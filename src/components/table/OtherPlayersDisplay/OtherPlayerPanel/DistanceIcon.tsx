@@ -6,6 +6,7 @@ import { useTooltip } from "../../../../hooks/useTooltip";
 import { useDistanceInfo } from "./DistanceIcon.hooks";
 import { useIsDragging } from "../../../../stores/hooks/localStateStore.hooks";
 import { getImageComponent } from "../../../../lib/images";
+import { m } from "motion/react";
 
 const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
   const isDragging = useIsDragging();
@@ -28,7 +29,15 @@ const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
         style={{ cursor: isDragging ? "default" : "pointer" }}
         {...(hasCardRef(tooltipContent) ? handlersPinable : handlersNonPinable)}
       >
-        <div
+        <m.div
+          key={distance}
+          initial={{ scale: 1 }}
+          animate={{ scale: [1, 1.35, 1] }}
+          transition={{
+            duration: 0.35,
+            times: [0, 0.5, 1],
+            ease: "easeInOut",
+          }}
           className="h-[100%] aspect-square border rounded-[50%] bg-paperTexture-yellow relative z-2"
           style={{
             borderWidth: sizeAdaptive(300),
@@ -37,7 +46,7 @@ const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
           {distance !== undefined && (
             <div className="h-full w-full text-center">{distance}</div>
           )}
-        </div>
+        </m.div>
 
         {getImageComponent("icon-distance", {
           className: "absolute top-[-60%] h-[70%] z-0",
