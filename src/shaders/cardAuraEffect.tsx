@@ -10,6 +10,7 @@ const CardAuraEffect = React.memo(
 
     return (
       <m.div
+        initial={{ opacity: isVisible ? 1 : 0 }}
         animate={{
           opacity: isVisible ? 1 : 0,
         }}
