@@ -1,13 +1,22 @@
 import { useState } from "react";
 import DevFlowControls from "./DEV_FLOW_CONTROLS";
 import DevKiller from "./DEV_KILLER";
+import {
+  useInteractionPhase,
+  usePendingCardIndex,
+} from "../stores/hooks/localStateStore.hooks";
+import DevUi from "./DEV_UI";
+import DevCard from "./DEV_CARDS";
 
-type DevTabs = "none" | "flow" | "animation" | "killer";
+type DevTabs = "none" | "flow" | "animation" | "killer" | "ui" | "card";
 
 export default function DevController() {
   const [showing, setShowing] = useState(false);
   const [currentTab, setCurrentTab] = useState<DevTabs>("animation");
   const toggleShowing = () => setShowing((prev) => !prev);
+
+  const pendingCardIndex = usePendingCardIndex();
+  const interactionPhase = useInteractionPhase();
 
   return (
     <div className="h-auto w-auto absolute z-999 m-5 bottom-5 left-0 flex-row">
@@ -24,6 +33,13 @@ export default function DevController() {
 
         {showing && (
           <div className="flex ">
+            <div className="fixed text-3xl text-white top-10 left-1">
+              {pendingCardIndex}
+            </div>
+            <div className="fixed text-3xl text-white top-0 left-1">
+              {interactionPhase}
+            </div>
+
             <TabButton
               tab={"flow"}
               currentTab={currentTab}
@@ -38,6 +54,18 @@ export default function DevController() {
 
             <TabButton
               tab={"animation"}
+              currentTab={currentTab}
+              setCurrentTab={setCurrentTab}
+            />
+
+            <TabButton
+              tab={"ui"}
+              currentTab={currentTab}
+              setCurrentTab={setCurrentTab}
+            />
+
+            <TabButton
+              tab={"card"}
               currentTab={currentTab}
               setCurrentTab={setCurrentTab}
             />
@@ -56,6 +84,10 @@ function Tab({ currentTab }: { currentTab: DevTabs }) {
       return null;
     case "killer":
       return <DevKiller />;
+    case "ui":
+      return <DevUi />;
+    case "card":
+      return <DevCard />;
     default:
       return null;
   }
