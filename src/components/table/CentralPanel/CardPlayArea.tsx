@@ -95,7 +95,7 @@ const useCardPlayAreaHighlight = () => {
 };
 
 function CardPlayAreaAnchor() {
-  const anchorId: AnchorId = { type: "card-play-area" };
+  const anchorId: AnchorId = { type: "play-area" };
 
   return (
     <div className="h-full w-full absolute flex justify-center items-center opacity-0 pointer-events-none">

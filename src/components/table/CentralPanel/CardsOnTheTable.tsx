@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { AnchorId } from "../../../contexts/AnchorsContext";
+import { useAnchors, type AnchorId } from "../../../contexts/AnchorsContext";
 import { getCardTableTransform } from "../../../lib/utils/getCardTableTransform";
 import { useCardsOnTheTable } from "../../../stores/hooks/localStateStore.hooks";
 import PlayingCard from "../../cards/PlayingCard";
@@ -23,14 +23,21 @@ function CardOnTheTable({
   card: { id: string; eventId: number };
   index: number;
 }) {
-  const { offsetX, offsetY, rotation } = getCardTableTransform(
+  const { offsetXFactor, offsetYFactor, rotation } = getCardTableTransform(
     card.id,
     card.eventId,
   );
+  const anchors = useAnchors();
+  const playAreaAnchor = anchors.getRect({ type: "play-area" });
   const anchorId: AnchorId = useMemo(
-    () => ({ type: "player-hand-card", index }),
+    () => ({ type: "play-area-card", index }),
     [index],
   );
+
+  if (!playAreaAnchor) return null;
+
+  const offsetX = offsetXFactor * playAreaAnchor.width;
+  const offsetY = offsetYFactor * playAreaAnchor.width;
 
   return (
     <div
