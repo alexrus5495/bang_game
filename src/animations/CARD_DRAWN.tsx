@@ -1,7 +1,7 @@
 import type { EventType } from "../types";
 import OpponentCardDrawn from "./CARD_DRAWN/OpponentCardDrawn";
 import ClientCardDrawn from "./CARD_DRAWN/ClientCardDrawn";
-import { useSocket } from "../hooks/useSocket";
+import { socket } from "../lib/socket";
 
 export default function CARD_DRAWN({
   data,
@@ -9,9 +9,7 @@ export default function CARD_DRAWN({
 }: {
   data: EventType["CARD_DRAWN"];
   onComplete: () => void;
-  animationId: string;
 }) {
-  const { socket } = useSocket();
   const playerIsClient = data.playerId === socket.id;
 
   return (

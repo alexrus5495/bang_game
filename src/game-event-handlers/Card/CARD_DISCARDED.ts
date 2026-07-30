@@ -7,7 +7,7 @@ export default function CARD_DISCARDED() {
     const { deckController, playersController } = useLocalStateStore.getState();
 
     if (stage === "beforeAnimation") {
-      playersController.removeFromHand(data.playerId, data.card.id);
+      playersController.removeFromHand(data.playerId, data.card.index);
     }
     if (stage === "afterAnimation") {
       deckController.incrementDiscard();

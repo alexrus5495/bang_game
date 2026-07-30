@@ -7,9 +7,12 @@ export function getCardTableTransform(cardId: string, eventIndex: number) {
 
   const absHash = Math.abs(hash);
 
-  const offsetX = (absHash % 17) - 8; // from -8px to +8px
-  const offsetY = ((absHash >> 3) % 17) - 8; // from -8px to +8px
-  const rotation = ((absHash >> 5) % 17) - 8; // from -8deg to +8deg
+  const rawXFactor = (absHash % 51) - 25;
+  const rawYFactor = ((absHash >> 3) % 51) - 25;
 
-  return { id: cardId, offsetX, offsetY, rotation };
+  const offsetXFactor = rawXFactor / 1000;
+  const offsetYFactor = rawYFactor / 1000;
+
+  const rotation = ((absHash >> 5) % 7) - 3;
+  return { id: cardId, offsetXFactor, offsetYFactor, rotation };
 }

@@ -2,6 +2,8 @@ import { m } from "motion/react";
 import { useAnchors } from "../../contexts/AnchorsContext";
 import type { EventType } from "../../types";
 import PlayingCard from "../../components/cards/PlayingCard";
+import { getAnimationScale } from "../../lib/utils/getAnimationScale";
+import { getAnimationPosition } from "../../lib/utils/getAnimationPosition";
 
 export default function OpponentCardDrawn({
   data,
@@ -18,10 +20,25 @@ export default function OpponentCardDrawn({
   });
 
   if (!from || !to) {
-    // Safely defer onComplete to avoid triggering state updates during render
     setTimeout(onComplete, 0);
     return null;
   }
+
+  const { initialScale, targetScale } = getAnimationScale({
+    baseSize: to,
+    initialSize: from,
+    targetSize: to,
+  });
+
+  const initialPos = getAnimationPosition({
+    containerSize: to,
+    targetRect: from,
+  });
+
+  const targetPos = getAnimationPosition({
+    containerSize: to,
+    targetRect: to,
+  });
 
   return (
     <m.div
@@ -29,17 +46,19 @@ export default function OpponentCardDrawn({
         position: "fixed",
         left: 0,
         top: 0,
-        width: from.width,
+        width: to.width,
+        height: to.height,
+        transformOrigin: "center center",
       }}
       initial={{
-        x: from.left,
-        y: from.top,
-        height: from.height,
+        x: initialPos.x,
+        y: initialPos.y,
+        scale: initialScale,
       }}
       animate={{
-        x: to.left,
-        y: to.top,
-        height: to.height,
+        x: targetPos.x,
+        y: targetPos.y,
+        scale: targetScale,
       }}
       transition={{
         type: "tween",

@@ -9,8 +9,11 @@ export default function CARD_DRAWN() {
     if (stage === "beforeAnimation") {
       deckController.decrementDeck();
     }
+
     if (stage === "afterAnimation") {
       playersController.addToHand(data.playerId, data.card.id);
+      const shouldWaitForStateUpdates = true;
+      return shouldWaitForStateUpdates;
     }
   };
 }

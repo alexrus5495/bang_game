@@ -2,6 +2,8 @@ import { m } from "motion/react";
 import { useAnchors } from "../../contexts/AnchorsContext";
 import type { EventType } from "../../types";
 import PlayingCard from "../../components/cards/PlayingCard";
+import { getAnimationScale } from "../../lib/utils/getAnimationScale";
+import { getAnimationPosition } from "../../lib/utils/getAnimationPosition";
 
 export default function ClientCardDiscarded({
   data,
@@ -19,11 +21,22 @@ export default function ClientCardDiscarded({
 
   if (!from || !to) return null;
 
+  const { initialScale, targetScale } = getAnimationScale({
+    baseSize: to,
+    initialSize: from,
+    targetSize: to,
+  });
+
+  const target = getAnimationPosition({ containerSize: to, targetRect: to });
+
   return (
     <m.div
-      className=""
-      initial={{ x: from.x, y: from.y, height: from.height }}
-      animate={{ x: to.x, y: to.y, height: to.height }}
+      style={{
+        height: to.height,
+        transformOrigin: "center center",
+      }}
+      initial={{ x: from.x, y: from.y, scale: initialScale }}
+      animate={{ x: target.x, y: target.y, scale: targetScale }}
       transition={{ duration: 0.2 }}
       onAnimationComplete={onComplete}
     >
