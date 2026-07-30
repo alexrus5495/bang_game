@@ -16,16 +16,8 @@ export function useRangeInfo(player: PlayerSlice) {
   return useMemo(() => {
     const baseInfo = addBaseWeaponInfo(player, locale, cardsMeta);
 
-    let currentRange = baseInfo.currentRange;
+    const currentRange = baseInfo.currentRange;
     const tooltipContent = baseInfo.tooltipContent;
-
-    currentRange = checkForBonuses(
-      player,
-      currentRange,
-      tooltipContent,
-      locale,
-      cardsMeta,
-    );
 
     return {
       range: currentRange,
@@ -67,77 +59,4 @@ function addBaseWeaponInfo(
   ]);
 
   return { currentRange, tooltipContent };
-}
-
-function checkForBonuses(
-  player: PlayerSlice,
-  currentRange: number,
-  tooltipContent: TooltipMessage[],
-  locale: Record<string, string>,
-  cardsMeta: CardsMetaData,
-) {
-  let updatedRange = currentRange;
-
-  // Check for scope card
-  updatedRange = checkForScope(
-    player,
-    updatedRange,
-    tooltipContent,
-    locale,
-    cardsMeta,
-  );
-
-  // Check for Rose Doolan char
-  updatedRange = checkForDoolanChar(
-    player,
-    currentRange,
-    tooltipContent,
-    locale,
-    cardsMeta,
-  );
-
-  return updatedRange;
-}
-
-function checkForScope(
-  player: PlayerSlice,
-  currentRange: number,
-  tooltipContent: TooltipMessage[],
-  locale: Record<string, string>,
-  cardsMeta: CardsMetaData,
-) {
-  let updatedRange = currentRange;
-  const scopeCard = player.equipment.find((item) => item.startsWith("scope_"));
-
-  if (scopeCard) {
-    updatedRange++;
-    tooltipContent.push([
-      { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
-      { type: "playingCardRef", content: cardsMeta.deckMeta[scopeCard] },
-    ]);
-  }
-  return updatedRange;
-}
-
-function checkForDoolanChar(
-  player: PlayerSlice,
-  currentRange: number,
-  tooltipContent: TooltipMessage[],
-  locale: Record<string, string>,
-  cardsMeta: CardsMetaData,
-) {
-  let updatedRange = currentRange;
-
-  if (player!.char === "rose_doolan") {
-    updatedRange++;
-    tooltipContent.push([
-      { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
-      {
-        type: "charCardRef",
-        content: cardsMeta.charDeckMeta["rose_doolan"],
-      },
-    ]);
-  }
-
-  return updatedRange;
 }

@@ -2,6 +2,7 @@ import React from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { useTooltip } from "../../../hooks/useTooltip";
 import Tooltip from "../Tooltip/Tooltip";
+import { m } from "motion/react";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/shallow";
@@ -57,7 +58,15 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
         style={{ cursor: isDragging ? "default" : "pointer" }}
         {...(hasCardRef(tooltipContent) ? handlersPinable : handlersNonPinable)}
       >
-        <div
+        <m.div
+          key={range}
+          initial={{ scale: 1 }}
+          animate={{ scale: [1, 1.35, 1] }}
+          transition={{
+            duration: 0.35,
+            times: [0, 0.5, 1],
+            ease: "easeInOut",
+          }}
           className="h-[100%] aspect-square border rounded-[50%] bg-paperTexture-yellow relative z-1"
           style={{
             borderWidth: sizeAdaptive(300),
@@ -66,7 +75,7 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
           {range !== undefined && (
             <div className="h-full w-full text-center">{range}</div>
           )}
-        </div>
+        </m.div>
         {getImageComponent("icon-crosshair", {
           className: "absolute z-0 top-[-65%] h-[100%]",
           draggable: false,
