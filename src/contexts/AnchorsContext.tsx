@@ -16,10 +16,11 @@ export type AnchorId =
   | { type: "player-hand-zero" }
   | { type: "player-hand-card"; index: number }
   | { type: "player-hand-slot"; index: number }
-  | { type: "player-equipment"; index: number }
-  | { type: "card-play-area" }
-  | { type: "table-card"; index: number }
-  | { type: "drag-proxy" };
+  | { type: "equipment-slot"; playerId: string; index: number }
+  | { type: "equipment-card"; playerId: string; index: number }
+  | { type: "equipment-zero"; playerId: string }
+  | { type: "play-area" }
+  | { type: "play-area-card"; index: number };
 
 type AnchorRegistry = Map<string, () => DOMRect | null>;
 
@@ -48,16 +49,18 @@ function serializeAnchor(id: AnchorId): string {
       return `player:hand:zero`;
     case "player-hand-card":
       return `player:hand:card:${id.index}`;
-    case "player-equipment":
-      return `player:equipment:${id.index}`;
+    case "equipment-zero":
+      return `equipment:zero:${id.playerId}`;
+    case "equipment-slot":
+      return `equipment:slot:${id.playerId}:${id.index}`;
+    case "equipment-card":
+      return `equipment:card:${id.playerId}:${id.index}`;
     case "player-hand-slot":
       return `player:hand:slot:${id.index}`;
-    case "drag-proxy":
-      return "drag:proxy";
-    case "card-play-area":
-      return "card:play:area";
-    case "table-card":
-      return "table:card";
+    case "play-area":
+      return "play:area";
+    case "play-area-card":
+      return `play:area:card:${id.index}`;
     default:
       return assertNever(id);
   }

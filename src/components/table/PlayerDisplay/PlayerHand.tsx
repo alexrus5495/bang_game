@@ -27,6 +27,7 @@ export default function PlayerHand({ clientId }: { clientId: string }) {
       <LayoutSlots
         quantity={cards ? cards.length + 1 : 1}
         containerWidth={containerWidth}
+        anchorType={"player-hand-slot"}
       />
 
       <div className="h-full w-full" ref={scaleRef}>
