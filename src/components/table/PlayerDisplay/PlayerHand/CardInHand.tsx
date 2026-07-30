@@ -1,4 +1,4 @@
-import { m } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import PlayingCard from "../../../cards/PlayingCard";
 import InspectIcon from "../InspectIcon";
 import AnimationAnchor from "../../shared/AnimationAnchor";
@@ -11,6 +11,8 @@ import {
   useIsPending,
 } from "../../../../stores/hooks/localStateStore.hooks";
 import TargetSelectPrompt from "../../prompts/TargetSelectPrompt";
+import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
+import { getImageComponent } from "../../../../lib/images";
 
 type CardInHandProps = {
   cardId: string;
@@ -129,9 +131,34 @@ const CardInHandInner = React.memo(() => {
 
         <CardAuraEffect color={aura.color} isVisible={aura.isVisible} />
 
-        <div style={{ opacity: showTargetSelector ? 1 : 0 }}>
-          <TargetSelectPrompt cardIndex={card.index} />
-        </div>
+        <AnimatePresence>
+          {showTargetSelector && (
+            <m.div
+              key={`targetSelector-arrowIndicator`}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="absolute z-999 top-1/2 -translate-y-1/2 left-[80%]"
+              style={{
+                marginLeft: sizeAdaptive(20),
+                height: sizeAdaptive(15),
+                width: sizeAdaptive(15),
+              }}
+            >
+              {getImageComponent("arrow-right-red", {
+                className: "h-auto w-auto",
+              })}
+            </m.div>
+          )}
+
+          <div
+            style={{ opacity: showTargetSelector ? 1 : 0 }}
+            key={`targetSelector-prompt`}
+          >
+            <TargetSelectPrompt cardIndex={card.index} />
+          </div>
+        </AnimatePresence>
       </m.div>
 
       {highlight.isHighlighted && !drag.isDragging && (

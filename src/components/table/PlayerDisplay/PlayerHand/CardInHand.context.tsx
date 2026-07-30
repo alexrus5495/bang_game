@@ -103,7 +103,7 @@ export const CardInHandProvider = ({
     shouldDrag,
   } = useCardDrag(index);
   const { isHighlighted, onMouseEnter, onMouseLeave } = useCardHighlight(index);
-  const { rotateX, rotateY } = use3dTilt(isDragging, dragX, dragY);
+  const { rotateX, rotateY } = use3dTilt(dragX, dragY);
   const aura = useCardAuraEffect(index);
 
   const anchorId: AnchorId = useMemo(

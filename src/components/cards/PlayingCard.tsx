@@ -19,7 +19,7 @@ const PlayingCard = React.memo(
     useEffect(() => {
       if (flipDelay) {
         const timer = setTimeout(() => {
-          setIsFaceDown(false);
+          setIsFaceDown(!isFaceDown);
         }, flipDelay);
 
         return () => clearTimeout(timer);

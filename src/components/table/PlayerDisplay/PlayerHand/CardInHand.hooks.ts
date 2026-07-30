@@ -10,9 +10,11 @@ import {
   useIsDragging,
   useIsOverPlayArea,
   useIsPending,
+  usePlayersController,
   useUiController,
 } from "../../../../stores/hooks/localStateStore.hooks";
 import { animate } from "motion";
+import { socket } from "../../../../lib/socket";
 
 export type CardPositionData = null | {
   top: number;
@@ -27,8 +29,7 @@ const DRAG_TRANSITION_TYPE = "spring";
 const DRAG_TRANSITION_STIFFNESS = 400;
 const DRAG_TRANSITION_DAMPING = 24;
 
-const SHIFT_OFFSET = 50;
-const NEGATIVE_SHIFT_OFFSET = -50;
+const SHIFT_OFFSET_FACTOR = 0.45;
 
 export function useCardPosition(data: { spacing: number; index: number }) {
   const anchor = useAnchors();
@@ -57,6 +58,8 @@ export function useCardPosition(data: { spacing: number; index: number }) {
   }, [isCardPlayable, isHighlighted, zeroAnchor, isCurrent, isPending]);
 
   const getTranslateX = useCallback((): number => {
+    if (!zeroAnchor) return 0;
+
     // 1. If no focus or it's on this card - no shift
     if (highlightedCardIndex === null || highlightedCardIndex === data.index) {
       return 0;
@@ -64,12 +67,12 @@ export function useCardPosition(data: { spacing: number; index: number }) {
 
     // 2. If focus to the left - shift right
     if (highlightedCardIndex < data.index) {
-      return SHIFT_OFFSET;
+      return SHIFT_OFFSET_FACTOR * zeroAnchor?.width;
     }
 
     // 3. If focus to the right - shift left
-    return NEGATIVE_SHIFT_OFFSET;
-  }, [highlightedCardIndex, data.index]);
+    return -(SHIFT_OFFSET_FACTOR * zeroAnchor?.width);
+  }, [highlightedCardIndex, data.index, zeroAnchor]);
 
   const position = useMemo((): CardPositionData => {
     if (!zeroAnchor) return null;
@@ -98,11 +101,25 @@ export function useCardPosition(data: { spacing: number; index: number }) {
 }
 
 export function useIsCardPlayable(index: number) {
+  const playerController = usePlayersController();
+  const player = playerController.getPlayerById(socket.id ?? "");
+
+  if (!player)
+    throw new Error(
+      `Tried getting hand validation data, but player is ${player}`,
+    );
+
   const handValidationData = useHandValidation();
 
-  const isCardPlayable = handValidationData
-    ? handValidationData[index].canPlay
-    : false;
+  if (!handValidationData) return;
+
+  const cardId = player.hand[index];
+
+  const cardValidationData = handValidationData?.find(
+    (card) => card.cardId === cardId,
+  );
+
+  const isCardPlayable = cardValidationData?.canPlay ?? false;
 
   return isCardPlayable;
 }
@@ -206,11 +223,7 @@ export function useCardHighlight(index: number) {
   return { highlightedCardIndex, isHighlighted, onMouseEnter, onMouseLeave };
 }
 
-export function use3dTilt(
-  isDragging: boolean,
-  dragX: MotionValue,
-  dragY: MotionValue,
-) {
+export function use3dTilt(dragX: MotionValue, dragY: MotionValue) {
   // Motion values to store tilt angles
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
@@ -221,13 +234,6 @@ export function use3dTilt(
 
   // Calculate drag speed on each frame and translate it into tilt angle
   useAnimationFrame(() => {
-    if (!isDragging) {
-      // If stopped moving smoothly reset tilt angles
-      rotateX.set(rotateX.get() * 0.85);
-      rotateY.set(rotateY.get() * 0.85);
-      return;
-    }
-
     const currentX = dragX.get();
     const currentY = dragY.get();
 
@@ -235,14 +241,20 @@ export function use3dTilt(
     const velocityX = currentX - prevX.current;
     const velocityY = currentY - prevY.current;
 
-    // Clamp tilt angles between -15deg and 15deg
-    // Horisontal speed rotate the card on Y axis, vertical speed - on X axis
-    const targetRotateY = Math.min(Math.max(velocityX * 0.4, -15), 15);
-    const targetRotateX = Math.min(Math.max(-velocityY * 0.4, -15), 15);
+    if (Math.abs(velocityX) > 0.1 || Math.abs(velocityY) > 0.1) {
+      // Clamp tilt angles between -15deg and 15deg
+      // Horisontal speed rotate the card on Y axis, vertical speed - on X axis
+      const targetRotateY = Math.min(Math.max(velocityX * 0.4, -15), 15);
+      const targetRotateX = Math.min(Math.max(-velocityY * 0.4, -15), 15);
 
-    // Linear interpolation to smooth out the rotation
-    rotateX.set(rotateX.get() + (targetRotateX - rotateX.get()) * 0.2);
-    rotateY.set(rotateY.get() + (targetRotateY - rotateY.get()) * 0.2);
+      // Linear interpolation to smooth out the rotation
+      rotateX.set(rotateX.get() + (targetRotateX - rotateX.get()) * 0.2);
+      rotateY.set(rotateY.get() + (targetRotateY - rotateY.get()) * 0.2);
+    } else {
+      // If no movement - smooth return to 0
+      rotateX.set(rotateX.get() * 0.85);
+      rotateY.set(rotateY.get() * 0.85);
+    }
 
     // Store current coordinates to use in the next frame
     prevX.current = currentX;
