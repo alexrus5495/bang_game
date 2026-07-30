@@ -67,6 +67,7 @@ export type LocalState = {
   turnPhase: TurnPhase;
 
   // UI data
+  highlightedOpponent: string | null;
   isUIblocked: boolean;
   gameFlowPhase: GameFlowPhase;
   interactionPhase: InteractionPhase;
@@ -98,6 +99,7 @@ export const useLocalStateStore = create<LocalState>()((...args) => ({
   previousPlayerId: null,
   turnPhase: "IDLE",
 
+  highlightedOpponent: null,
   isUIblocked: false,
   gameFlowPhase: "PREPARATION",
   interactionPhase: "IDLE",

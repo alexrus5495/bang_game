@@ -14,6 +14,7 @@ export type UIController = {
   startDrag: (index: number) => void;
   endDrag: () => void;
   setIsUiBlocked: (v: boolean) => void;
+  setHighlightedOpponent: (v: null | string) => void;
 };
 
 export const createUIController: StateCreator<
@@ -23,20 +24,17 @@ export const createUIController: StateCreator<
   UIController
 > = (set, get) => ({
   setHighlightedCardIndex: (v) =>
-    set((state) => ({
-      ...state,
+    set(() => ({
       highlightedCardIndex: v,
     })),
 
   setIsOverPlayArea: (v) =>
-    set((state) => ({
-      ...state,
+    set(() => ({
       isOverPlayArea: v,
     })),
 
   setInteractionPhase: (interactionPhase, pendingCardIndex = null) =>
-    set((state) => ({
-      ...state,
+    set(() => ({
       interactionPhase,
       pendingCardIndex,
     })),
@@ -49,15 +47,13 @@ export const createUIController: StateCreator<
         : "IDLE";
 
       return {
-        ...state,
         interactionPhase: defaultInteraction,
         pendingCardIndex: null,
       };
     }),
 
   setPendingCardIndex: (index) =>
-    set((state) => ({
-      ...state,
+    set(() => ({
       pendingCardIndex: index,
     })),
 
@@ -81,6 +77,10 @@ export const createUIController: StateCreator<
   },
 
   setIsUiBlocked: (v) => {
-    set((state) => ({ ...state, isUIblocked: v }));
+    set(() => ({ isUIblocked: v }));
+  },
+
+  setHighlightedOpponent: (v) => {
+    set(() => ({ highlightedOpponent: v }));
   },
 });

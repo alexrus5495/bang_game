@@ -176,6 +176,8 @@ export interface EventType {
   PLAYER_DISCARDING_END: { playerId: string };
   PLAYER_TURN_END: { playerId: string };
 
+  // Player utility events
+
   // Card events
   CARD_DRAWN: {
     playerId: string;
@@ -199,6 +201,26 @@ export interface EventType {
       id: string;
       index: number;
     };
+  };
+  CARD_EQUIPPED: {
+    playerId: string;
+    card: {
+      id: string;
+      index: number;
+      isWeapon?: boolean;
+      range?: number;
+    };
+  };
+  CARD_UNEQUIPPED: {
+    playerId: string;
+    card: {
+      id: string;
+      index: number;
+      isWeapon?: boolean;
+    };
+  };
+  TABLE_CLEARED: null | {
+    clearedCards?: { cardId: string; eventId: number }[];
   };
 }
 

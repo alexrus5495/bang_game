@@ -41,11 +41,15 @@ export const createCardActionsController: StateCreator<
 
     // 2. Emit play request
     try {
-      await emitWithTimeout(SocketEvents.PLAY_CARD, {
-        gameId: gameId,
-        cardIndex: index,
-        targetId: targetId,
-      });
+      await emitWithTimeout(
+        SocketEvents.PLAY_CARD,
+        {
+          gameId: gameId,
+          cardIndex: index,
+          targetId: targetId,
+        },
+        5000,
+      );
 
       uiController.setInteractionPhase("RESOLVING_EFFECTS");
     } catch (error) {

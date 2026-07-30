@@ -24,7 +24,7 @@ export const createFlowController: StateCreator<
   FlowController
 > = (set) => ({
   turnStart: (playerId) =>
-    set((state) => {
+    set(() => {
       const clientId = socket.id ?? "";
       const isClientTurn = playerId === clientId;
 
@@ -36,8 +36,8 @@ export const createFlowController: StateCreator<
         : "IDLE";
 
       return {
-        ...state,
         currentPlayerId: playerId,
+        highlightedOpponent: playerId,
         gameFlowPhase,
         interactionPhase,
       };
@@ -45,46 +45,40 @@ export const createFlowController: StateCreator<
 
   turnEnd: () =>
     set((state) => ({
-      ...state,
       previousPlayerId: state.currentPlayerId,
       currentPlayerId: null,
+      highlightedOpponent: null,
       turnPhase: "IDLE",
       gameFlowPhase: "TURN_TRANSITION",
     })),
 
   drawingStart: () =>
-    set((state) => ({
-      ...state,
+    set(() => ({
       turnPhase: "DRAWING",
     })),
 
   drawingEnd: () =>
-    set((state) => ({
-      ...state,
+    set(() => ({
       turnPhase: "IDLE",
     })),
 
   playingStart: () =>
-    set((state) => ({
-      ...state,
+    set(() => ({
       turnPhase: "PLAYING",
     })),
 
   playingEnd: () =>
-    set((state) => ({
-      ...state,
+    set(() => ({
       turnPhase: "IDLE",
     })),
 
   discardingStart: () =>
-    set((state) => ({
-      ...state,
+    set(() => ({
       turnPhase: "DISCARDING",
     })),
 
   discardingEnd: () =>
-    set((state) => ({
-      ...state,
+    set(() => ({
       turnPhase: "IDLE",
     })),
 });

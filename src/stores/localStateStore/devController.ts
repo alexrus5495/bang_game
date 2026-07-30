@@ -8,7 +8,7 @@ import { socket } from "../../lib/socket";
 
 export type DevController = {
   setTurn: (playerId: string | null) => void;
-  setPhase: (phase: LocalState["turn"]["phase"]) => void;
+  setPhase: (phase: LocalState["turnPhase"]) => void;
   toggleAlive: (playerId: string) => void;
 };
 
@@ -31,25 +31,16 @@ export const createDevController: StateCreator<
         : "IDLE";
 
       return {
-        turn: {
-          ...state.turn,
-          previousPlayerId: playerId,
-          playerId,
-        },
-        ui: {
-          ...state.ui,
-          gameFlowPhase,
-          interactionPhase,
-        },
+        previousPlayerId: state.currentPlayerId,
+        currentPlayerId: playerId,
+        gameFlowPhase,
+        interactionPhase,
       };
     }),
 
   setPhase: (phase) =>
-    set((state) => ({
-      turn: {
-        ...state.turn,
-        phase,
-      },
+    set(() => ({
+      turnPhase: phase,
     })),
 
   toggleAlive: (playerId) =>

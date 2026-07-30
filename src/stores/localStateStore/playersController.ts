@@ -34,6 +34,10 @@ export type PlayersController = {
   ) => ClientPlayer["stats"]["health"] | { current: number; max: 0 };
   getPlayerWeaponRange: (playerId: string) => number;
   getPlayerWeapon: (playerId: string) => string;
+  setPlayerWeapon: (
+    playerId: string,
+    weapon: { id: string; range: number },
+  ) => void;
   setHandValidationData: (data: CardValidationData[], playerId: string) => void;
   resetHandValidationData: (playerId: string) => void;
 };
@@ -236,6 +240,21 @@ export const createPlayersController: StateCreator<
     const p = get().players.find((p) => p.id === playerId);
     return p?.weapon.card ?? "colt45";
   },
+
+  setPlayerWeapon: (playerId, weapon) =>
+    set((state) => {
+      const index = getPlayerIndex(state.players, playerId);
+
+      const updated = [...state.players];
+      updated[index] = {
+        ...updated[index],
+        weapon: {
+          card: weapon.id,
+          range: weapon.range,
+        },
+      };
+      return { players: updated };
+    }),
 
   setHandValidationData: (data, playerId) =>
     set((state) => {

@@ -120,6 +120,10 @@ export function useIsPreparing(): boolean {
   return useLocalStateStore((state) => state.gameFlowPhase === "PREPARATION");
 }
 
+export function useHighlightedOpponent() {
+  return useLocalStateStore((state) => state.highlightedOpponent);
+}
+
 // ==========================================
 // 4. CONTROLLER HOOKS (для быстрого доступа к действиям)
 // ==========================================
