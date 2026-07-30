@@ -3,6 +3,7 @@ import { useGameEventsState } from "../../stores/hooks/useGameEventsState";
 import { useAnimationLayer } from "../../hooks/useAnimationLayer";
 import { useLocalStateUpdater } from "../../hooks/useLocalStateUpdater";
 import AnimationLayer from "./AnimationLayer";
+import { waitForFrames } from "../../lib/utils/waitForFrames";
 
 export function EventProcessor({ children }: { children: React.ReactNode }) {
   const events = useGameEventsState()[0];
@@ -32,12 +33,42 @@ export function EventProcessor({ children }: { children: React.ReactNode }) {
 
           if (!nextEvent) break;
 
-          updateLocalState(nextEvent, "beforeAnimation");
+          // Depending on the event's nature, sometimes you need to wait until
+          // react updates the DOM and useEffect/useResizeObserver complete it's
+          // job.
+          //
+          // Example: when the animation requires the anchor point, that was
+          // created only during previous state update ("beforeAnimation"),
+          // the anchor wouldn't be available if we try to run animation right
+          // away, without waiting a couple of animationFrames for the anchor
+          // to be rendered.
+          //
+          // On the other hand, for example, during CARD_PLAYED event, if we
+          // try to wait after "before" state update, the anchor wouldn't be
+          // available anymore.
+          //
+          // To specify if the event requires waiting, the event handlers
+          // should return TRUE. Returning FALSE in order to skip the wait is unnecessary.
+          const { shouldWait: shouldWaitBefore, enrichedPayload } =
+            updateLocalState(nextEvent, "beforeAnimation");
+
+          // Let React to finish updating DOM after the first stage of state update
+          if (shouldWaitBefore) await waitForFrames(1);
+
+          // If the state updater returns enriched payload, add it to the event
+          const enrichedEvent = enrichedPayload
+            ? { ...nextEvent, data: { ...nextEvent.data, ...enrichedPayload } }
+            : nextEvent;
 
           // react-doctor-disable-next-line async-await-in-loop
-          await playAnimation(nextEvent);
+          await playAnimation(enrichedEvent);
 
-          updateLocalState(nextEvent, "afterAnimation");
+          const { shouldWait: shouldWaitAfter } = updateLocalState(
+            enrichedEvent,
+            "afterAnimation",
+          );
+
+          if (shouldWaitAfter) await waitForFrames(1);
 
           lastProcessedIndexRef.current = nextIndex;
         }
@@ -52,6 +83,10 @@ export function EventProcessor({ children }: { children: React.ReactNode }) {
       isEffectActive = false;
     };
   }, [events, playAnimation, updateLocalState]);
+
+  useEffect(() => {
+    console.table(events);
+  }, [events]);
 
   return (
     <>
