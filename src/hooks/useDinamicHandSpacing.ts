@@ -21,13 +21,9 @@ export function useDinamicHandSpacing(
   const spacing = useMemo(() => {
     const cardsTotal = cardIds.length;
 
-    if (cardsTotal <= 1) {
-      return 0;
-    }
+    if (cardsTotal <= 1) return 0;
 
-    if (cardWidth <= 0 || containerWidth <= 0) {
-      return 0;
-    }
+    if (cardWidth <= 0 || containerWidth <= 0) return 0;
 
     const initialTotalCardsWidth = cardWidth * cardsTotal;
 
