@@ -7,8 +7,16 @@ import {
 } from "../stores/hooks/localStateStore.hooks";
 import DevUi from "./DEV_UI";
 import DevCard from "./DEV_CARDS";
+import DevHealth from "./DEV_HEALTH";
 
-type DevTabs = "none" | "flow" | "animation" | "killer" | "ui" | "card";
+type DevTabs =
+  | "none"
+  | "flow"
+  | "animation"
+  | "killer"
+  | "ui"
+  | "card"
+  | "health";
 
 export default function DevController() {
   const [showing, setShowing] = useState(false);
@@ -32,7 +40,7 @@ export default function DevController() {
         </div>
 
         {showing && (
-          <div className="flex ">
+          <div className="flex">
             <div className="fixed text-3xl text-white top-10 left-1">
               {pendingCardIndex}
             </div>
@@ -45,27 +53,28 @@ export default function DevController() {
               currentTab={currentTab}
               setCurrentTab={setCurrentTab}
             />
-
             <TabButton
               tab={"killer"}
               currentTab={currentTab}
               setCurrentTab={setCurrentTab}
             />
-
             <TabButton
               tab={"animation"}
               currentTab={currentTab}
               setCurrentTab={setCurrentTab}
             />
-
             <TabButton
               tab={"ui"}
               currentTab={currentTab}
               setCurrentTab={setCurrentTab}
             />
-
             <TabButton
               tab={"card"}
+              currentTab={currentTab}
+              setCurrentTab={setCurrentTab}
+            />
+            <TabButton
+              tab={"health"}
               currentTab={currentTab}
               setCurrentTab={setCurrentTab}
             />
@@ -76,7 +85,7 @@ export default function DevController() {
   );
 }
 
-function Tab({ currentTab }: { currentTab: DevTabs }) {
+export function Tab({ currentTab }: { currentTab: DevTabs }) {
   switch (currentTab) {
     case "flow":
       return <DevFlowControls />;
@@ -88,6 +97,8 @@ function Tab({ currentTab }: { currentTab: DevTabs }) {
       return <DevUi />;
     case "card":
       return <DevCard />;
+    case "health":
+      return <DevHealth />;
     default:
       return null;
   }

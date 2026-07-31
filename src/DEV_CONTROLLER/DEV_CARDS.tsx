@@ -42,7 +42,7 @@ export default function DevCard() {
 
     const cardId = `${selectedType}${selectedIndex}`;
 
-    socket.emit(SocketEvents.ADD_TO_HAND, cardId);
+    socket.emit(SocketEvents.DEV_ADD_TO_HAND, cardId);
 
     playersController.addToHand(socket.id, cardId);
   };
