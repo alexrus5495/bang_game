@@ -177,6 +177,9 @@ export interface EventType {
   PLAYER_TURN_END: { playerId: string };
 
   // Player utility events
+  PLAYER_HEALED: { playerId: string; amount: number; newHealth: number };
+  PLAYER_DAMAGED: { playerId: string; amount: number; newHealth: number };
+  PLAYER_ELIMINATED: { playerId: string };
 
   // Card events
   CARD_DRAWN: {
