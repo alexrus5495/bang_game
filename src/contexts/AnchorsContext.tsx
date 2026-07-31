@@ -20,7 +20,8 @@ export type AnchorId =
   | { type: "equipment-card"; playerId: string; index: number }
   | { type: "equipment-zero"; playerId: string }
   | { type: "play-area" }
-  | { type: "play-area-card"; index: number };
+  | { type: "play-area-card"; index: number }
+  | { type: "player-portrait"; playerId: string };
 
 type AnchorRegistry = Map<string, () => DOMRect | null>;
 
@@ -61,6 +62,8 @@ function serializeAnchor(id: AnchorId): string {
       return "play:area";
     case "play-area-card":
       return `play:area:card:${id.index}`;
+    case "player-portrait":
+      return `player:portrait:${id.playerId}`;
     default:
       return assertNever(id);
   }
