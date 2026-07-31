@@ -21,7 +21,7 @@ export type PlayersController = {
   removeFromEquipment: (playerId: string, cardId: string) => void;
   updateHealth: (
     playerId: string,
-    health: { current: number; max: number },
+    health: { current: number; max?: number },
   ) => void;
   setEliminated: (playerId: string) => void;
   setUnderSight: (playerId: string, value: boolean) => void;
@@ -152,6 +152,8 @@ export const createPlayersController: StateCreator<
   removeFromEquipment: (playerId, cardId) =>
     set((state) => {
       const index = getPlayerIndex(state.players, playerId);
+      if (index === -1) return state;
+
       const player = state.players[index];
       const updated = [...state.players];
       updated[index] = {
@@ -167,10 +169,20 @@ export const createPlayersController: StateCreator<
   updateHealth: (playerId, health) =>
     set((state) => {
       const index = getPlayerIndex(state.players, playerId);
+      if (index === -1) return state;
+
       const updated = [...state.players];
+      const currentPlayer = updated[index];
+
       updated[index] = {
-        ...updated[index],
-        stats: { ...updated[index].stats, health },
+        ...currentPlayer,
+        stats: {
+          ...currentPlayer.stats,
+          health: {
+            ...currentPlayer.stats.health,
+            ...health,
+          },
+        },
       };
       return { players: updated };
     }),
