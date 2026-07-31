@@ -14,17 +14,11 @@ export default function TABLE_CLEARED({
   data: EventType["TABLE_CLEARED"];
   onComplete: () => void;
 }) {
-  console.log(`INSIDE TABLE_CLEARED ANIMATION`);
-
   const anchors = useAnchors();
   const cards = data?.clearedCards ?? [];
 
   const playArea = anchors.getRect({ type: "play-area" });
   const discardArea = anchors.getRect({ type: "discard" });
-  console.log(`DATA:`);
-  console.table(data);
-  console.log(playArea);
-  console.log(discardArea);
 
   useEffect(() => {
     if (cards.length === 0 || !playArea || !discardArea) {
