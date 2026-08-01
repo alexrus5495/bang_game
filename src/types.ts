@@ -178,7 +178,13 @@ export interface EventType {
 
   // Player utility events
   PLAYER_HEALED: { playerId: string; amount: number; newHealth: number };
+  MASS_PLAYER_HEALED: {
+    targets: Array<{ playerId: string; amount: number; newHealth: number }>;
+  };
   PLAYER_DAMAGED: { playerId: string; amount: number; newHealth: number };
+  MASS_PLAYER_DAMAGED: {
+    targets: Array<{ playerId: string; amount: number; newHealth: number }>;
+  };
   PLAYER_ELIMINATED: { playerId: string };
 
   // Card events
