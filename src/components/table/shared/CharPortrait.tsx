@@ -9,6 +9,8 @@ import Tooltip from "../Tooltip/Tooltip";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useShallow } from "zustand/shallow";
 import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
+import AnimationAnchor from "./AnimationAnchor";
+import type { AnchorId } from "../../../contexts/AnchorsContext";
 
 const CharPortrait = React.memo(
   ({
@@ -58,12 +60,14 @@ const CharPortrait = React.memo(
       [cardsMeta.charDeckMeta, char],
     );
 
+    const anchorId: AnchorId = { type: "player-portrait", playerId };
+
     if (!playerData) return null;
 
     return (
       <>
         <div
-          className="h-full aspect-square rounded-[35%] bg-[var(--WHITE)] relative overflow-hidden outline"
+          className="h-full aspect-square rounded-[35%] bg-[var(--WHITE)] relative outline overflow-hidden"
           style={{
             cursor: isDragging || tooltipDisabled ? "default" : "pointer",
             borderColor: color,
@@ -73,6 +77,8 @@ const CharPortrait = React.memo(
           }}
           {...handlersPinable}
         >
+          <AnimationAnchor id={anchorId} className="h-full w-full absolute" />
+
           {imageElement}
 
           {isEliminated && (
