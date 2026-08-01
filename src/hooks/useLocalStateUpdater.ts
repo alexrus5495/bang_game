@@ -22,12 +22,23 @@ export type EventHandler<TPayload = AnyEventPayload> = (
   eventId?: number,
 ) => LooseHandlerResult<TPayload>;
 
+const IGNORED_EVENTS: Set<keyof EventType> = new Set([
+  "INITIALIZATION_STARTED",
+  "DEALING_CARDS",
+  "CARDS_DEALT",
+  "INITIALIZATION_COMPLETED",
+  "GAME_STARTED",
+]);
+
 export function useLocalStateUpdater() {
   const handlers = useHandlers();
 
   const updateLocalState = useCallback(
     (event: GameEvent, stage: StateUpdaterStage): HandlerResult => {
+      if (IGNORED_EVENTS.has(event.type)) return { shouldWait: false };
+
       const handler = handlers[event.type];
+
       if (!handler) {
         console.warn(`Failed to find handler for ${event.type}`);
         return { shouldWait: false };
