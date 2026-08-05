@@ -20,6 +20,9 @@ const CardBack = React.memo(() => {
       >
         {getImageComponent("cardback_1", {
           className: "w-full h-auto m-auto",
+          style: {
+            borderRadius: `${CARD_CONTAINER_BORDER_RADIUS}px`,
+          },
         })}
       </div>
     </CardScaler>

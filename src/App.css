@@ -98,27 +98,32 @@
   }
 
   .bg-woodenTexture {
-    background-image: url(./assets/images/core/woodenTexture.jpg);
+    background-image: url(./assets/images/core/woodenTexture.webp);
     background-size: 110%;
   }
 
+  .bg-woodenTexture2 {
+    background-image: url(./assets/images/core/woodenTexture2.webp);
+    background-size: 100%;
+  }
+
   .bg-fabricTexture {
-    background-image: url(./assets/images/core/fabricTexture_small.jpg);
+    background-image: url(./assets/images/core/fabricTexture.webp);
     background-size: 100%;
   }
 
   .bg-paperTexture-yellow {
-    background-image: url(./assets/images/core/paperTexture_yellow.png);
+    background-image: url(./assets/images/core/paperTexture_yellow.webp);
     background-size: 300%;
   }
 
   .bg-paperTexture-stockalike {
-    background-image: url(./assets/images/core/paperTexture_stockalike.png);
+    background-image: url(./assets/images/core/paperTexture_stockalike.webp);
     background-size: 300%;
   }
 
   .bg-paperTexture-white {
-    background-image: url(./assets/images/core/paperTexture_white.jpg);
+    background-image: url(./assets/images/core/paperTexture_white.webp);
     background-size: 250%;
   }
 

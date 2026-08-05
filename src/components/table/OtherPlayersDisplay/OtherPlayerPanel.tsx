@@ -50,7 +50,7 @@ const OtherPlayerPanel = React.memo(({ playerId }: { playerId: string }) => {
     >
       <div className="w-full h-[50%] relative">
         <div
-          className="h-[50%] w-full bg-paperTexture-white absolute flex items-center"
+          className="h-[50%] w-full bg-[var(--WHITE)] absolute flex items-center"
           style={{
             bottom: 0,
             borderBottomRightRadius: sizeAdaptive(35),

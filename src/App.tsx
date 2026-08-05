@@ -27,7 +27,7 @@ export default function App() {
   useTestGame(setCurrentPage);
 
   return (
-    <div className="h-[100vh] w-[100vw] flex items-center bg-woodenTexture select-none absolute overflow-hidden">
+    <div className="h-[100vh] w-[100vw] flex items-center bg-woodenTexture2 select-none absolute overflow-hidden">
       <div
         style={{
           fontSize: sizeAdaptive(30),
