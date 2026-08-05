@@ -77,16 +77,17 @@
   }
 
   .mask-weathered {
-    mask: url(./assets/images/base/misc/_mask_weathered.png) 0 0/ 190px 90px;
+    mask: url(./assets/images/base/misc/_mask_weathered.webp) 0 0/ 190px 90px;
   }
 
   .mask-weathered_2 {
-    mask: url(./assets/images/base/misc/_mask_weathered.png) 0 100px/ 200px
+    mask: url(./assets/images/base/misc/_mask_weathered.webp) 0 100px/ 200px
       400px;
   }
 
   .mask-weathered_3 {
-    mask: url(./assets/images/base/misc/_mask_weathered.png) 50px 0/ 400px 800px;
+    mask: url(./assets/images/base/misc/_mask_weathered.webp) 50px 0/ 400px
+      800px;
   }
 
   .bg-gradient-custom-1 {

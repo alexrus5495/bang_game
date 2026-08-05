@@ -5,6 +5,7 @@ import KickOutButton from "./KickOutButton";
 import ReadySwitch from "./ReadySwitch";
 import SeatTypeSwitch from "./SeatTypeSwitch";
 import { socket } from "../../lib/socket";
+import { getImageComponent } from "../../lib/images";
 
 export default function SeatLine({
   index,
@@ -37,11 +38,9 @@ export default function SeatLine({
         style={{ gap: sizeAdaptive(100) }}
       >
         <div className="h-[60%] aspect-square border">
-          {seat.type === "ai" ? (
-            <img alt="robot icon" src="./icon-bot.png" />
-          ) : (
-            <img alt="person-icon" src="./icon-person.png" />
-          )}
+          {seat.type === "ai"
+            ? getImageComponent("icon-bot")
+            : getImageComponent("icon-person")}
         </div>
         <div style={{ fontSize: sizeAdaptive(40) }}>
           {seat.status !== "open"
@@ -50,14 +49,13 @@ export default function SeatLine({
               : `${locale[seat.playerName as string]}`
             : `-${locale["empty"]}-`}
         </div>
-        {isLobbyOwner() && (
-          <img
-            alt="sheriff icon"
-            className="h-[40%] aspect-square"
-            style={{ marginLeft: sizeAdaptive(90) }}
-            src="./sheriff_icon.png"
-          />
-        )}
+        {isLobbyOwner() &&
+          getImageComponent("sheriff_icon", {
+            className: "h-[40%] aspect-square",
+            style: {
+              marginLeft: sizeAdaptive(90),
+            },
+          })}
       </div>
       {!editMode &&
         seat.type === "human" &&

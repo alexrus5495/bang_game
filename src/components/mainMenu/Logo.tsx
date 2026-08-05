@@ -1,5 +1,5 @@
 import { m, useAnimation } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { getImageComponent } from "../../lib/images";
 
 export default function Logo() {
@@ -12,15 +12,9 @@ export default function Logo() {
         initial={{ scale: 5, opacity: 0 }}
         animate={shadowControls}
         className="h-[23%] w-auto absolute z-1 top-[2%] left-[29.8%] select-none will-change-transform transform-gpu"
-        style={{
-          originX: 0.2,
-          originY: 0.2,
-          cursor: "pointer",
-        }}
+        style={{ originX: 0.2, originY: 0.2, cursor: "pointer" }}
       >
-        {getImageComponent("title-shadow", {
-          draggable: false,
-        })}
+        {getImageComponent("title-shadow", { draggable: false })}
       </m.div>
 
       <m.div
@@ -28,11 +22,7 @@ export default function Logo() {
         animate={logoControls}
         onClick={handleClickLogo}
         className="h-[22%] w-auto absolute z-2 top-[2%] left-[30%] select-none will-change-transform transform-gpu"
-        style={{
-          originX: 0.2,
-          originY: 0.2,
-          cursor: "pointer",
-        }}
+        style={{ originX: 0.2, originY: 0.2, cursor: "pointer" }}
       >
         {getImageComponent("title-text", { draggable: false })}
       </m.div>
@@ -43,23 +33,33 @@ export default function Logo() {
 function useInteractiveLogo() {
   const logoControls = useAnimation();
   const shadowControls = useAnimation();
+  const clickControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
-
     animateStartUp(logoControls, shadowControls, controller.signal);
 
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      clickControllerRef.current?.abort();
+    };
   }, [logoControls, shadowControls]);
 
   function handleClickLogo() {
-    const controller = new AbortController();
+    clickControllerRef.current?.abort();
+    clickControllerRef.current = new AbortController();
+    const signal = clickControllerRef.current.signal;
 
     stopAnimation(logoControls, shadowControls);
-    animateSwing(logoControls, shadowControls);
-    setTimeout(() => {
-      animateStartUp(logoControls, shadowControls, controller.signal);
+    animateSwing(logoControls, shadowControls, signal);
+
+    const restartTimeout = setTimeout(() => {
+      if (!signal.aborted) {
+        animateStartUp(logoControls, shadowControls, signal);
+      }
     }, 4000);
+
+    signal.addEventListener("abort", () => clearTimeout(restartTimeout));
   }
 
   return { logoControls, shadowControls, handleClickLogo };
@@ -132,63 +132,44 @@ function animateSwing(
 ) {
   if (signal?.aborted) return;
 
+  logoControls.set({ rotate: 0, translateY: 0 });
+  shadowControls.set({ rotate: 0, translateY: 0 });
+
   logoControls.start({
     rotate: [0, 110, 30, 90, 50, 90],
-    transition: {
-      duration: 2,
-      ease: "easeInOut",
-      repeatType: "mirror",
-    },
+    transition: { duration: 2, ease: "easeInOut" },
   });
 
   shadowControls.start({
     rotate: [0, 110, 30, 90, 50, 90],
-    transition: {
-      duration: 2,
-      ease: "easeInOut",
-      repeatType: "mirror",
-    },
+    transition: { duration: 2, ease: "easeInOut" },
   });
 
-  const falltimeout = setTimeout(() => {
+  const fallTimeout = setTimeout(() => {
     if (signal?.aborted) return;
 
     logoControls.start({
       translateY: "200vh",
-      transition: {
-        duration: 1,
-      },
+      transition: { duration: 1 },
     });
 
     shadowControls.start({
       translateY: "200vh",
-      transition: {
-        duration: 1,
-      },
+      transition: { duration: 1 },
     });
   }, 2000);
 
   const resetTimeout = setTimeout(() => {
     if (signal?.aborted) return;
 
-    logoControls.set({
-      rotate: 0,
-      translateY: 0,
-    });
-
-    shadowControls.set({
-      rotate: 0,
-      translateY: 0,
-    });
+    logoControls.set({ rotate: 0, translateY: 0 });
+    shadowControls.set({ rotate: 0, translateY: 0 });
   }, 4000);
 
   signal?.addEventListener("abort", () => {
-    clearTimeout(falltimeout);
+    clearTimeout(fallTimeout);
     clearTimeout(resetTimeout);
     logoControls.stop();
     shadowControls.stop();
   });
-
-  logoControls.set({ rotate: 0, translateY: 0 });
-  shadowControls.set({ rotate: 0, translateY: 0 });
 }

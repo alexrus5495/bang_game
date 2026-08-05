@@ -1,4 +1,5 @@
 import { m, useAnimation } from "motion/react";
+import { getImageComponent } from "../../lib/images";
 
 export default function AnimatedStar() {
   const starControls = useAnimation();
@@ -19,10 +20,9 @@ export default function AnimatedStar() {
     starControls.set({ rotate: 40 });
   }
   return (
-    <m.img
+    <m.div
       initial={{ rotate: 40 }}
       animate={starControls}
-      src="./sheriff-star.png"
       className={`
           h-[23%] 
           absolute 
@@ -33,8 +33,9 @@ export default function AnimatedStar() {
           select-none
         `}
       draggable="false"
-      alt=""
       onClick={handleClickStar}
-    />
+    >
+      {getImageComponent("sheriff-star")}
+    </m.div>
   );
 }
