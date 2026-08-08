@@ -18,7 +18,7 @@ export default function SearchLobby_lobbyDetails({
 }) {
   const selectedLobbyData = lobbies.find((lobby) => lobby.id === selectedLobby);
 
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   return (
     <div className="w-full h-full">

@@ -13,7 +13,7 @@ export default function CardSymbolDescription({
   symbol: string;
   cardIsWeapon: boolean;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   const symbolIsRange = rangeSymbols.some((value) => value === symbol);
   const symbolIsDrawRange = drawRangeSymbols.some((value) => value === symbol);

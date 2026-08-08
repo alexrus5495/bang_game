@@ -12,7 +12,7 @@ export default function CreateLobby_form({
   lobbyConfig: LobbyConfig;
   setLobbyConfig: React.Dispatch<React.SetStateAction<LobbyConfig>>;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   const updateLobbyName = (newName: string) => {
     const updatedPlayerConfig = { ...lobbyConfig, lobbyName: newName };

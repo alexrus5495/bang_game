@@ -39,7 +39,7 @@ function Backdrop() {
 }
 
 function Content() {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const currentPlayerId = useCurrentPlayerId();
   const previousPlayerId = usePreviousPlayerId();
   const currentPlayer = currentPlayerId ?? previousPlayerId;

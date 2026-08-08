@@ -10,7 +10,7 @@ import { getImageComponent } from "../../../../lib/images";
 
 const PlayerTypeIcon = React.memo(({ playerId }: { playerId: string }) => {
   const { position, isVisible, handlersNonPinable } = useTooltip();
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const isDragging = useIsDragging();
 
   const isAI = useLocalStateStore(

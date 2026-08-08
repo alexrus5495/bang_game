@@ -21,7 +21,7 @@ export default function Join_passwordForm({
   const setCurrentLobby = useCurrentLobbyState()[1];
   const setCurrentPage = useCurrentPageState()[1];
 
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   const isFormReady = password.length > 0 && password.length <= 15;
 

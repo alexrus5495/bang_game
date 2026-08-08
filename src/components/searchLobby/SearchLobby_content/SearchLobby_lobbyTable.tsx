@@ -19,7 +19,7 @@ export default function SearchLobby_lobbyTable({
 }) {
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
 
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   const sortedLobbies = useMemo(() => {
     if (!sortConfig) return lobbies;

@@ -10,7 +10,7 @@ import { defaultWeaponMeta } from "../../../config/defaultWeaponMeta";
 import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
 
 export function useRangeInfo(player: PlayerSlice) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
 
   return useMemo(() => {

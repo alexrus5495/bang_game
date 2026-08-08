@@ -16,7 +16,7 @@ export default function LobbyInfo_public({
   playerName: string;
   setPlayerName: (newName: string) => void;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const setCurrentPage = useCurrentPageState()[1];
   const setCurrentLobby = useCurrentLobbyState()[1];
 

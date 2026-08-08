@@ -11,7 +11,7 @@ export default function SeatController({
   lobbyConfig: LobbyConfig;
   setLobbyConfig: React.Dispatch<React.SetStateAction<LobbyConfig>>;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   const updateNumberOfSeats = (newNumber: number, newSeats: LobbySeat[]) => {
     const updatedPlayerConfig = {

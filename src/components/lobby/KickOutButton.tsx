@@ -16,7 +16,7 @@ export default function KickOutButton({
   isLobbyOwner: boolean;
 }) {
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   const handleKickOutPlayer = (seatId: number) => {
     socket.emit(SocketEvents.KICK_OUT_PLAYER, lobbyData.id, seatId);

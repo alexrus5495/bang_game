@@ -9,13 +9,14 @@ import LobbyTitle from "./LobbyTitle";
 import { SocketEvents } from "../../lib/socketEvents";
 import { useCurrentPageState } from "../../stores/hooks/useCurrentPageState";
 import { socket } from "../../lib/socket";
+import { getImageComponent } from "../../lib/images";
 
 export default function Lobby_content({
   setExitAnimationType,
 }: {
   setExitAnimationType: (type: "left" | "up") => void;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const [lobbyData, setLobbyData] = useState<LobbyPublicData | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
 
@@ -45,7 +46,7 @@ export default function Lobby_content({
       socket.off(SocketEvents.LOBBY_UPDATE, handleLobbyData);
       socket.off(SocketEvents.GAME_CREATED, handleGameCreated);
     };
-  }, [socket, currentLobbyId, setCurrentPage]);
+  }, [currentLobbyId, setCurrentPage]);
 
   const handleExit = () => {
     socket.emit(SocketEvents.EXIT_LOBBY, lobbyData?.id);
@@ -158,12 +159,10 @@ export default function Lobby_content({
           </div>
           <div className="w-[37%] h-full">
             <div className="h-[80%] w-full flex justify-center items-center">
-              <img
-                src="/pistols.png"
-                alt=""
-                className="w-[70%] m-auto select-none"
-                draggable={false}
-              />
+              {getImageComponent("pistols", {
+                className: "w-[70%] m-auto select-none",
+                draggable: false,
+              })}
             </div>
             <div className="h-[20%] flex justify-center items-center">
               {isLobbyOwner() &&

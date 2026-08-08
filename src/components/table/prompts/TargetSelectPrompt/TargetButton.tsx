@@ -29,7 +29,7 @@ const TargetButton = React.memo(
     const pendingCardIndex = usePendingCardIndex();
     const uiController = useUiController();
     const cardActionController = useCardActionsController();
-    const locale = useSystemLocalization() as Record<string, string>;
+    const locale = useSystemLocalization();
     const playerData = playersController.getPlayerById(player);
     const position = useTargetPosition({ spacing, index, highlightedOption });
 

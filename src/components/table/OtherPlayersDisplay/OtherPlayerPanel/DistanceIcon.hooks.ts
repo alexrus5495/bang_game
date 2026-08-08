@@ -10,7 +10,7 @@ import { useMemo } from "react";
 
 export function useDistanceInfo(playerId: string) {
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   const { ids, eliminatedMap, clientData, playerData } =
     usePreparePlayersData(playerId);

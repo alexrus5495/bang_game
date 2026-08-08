@@ -14,7 +14,7 @@ export default function LobbyInfo_private({
 }: {
   selectedLobbyData: LobbyPublicData;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const [showForm, setShowForm] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [playerName, setPlayerName] = useState<string>("");

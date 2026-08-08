@@ -7,7 +7,7 @@ export default function MainMenu_navigation_Home({
 }: {
   setMenuState: (state: string) => void;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const setCurrentPage = useCurrentPageState()[1];
 
   return (

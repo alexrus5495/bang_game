@@ -10,6 +10,7 @@ import Button from "../../shared/Button";
 import RootPortal from "../../shared/RootPortal";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { socket } from "../../../lib/socket";
+import ScreenDimmer from "../../shared/ScreenDimmer";
 
 type CharOption = {
   id: string;
@@ -19,7 +20,7 @@ type CharOption = {
 type HighlightedOption = "a" | "b" | "none";
 
 const CharSelectPrompt = React.memo(() => {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   const [role, setRole] = useState<string>("");
   const [charOptions, setCharOptions] = useState<CharOption[]>([]);
@@ -52,7 +53,7 @@ const CharSelectPrompt = React.memo(() => {
 
   return (
     <RootPortal portalId={"char-select-prompt"}>
-      <div className="w-full h-full bg-black/90 absolute z-30 flex flex-col">
+      <ScreenDimmer dimStrength={80}>
         <div className="w-full h-[20%] border flex justify-center items-center">
           <m.div
             initial={{ y: "-100%" }}
@@ -63,7 +64,6 @@ const CharSelectPrompt = React.memo(() => {
             {locale["charSelect_title"]}
           </m.div>
         </div>
-
         <div className="w-full h-[65%] border flex justify-center">
           <div className="border h-[70%] flex justify-center relative">
             {charOptions.length > 0 && (
@@ -99,7 +99,7 @@ const CharSelectPrompt = React.memo(() => {
             )}
           </div>
         </div>
-      </div>
+      </ScreenDimmer>
     </RootPortal>
   );
 });

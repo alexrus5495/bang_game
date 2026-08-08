@@ -12,7 +12,7 @@ export default function SeatLine({
   index: number;
   setSeatType: (seatIndex: number, type: "human" | "ai") => void;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   return (
     <div

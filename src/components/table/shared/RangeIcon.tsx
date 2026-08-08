@@ -47,7 +47,7 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
     hasCardRef,
   } = useTooltip();
 
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const isDragging = useIsDragging();
   const { range, tooltipContent } = useRangeInfo(player);
 

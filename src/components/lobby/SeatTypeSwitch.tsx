@@ -11,7 +11,7 @@ export default function SeatTypeSwitch({
   seat: LobbySeat;
   lobbyId: string;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   const toggleSeatType = () => {
     socket.emit(SocketEvents.TOGGLE_SEAT_TYPE, seat.id, lobbyId);

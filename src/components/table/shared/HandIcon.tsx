@@ -9,7 +9,7 @@ import { m } from "motion/react";
 
 export default function HandIcon({ playerId }: { playerId: string }) {
   const { position, isVisible, handlersNonPinable } = useTooltip();
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const isDragging = useIsDragging();
 
   const handLength =

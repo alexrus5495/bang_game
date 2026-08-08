@@ -11,7 +11,7 @@ import { useIsDragging } from "../../../../stores/hooks/localStateStore.hooks";
 export default function RoleIcon({ role }: { role: string }) {
   const { position, isVisible, handlersPinable, isPinned } = useTooltip();
   const isDragging = useIsDragging();
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
 
   const roleIconElement = useMemo(() => {

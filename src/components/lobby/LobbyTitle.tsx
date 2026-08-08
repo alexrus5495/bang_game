@@ -10,7 +10,7 @@ export default function LobbyTitle({
   lobbyData: LobbyPublicData | null;
 }) {
   const [idCopied, setIdCopied] = useState<boolean>(false);
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   const copyToClipboard = async (text: string) => {
     try {

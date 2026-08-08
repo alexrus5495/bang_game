@@ -17,7 +17,7 @@ export default function MainMenu_navigation_Join({
     "idForm",
   );
 
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   return (
     <div className="h-full w-full">

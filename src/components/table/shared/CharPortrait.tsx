@@ -44,7 +44,7 @@ const CharPortrait = React.memo(
 
     const cardsMeta = (useCardsMetaDataState()[0] as CardsMetaData) ?? {};
     const { position, isVisible, handlersPinable, isPinned } = useTooltip();
-    const locale = useSystemLocalization() as Record<string, string>;
+    const locale = useSystemLocalization();
 
     const { char, isEliminated, color } = playerData ?? {
       char: "",
@@ -67,7 +67,7 @@ const CharPortrait = React.memo(
     return (
       <>
         <div
-          className="h-full aspect-square rounded-[35%] bg-[var(--WHITE)] relative outline overflow-hidden"
+          className="h-full aspect-square rounded-[35%] bg-paperTexture-stockalike relative outline overflow-hidden"
           style={{
             cursor: isDragging || tooltipDisabled ? "default" : "pointer",
             borderColor: color,

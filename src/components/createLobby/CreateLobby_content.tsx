@@ -13,7 +13,7 @@ import { useCurrentLobbyState } from "../../stores/hooks/useCurrentLobbyState";
 import { socket } from "../../lib/socket";
 
 export default function CreateLobby_content() {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
 
   const [lobbyConfig, setLobbyConfig] = useState<LobbyConfig>(() => ({
     ...structuredClone(blankLobbyConfig),

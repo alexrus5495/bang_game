@@ -21,7 +21,7 @@ export default function Join_idForm({
   setPlayerName: (name: string) => void;
   setCurrentForm: (form: "idForm" | "passwordForm") => void;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const [showNoLobbyMsg, setShowNoLobbyMsg] = useState<boolean>(false);
   const setCurrentPage = useCurrentPageState()[1];
   const setCurrentLobby = useCurrentLobbyState()[1];

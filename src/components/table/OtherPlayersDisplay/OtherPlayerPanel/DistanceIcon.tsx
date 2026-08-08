@@ -19,7 +19,7 @@ const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
     handlersPinable,
     hasCardRef,
   } = useTooltip();
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const { distance, tooltipContent } = useDistanceInfo(playerId);
 
   return (

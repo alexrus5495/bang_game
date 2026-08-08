@@ -18,7 +18,7 @@ export default function SeatLine({
   lobbyData: LobbyPublicData;
   editMode: boolean;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const isLobbyOwner = () => {
     return lobbyData.ownerId === seat.playerId;
   };

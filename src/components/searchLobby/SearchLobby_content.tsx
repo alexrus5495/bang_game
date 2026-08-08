@@ -10,7 +10,7 @@ import { useCurrentPageState } from "../../stores/hooks/useCurrentPageState";
 import { socket } from "../../lib/socket";
 
 export default function SearchLobby_content() {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const [lobbies, setLobbies] = useState<LobbyPublicData[]>([]);
   const [selectedLobby, setSelectedLobby] = useState<string | null>(null);
   const [playerName, setPlayerName] = useState<string>("");

@@ -5,7 +5,7 @@ import { getImageComponent } from "../../../lib/images";
 import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 
 const EndTurnButton = React.memo(() => {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   return (
     <m.div
       initial={{ y: "-100%", opacity: 0 }}

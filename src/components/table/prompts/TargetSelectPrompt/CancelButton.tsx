@@ -16,7 +16,7 @@ export default function CancelButton({
   highlightedOption: number | null;
   setHighlightedOption: (v: number | null) => void;
 }) {
-  const locale = useSystemLocalization() as Record<string, string>;
+  const locale = useSystemLocalization();
   const position = useTargetPosition({ index, spacing, highlightedOption });
   const uiController = useUiController();
 
