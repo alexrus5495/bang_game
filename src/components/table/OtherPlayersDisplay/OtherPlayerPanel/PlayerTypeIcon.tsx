@@ -1,4 +1,3 @@
-import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
 import type { TooltipMessage } from "../../../../types";
@@ -7,10 +6,11 @@ import { useLocalStateStore } from "../../../../stores/localStateStore";
 import React from "react";
 import { useIsDragging } from "../../../../stores/hooks/localStateStore.hooks";
 import { getImageComponent } from "../../../../lib/images";
+import { useTranslation } from "../../../../hooks/useTranslation";
 
 const PlayerTypeIcon = React.memo(({ playerId }: { playerId: string }) => {
   const { position, isVisible, handlersNonPinable } = useTooltip();
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const isDragging = useIsDragging();
 
   const isAI = useLocalStateStore(
@@ -23,7 +23,7 @@ const PlayerTypeIcon = React.memo(({ playerId }: { playerId: string }) => {
     [
       {
         type: "plainText",
-        content: `${isAI ? locale["tooltip_bot"] : locale["tooltip_human"]}`,
+        content: `${isAI ? t("tooltip_bot") : t("tooltip_human")}`,
       },
     ],
   ];
@@ -51,7 +51,7 @@ const PlayerTypeIcon = React.memo(({ playerId }: { playerId: string }) => {
 
       {isVisible && (
         <Tooltip
-          title={locale.playerType}
+          title={t("playerType")}
           content={tooltipContant}
           position={position}
           hasCardRef={false}

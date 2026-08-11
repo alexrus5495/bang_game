@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import type { LobbyPublicData } from "../../types";
-import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { m } from "motion/react";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export default function LobbyTitle({
   lobbyData,
@@ -10,7 +10,7 @@ export default function LobbyTitle({
   lobbyData: LobbyPublicData | null;
 }) {
   const [idCopied, setIdCopied] = useState<boolean>(false);
-  const locale = useSystemLocalization();
+  const t = useTranslation();
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -33,13 +33,13 @@ export default function LobbyTitle({
         className="custom-text-highlighted text-center"
         style={{ fontSize: sizeAdaptive(13) }}
       >
-        {lobbyData ? `${lobbyData.name}` : locale["lobby_noLobby"]}
+        {lobbyData ? `${lobbyData.name}` : t("lobby_noLobby")}
       </h2>
       <div
         className="flex justify-center"
         style={{ fontSize: sizeAdaptive(33), gap: sizeAdaptive(30) }}
       >
-        <h3>{lobbyData ? `ID: ${lobbyData.id}` : locale["lobby_noLobby"]}</h3>
+        <h3>{lobbyData ? `ID: ${lobbyData.id}` : t("lobby_noLobby")}</h3>
         <m.button
           type="button"
           className={`${idCopied ? "" : "cursor-pointer"} w-[8%]`}
@@ -50,7 +50,7 @@ export default function LobbyTitle({
           }
           whileHover={{ scale: idCopied ? 1 : 1.3 }}
         >
-          {idCopied ? locale["lobby_copied"] : locale["lobby_copy"]}
+          {idCopied ? t("lobby_copied") : t("lobby_copy")}
         </m.button>
       </div>
     </div>

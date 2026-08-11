@@ -1,4 +1,3 @@
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { useTooltip } from "../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import Tooltip from "../Tooltip/Tooltip";
@@ -6,10 +5,11 @@ import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
 import { getImageComponent } from "../../../lib/images";
 import { m } from "motion/react";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export default function HandIcon({ playerId }: { playerId: string }) {
+  const t = useTranslation();
   const { position, isVisible, handlersNonPinable } = useTooltip();
-  const locale = useSystemLocalization();
   const isDragging = useIsDragging();
 
   const handLength =
@@ -51,7 +51,7 @@ export default function HandIcon({ playerId }: { playerId: string }) {
 
       {isVisible && (
         <Tooltip
-          title={`${locale["tooltip_handSize"]}: ${handLength}`}
+          title={`${t("tooltip_handSize")}: ${handLength}`}
           content={undefined}
           position={position}
           hasCardRef={false}

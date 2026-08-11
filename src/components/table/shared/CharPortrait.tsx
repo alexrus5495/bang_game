@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { useTooltip } from "../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../lib/images";
@@ -11,6 +10,7 @@ import { useShallow } from "zustand/shallow";
 import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
 import AnimationAnchor from "./AnimationAnchor";
 import type { AnchorId } from "../../../contexts/AnchorsContext";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 const CharPortrait = React.memo(
   ({
@@ -20,6 +20,7 @@ const CharPortrait = React.memo(
     playerId: string;
     tooltipDisabled?: boolean;
   }) => {
+    const t = useTranslation();
     const playerData = useLocalStateStore(
       useShallow((state) => {
         const p = state.players.find((player) => player.id === playerId);
@@ -44,7 +45,6 @@ const CharPortrait = React.memo(
 
     const cardsMeta = (useCardsMetaDataState()[0] as CardsMetaData) ?? {};
     const { position, isVisible, handlersPinable, isPinned } = useTooltip();
-    const locale = useSystemLocalization();
 
     const { char, isEliminated, color } = playerData ?? {
       char: "",
@@ -88,7 +88,7 @@ const CharPortrait = React.memo(
 
         {isVisible && !tooltipDisabled && (
           <Tooltip
-            title={locale.character}
+            title={t("character")}
             content={tooltipContent}
             position={position}
             hasCardRef={true}

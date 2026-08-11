@@ -1,11 +1,11 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import type { LobbyPublicData, LobbySeat } from "../../../types";
 import Button from "../../shared/Button";
 import { SocketEvents } from "../../../lib/socketEvents";
 import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
 import { useCurrentLobbyState } from "../../../stores/hooks/useCurrentLobbyState";
 import { socket } from "../../../lib/socket";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export default function LobbyInfo_public({
   selectedLobbyData,
@@ -16,7 +16,7 @@ export default function LobbyInfo_public({
   playerName: string;
   setPlayerName: (newName: string) => void;
 }) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const setCurrentPage = useCurrentPageState()[1];
   const setCurrentLobby = useCurrentLobbyState()[1];
 
@@ -59,8 +59,8 @@ export default function LobbyInfo_public({
               {seat.status !== "open"
                 ? seat.type === "human"
                   ? `${seat.playerName}`
-                  : `${locale["ai"]}`
-                : `-${locale["empty"]}-`}
+                  : `${t("ai")}`
+                : `-${t("empty")}-`}
             </div>
           </div>
         ))}
@@ -71,8 +71,8 @@ export default function LobbyInfo_public({
       >
         <input
           type="text"
-          aria-label={locale["enter_as"]}
-          placeholder={`${locale["enter_as"]}...`}
+          aria-label={t("enter_as")}
+          placeholder={`${t("enter_as")}...`}
           className="border w-[90%]"
           style={{
             fontSize: sizeAdaptive(30),
@@ -83,7 +83,7 @@ export default function LobbyInfo_public({
           onChange={(e) => setPlayerName(e.target.value)}
         />
         <Button
-          text={locale.join}
+          text={t("join")}
           style={{
             fontSize: sizeAdaptive(20),
             color: playerName !== "" ? "var(--BLACK)" : "var(--BEIGE)",

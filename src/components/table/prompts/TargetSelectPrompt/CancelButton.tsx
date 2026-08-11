@@ -1,9 +1,9 @@
 import { m } from "motion/react";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../../lib/images";
-import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import { useTargetPosition } from "../TargetSelectPrompt.hooks";
 import { useUiController } from "../../../../stores/hooks/localStateStore.hooks";
+import { useTranslation } from "../../../../hooks/useTranslation";
 
 export default function CancelButton({
   highlightedOption,
@@ -16,7 +16,7 @@ export default function CancelButton({
   highlightedOption: number | null;
   setHighlightedOption: (v: number | null) => void;
 }) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const position = useTargetPosition({ index, spacing, highlightedOption });
   const uiController = useUiController();
 
@@ -76,7 +76,7 @@ export default function CancelButton({
             marginLeft: sizeAdaptive(150),
           }}
         >
-          {locale["cancel"]}
+          {t("cancel")}
         </m.div>
       )}
     </m.div>

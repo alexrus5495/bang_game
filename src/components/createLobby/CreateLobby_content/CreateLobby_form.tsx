@@ -1,9 +1,9 @@
 import type React from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import type { LobbyConfig } from "../../../types";
 import FormCheckboxInput from "./FormCheckboxInput";
 import FormTextInput from "./FormTextInput";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export default function CreateLobby_form({
   lobbyConfig,
@@ -12,7 +12,7 @@ export default function CreateLobby_form({
   lobbyConfig: LobbyConfig;
   setLobbyConfig: React.Dispatch<React.SetStateAction<LobbyConfig>>;
 }) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
 
   const updateLobbyName = (newName: string) => {
     const updatedPlayerConfig = { ...lobbyConfig, lobbyName: newName };
@@ -39,21 +39,21 @@ export default function CreateLobby_form({
     <div className="flex flex-col" style={{ gap: sizeAdaptive(35) }}>
       <FormTextInput
         inputName={"lobbyName"}
-        text={locale.name}
+        text={t("name")}
         state={lobbyConfig.lobbyName}
         handler={updateLobbyName}
       />
 
       <FormCheckboxInput
         inputName={"isPrivate"}
-        text={locale.private}
+        text={t("private")}
         state={lobbyConfig.isPrivate}
         handler={toggleIsPrivate}
       />
 
       <FormTextInput
         inputName={"password"}
-        text={locale.password}
+        text={t("password")}
         state={lobbyConfig.password}
         handler={updatePassword}
         isDisabled={!lobbyConfig.isPrivate}
@@ -61,7 +61,7 @@ export default function CreateLobby_form({
 
       <FormTextInput
         inputName={"playerName"}
-        text={locale["your_name"]}
+        text={t("your_name")}
         state={lobbyConfig.playerName}
         handler={updatePlayerName}
       />

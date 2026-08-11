@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import Button from "../shared/Button";
 import SearchLobby_lobbyTable from "./SearchLobby_content/SearchLobby_lobbyTable";
 import type { LobbyPublicData } from "../../types";
@@ -8,9 +7,10 @@ import SearchLobby_lobbyDetails from "./SearchLobby_content/SearchLobby_lobbyDet
 import { SocketEvents } from "../../lib/socketEvents";
 import { useCurrentPageState } from "../../stores/hooks/useCurrentPageState";
 import { socket } from "../../lib/socket";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export default function SearchLobby_content() {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const [lobbies, setLobbies] = useState<LobbyPublicData[]>([]);
   const [selectedLobby, setSelectedLobby] = useState<string | null>(null);
   const [playerName, setPlayerName] = useState<string>("");
@@ -35,7 +35,7 @@ export default function SearchLobby_content() {
       <div className="w-[60%] h-[80%] relative flex flex-col justify-between ">
         <div className="flex justify-center items-center">
           <Button
-            text={locale.back}
+            text={t("back")}
             className={"absolute"}
             handler={() => setCurrentPage("mainMenu")}
             style={{ fontSize: sizeAdaptive(16), left: sizeAdaptive(18) }}
@@ -45,7 +45,7 @@ export default function SearchLobby_content() {
             className="custom-text-highlighted"
             style={{ fontSize: sizeAdaptive(13) }}
           >
-            {locale["search_lobby"]}
+            {t("search_lobby")}
           </h2>
         </div>
         <div

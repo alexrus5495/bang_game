@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { useCardLocalization } from "../../../stores/hooks/useCardLocalization";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export default function CardTitleComponent({
   pack,
@@ -10,7 +10,8 @@ export default function CardTitleComponent({
   cardTypeId: string;
   cardType: string;
 }) {
-  const title = useCardLocalization(pack, cardTypeId).title;
+  const t = useTranslation();
+  const title = t.cardField(pack, cardTypeId, "title");
 
   let dynamicClasses = {
     height: cardType === "character" ? "70px" : "120px",

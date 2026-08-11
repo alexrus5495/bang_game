@@ -1,5 +1,5 @@
+import { useTranslation } from "../../../hooks/useTranslation";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import type { LobbyPublicData } from "../../../types";
 import LobbyInfo_none from "./LobbyInfo_none";
 import LobbyInfo_private from "./LobbyInfo_private";
@@ -18,7 +18,7 @@ export default function SearchLobby_lobbyDetails({
 }) {
   const selectedLobbyData = lobbies.find((lobby) => lobby.id === selectedLobby);
 
-  const locale = useSystemLocalization();
+  const t = useTranslation();
 
   return (
     <div className="w-full h-full">
@@ -30,7 +30,7 @@ export default function SearchLobby_lobbyDetails({
             borderBottomWidth: sizeAdaptive(150),
           }}
         >
-          {locale["lobbyInfo_title"]}
+          {t("lobbyInfo_title")}
         </h2>
       </div>
       <div className="w-full h-[90%]">

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { m } from "motion/react";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Button from "../../shared/Button";
 import { SocketEvents } from "../../../lib/socketEvents";
 import { useCurrentLobbyState } from "../../../stores/hooks/useCurrentLobbyState";
 import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
 import { socket } from "../../../lib/socket";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export default function Join_passwordForm({
   lobbyId,
@@ -15,13 +15,12 @@ export default function Join_passwordForm({
   lobbyId: string;
   playerName: string;
 }) {
+  const t = useTranslation();
   const [password, setPassword] = useState<string>("");
   const [showWrongPasswordMsg, setShowWrongPasswordMsg] =
     useState<boolean>(false);
   const setCurrentLobby = useCurrentLobbyState()[1];
   const setCurrentPage = useCurrentPageState()[1];
-
-  const locale = useSystemLocalization();
 
   const isFormReady = password.length > 0 && password.length <= 15;
 
@@ -69,13 +68,13 @@ export default function Join_passwordForm({
           outlineWidth: sizeAdaptive(150),
           outlineColor: "var(--BLACK)",
         }}
-        placeholder={`${locale["enter_password"]}...`}
+        placeholder={t("enter_password")}
         whileFocus={{ scale: 1.05 }}
         maxLength={15}
       />
 
       <Button
-        text={showWrongPasswordMsg ? locale["password_wrong"] : locale.join}
+        text={showWrongPasswordMsg ? t("password_wrong") : t("join")}
         style={{
           fontSize: sizeAdaptive(16),
           marginTop: "-5%",

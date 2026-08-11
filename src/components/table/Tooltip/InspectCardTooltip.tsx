@@ -10,6 +10,7 @@ import CardSymbolDescription from "./CardSymbolDescription";
 import RootPortal from "../../shared/RootPortal";
 import React from "react";
 import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
+import ScreenDimmer from "../../shared/ScreenDimmer";
 
 const InspectCardTooltip = React.memo(
   ({
@@ -51,12 +52,11 @@ const InspectCardTooltip = React.memo(
           animate={{ opacity: isVisible ? 1 : 0 }}
           transition={{ delay: delay, duration: 0.2 }}
         >
-          {/* Screen dimmmer */}
-          <m.div className="h-[100vh] w-[100vw] bg-black fixed top-0 left-0 pointer-events-none opacity-90"></m.div>
+          <ScreenDimmer fadeIn={true} />
 
           {/* Tooltip */}
           <m.div
-            className="flex items-center fixed pointer-events-none"
+            className="flex items-center fixed pointer-events-none z-30"
             style={{
               gap: sizeAdaptive(20),
               top: "50%",

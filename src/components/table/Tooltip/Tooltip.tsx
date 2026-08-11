@@ -4,10 +4,11 @@ import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import type { TooltipMessage } from "../../../types";
 import TooltipMessageLine from "../Tooltip/TooltipMessage";
 import { checkBounds } from "../../../lib/utils/checkBounds";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import RootPortal from "../../shared/RootPortal";
 import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
 import { getImageComponent } from "../../../lib/images";
+import DecoratedFrame from "../../shared/DecoratedFrame";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 const Tooltip = React.memo(
   ({
@@ -56,7 +57,7 @@ const Tooltip = React.memo(
       <RootPortal portalId="inspect_card_tooltip">
         <m.div
           ref={tooltipRef}
-          className="w-fit z-[999] flex flex-col border border-[var(--BLACK)] bg-paperTexture-yellow"
+          className="w-fit z-[999] flex flex-col text-center"
           style={{
             position: "fixed",
             left: coordinates.left,
@@ -65,7 +66,6 @@ const Tooltip = React.memo(
             bottom: coordinates.bottom,
             gap: sizeAdaptive(180),
             padding: sizeAdaptive(80),
-            borderWidth: sizeAdaptive(200),
             visibility:
               coordinates.top !== undefined || coordinates.bottom !== undefined
                 ? "visible"
@@ -75,23 +75,30 @@ const Tooltip = React.memo(
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.2 }}
         >
-          {hasCardRef && isPinned && (
-            <div className="absolute top-0 right-0">
-              {getImageComponent("icon-pin", {
-                style: {
-                  height: sizeAdaptive(40),
-                  margin: sizeAdaptive(120),
-                },
-                draggable: false,
-              })}
-            </div>
-          )}
+          <DecoratedFrame variant={"doubleArch"}>
+            {hasCardRef && isPinned && (
+              <div
+                className="absolute"
+                style={{
+                  top: "-20%",
+                  right: "-5%",
+                }}
+              >
+                {getImageComponent("icon-pin", {
+                  style: {
+                    height: sizeAdaptive(30),
+                  },
+                  draggable: false,
+                })}
+              </div>
+            )}
 
-          <TooltipInnerContent
-            title={title}
-            content={content}
-            hasCardRef={hasCardRef}
-          />
+            <TooltipInnerContent
+              title={title}
+              content={content}
+              hasCardRef={hasCardRef}
+            />
+          </DecoratedFrame>
         </m.div>
       </RootPortal>
     );
@@ -115,6 +122,7 @@ const TooltipInnerContent = React.memo(
           style={{
             fontSize: sizeAdaptive(35),
             color: "var(--BLACK)",
+            paddingBottom: sizeAdaptive(250),
             fontWeight: "bolder",
           }}
         >
@@ -122,14 +130,20 @@ const TooltipInnerContent = React.memo(
         </div>
 
         <div
-          className="flex flex-col font-palatino z-[999]"
+          className="flex flex-col font-palatino z-[999] items-center justify-center"
           style={{ fontWeight: "bolder" }}
         >
-          {content?.map((message, index) => (
-            <div key={index} style={{ fontSize: sizeAdaptive(40) }}>
-              <TooltipMessageLine message={message} />
-            </div>
-          ))}
+          {content?.map((message, index) => {
+            return (
+              <div
+                key={index}
+                style={{ fontSize: sizeAdaptive(40) }}
+                className="w-auto"
+              >
+                <TooltipMessageLine message={message} />
+              </div>
+            );
+          })}
         </div>
 
         {hasCardRef && <HoldToInspectMessage />}
@@ -139,8 +153,8 @@ const TooltipInnerContent = React.memo(
 );
 
 const HoldToInspectMessage = React.memo(() => {
-  const locale = useSystemLocalization() as Record<string, string>;
-  const localeText = locale["tooltip_holdToInspect"];
+  const t = useTranslation();
+  const localeText = t("tooltip_holdToInspect");
 
   const parts = localeText.split("{icon}");
 

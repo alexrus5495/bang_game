@@ -5,16 +5,19 @@ import type {
   PlayingCardMeta,
   TooltipMessage,
 } from "../../../types";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { defaultWeaponMeta } from "../../../config/defaultWeaponMeta";
 import { useCardsMetaDataState } from "../../../stores/hooks/useCardsMetaDataState";
+import {
+  useTranslation,
+  type TranslateFn,
+} from "../../../hooks/useTranslation";
 
 export function useRangeInfo(player: PlayerSlice) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
 
   return useMemo(() => {
-    const baseInfo = addBaseWeaponInfo(player, locale, cardsMeta);
+    const baseInfo = addBaseWeaponInfo(player, t, cardsMeta);
 
     const currentRange = baseInfo.currentRange;
     const tooltipContent = baseInfo.tooltipContent;
@@ -23,12 +26,12 @@ export function useRangeInfo(player: PlayerSlice) {
       range: currentRange,
       tooltipContent: tooltipContent,
     };
-  }, [player, locale, cardsMeta]);
+  }, [player, t, cardsMeta]);
 }
 
 function addBaseWeaponInfo(
   player: PlayerSlice,
-  locale: Record<string, string>,
+  t: TranslateFn,
   cardsMeta: CardsMetaData,
 ) {
   const weapon = {
@@ -44,7 +47,7 @@ function addBaseWeaponInfo(
   tooltipContent.push([
     {
       type: "plainText",
-      content: `+${currentRange} ${locale["tooltip_from"]} `,
+      content: `+${currentRange} ${t("tooltip_from")} `,
     },
     {
       type: "playingCardRef",

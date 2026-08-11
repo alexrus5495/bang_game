@@ -7,9 +7,9 @@ import {
   useUiController,
 } from "../../../../stores/hooks/localStateStore.hooks";
 import { getImageComponent } from "../../../../lib/images";
-import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import { useTargetPosition } from "../TargetSelectPrompt.hooks";
 import React from "react";
+import { useTranslation } from "../../../../hooks/useTranslation";
 
 const TargetButton = React.memo(
   ({
@@ -29,7 +29,7 @@ const TargetButton = React.memo(
     const pendingCardIndex = usePendingCardIndex();
     const uiController = useUiController();
     const cardActionController = useCardActionsController();
-    const locale = useSystemLocalization();
+    const t = useTranslation();
     const playerData = playersController.getPlayerById(player);
     const position = useTargetPosition({ spacing, index, highlightedOption });
 
@@ -108,7 +108,7 @@ const TargetButton = React.memo(
               marginLeft: sizeAdaptive(150),
             }}
           >
-            {locale[playerData.nickname]}
+            {t(playerData.nickname)}
           </m.div>
         )}
       </m.div>

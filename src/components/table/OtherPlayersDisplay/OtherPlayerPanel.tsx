@@ -1,4 +1,3 @@
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import CharPortrait from "../shared/CharPortrait";
 import EquipmentCardsPanel from "../shared/EquipmentCardsPanel";
@@ -9,9 +8,10 @@ import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useShallow } from "zustand/shallow";
 import { useStore } from "zustand";
 import { useHighlightedOpponent } from "../../../stores/hooks/localStateStore.hooks";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 const OtherPlayerPanel = React.memo(({ playerId }: { playerId: string }) => {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const highlightedOpponent = useHighlightedOpponent();
   const isCurrent = highlightedOpponent === playerId;
 
@@ -67,7 +67,7 @@ const OtherPlayerPanel = React.memo(({ playerId }: { playerId: string }) => {
               lineHeight: sizeAdaptive(24),
             }}
           >
-            {player.isAI ? locale[player.nickname] : player.nickname}
+            {player.isAI ? t(player.nickname) : player.nickname}
           </div>
         </div>
         <CharPortrait playerId={playerId} />

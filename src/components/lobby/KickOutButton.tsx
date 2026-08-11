@@ -2,9 +2,9 @@ import { useState } from "react";
 import Button from "../shared/Button";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import type { LobbyPublicData, LobbySeat } from "../../types";
-import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { SocketEvents } from "../../lib/socketEvents";
 import { socket } from "../../lib/socket";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export default function KickOutButton({
   lobbyData,
@@ -16,7 +16,7 @@ export default function KickOutButton({
   isLobbyOwner: boolean;
 }) {
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
-  const locale = useSystemLocalization();
+  const t = useTranslation();
 
   const handleKickOutPlayer = (seatId: number) => {
     socket.emit(SocketEvents.KICK_OUT_PLAYER, lobbyData.id, seatId);
@@ -33,7 +33,7 @@ export default function KickOutButton({
         !isEmpty() &&
         (!showConfirm ? (
           <Button
-            text={locale["lobby_kick"]}
+            text={t("lobby_kick")}
             style={{ fontSize: sizeAdaptive(20) }}
             handler={() => setShowConfirm(true)}
           />
@@ -43,13 +43,13 @@ export default function KickOutButton({
             style={{ gap: sizeAdaptive(60) }}
           >
             <Button
-              text={locale.confirm}
+              text={t("confirm")}
               style={{ fontSize: sizeAdaptive(20) }}
               handler={() => handleKickOutPlayer(seatId)}
             />
             <span className="h-[80%] w-[1%] bg-[var(--BLACK)]"></span>
             <Button
-              text={locale.back}
+              text={t("back")}
               style={{ fontSize: sizeAdaptive(20) }}
               handler={() => setShowConfirm(false)}
             />

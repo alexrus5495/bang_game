@@ -48,7 +48,7 @@ const Frame = React.memo(({ char, index }: { char: string; index: number }) => {
       }}
       className="h-full aspect-square relative outline will-change-transform"
     >
-      {getImageComponent("frame", {
+      {getImageComponent("carousel_frame", {
         className: "absolute pointer-none",
         draggable: false,
       })}

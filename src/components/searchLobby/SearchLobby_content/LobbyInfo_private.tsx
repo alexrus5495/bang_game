@@ -1,5 +1,4 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Button from "../../shared/Button";
 import { useState } from "react";
 import FormTextInput from "../../createLobby/CreateLobby_content/FormTextInput";
@@ -8,13 +7,14 @@ import { SocketEvents } from "../../../lib/socketEvents";
 import { useCurrentLobbyState } from "../../../stores/hooks/useCurrentLobbyState";
 import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
 import { socket } from "../../../lib/socket";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export default function LobbyInfo_private({
   selectedLobbyData,
 }: {
   selectedLobbyData: LobbyPublicData;
 }) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const [showForm, setShowForm] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [playerName, setPlayerName] = useState<string>("");
@@ -69,7 +69,7 @@ export default function LobbyInfo_private({
       <div className="w-full h-[80%] flex justify-center items-center">
         {!showForm ? (
           <div style={{ fontSize: sizeAdaptive(25) }}>
-            {locale["lobbyInfo_private"]}
+            {t("lobbyInfo_private")}
           </div>
         ) : (
           <div
@@ -78,7 +78,7 @@ export default function LobbyInfo_private({
           >
             <FormTextInput
               inputName={"playerName"}
-              text={locale["enter_as"]}
+              text={t("enter_as")}
               state={playerName}
               handler={setPlayerName}
               className="justify-center items-center"
@@ -86,7 +86,7 @@ export default function LobbyInfo_private({
             />
             <FormTextInput
               inputName={"password"}
-              text={locale.password}
+              text={t("password")}
               state={password}
               handler={updatePassword}
               className="justify-center items-center"
@@ -94,9 +94,7 @@ export default function LobbyInfo_private({
             />
 
             <Button
-              text={
-                showWrongPasswordMsg ? locale["password_wrong"] : locale.join
-              }
+              text={showWrongPasswordMsg ? t("password_wrong") : t("join")}
               style={{
                 fontSize: sizeAdaptive(20),
                 color: showWrongPasswordMsg
@@ -114,13 +112,13 @@ export default function LobbyInfo_private({
       <div className="h-[20%] w-full flex flex-col justify-center items-center">
         {!showForm ? (
           <Button
-            text={locale.join}
+            text={t("join")}
             style={{ fontSize: sizeAdaptive(20) }}
             handler={() => setShowForm(true)}
           />
         ) : (
           <Button
-            text={locale.back}
+            text={t("back")}
             style={{ fontSize: sizeAdaptive(20) }}
             handler={() => setShowForm(false)}
           />

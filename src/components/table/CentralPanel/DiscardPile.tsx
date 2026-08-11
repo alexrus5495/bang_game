@@ -7,10 +7,12 @@ import SkeletonCard from "../../cards/SkeletonCard";
 import AnimationAnchor from "../shared/AnimationAnchor";
 import Tooltip from "../Tooltip/Tooltip";
 import type { AnchorId } from "../../../contexts/AnchorsContext";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 const DiscardPile = React.memo(() => {
   const size = useLocalStateStore().discardCurrentSize;
   const { position, isVisible, handlersNonPinable } = useTooltip();
+  const t = useTranslation();
 
   const skeletonCards = useMemo(() => {
     if (size <= 1) return null;
@@ -59,7 +61,7 @@ const DiscardPile = React.memo(() => {
 
       {isVisible && (
         <Tooltip
-          title={"DiscardPile"}
+          title={t("discard_pile")}
           content={tooltipContent}
           position={position}
           hasCardRef={false}

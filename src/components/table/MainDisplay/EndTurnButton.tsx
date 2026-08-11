@@ -2,10 +2,10 @@ import React from "react";
 import { m } from "motion/react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../lib/images";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 const EndTurnButton = React.memo(() => {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   return (
     <m.div
       initial={{ y: "-100%", opacity: 0 }}
@@ -35,7 +35,7 @@ const EndTurnButton = React.memo(() => {
               marginRight: sizeAdaptive(70),
             }}
           >
-            {locale["end_turn"]}
+            {t("end_turn")}
           </div>
 
           <div className="h-full flex items-center justify-center will-change-transform">

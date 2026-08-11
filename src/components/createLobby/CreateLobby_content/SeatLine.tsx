@@ -1,7 +1,7 @@
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { m } from "motion/react";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import type { LobbySeat } from "../../../types";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export default function SeatLine({
   seat,
@@ -12,7 +12,7 @@ export default function SeatLine({
   index: number;
   setSeatType: (seatIndex: number, type: "human" | "ai") => void;
 }) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
 
   return (
     <div
@@ -52,7 +52,7 @@ export default function SeatLine({
           whileTap={{ scale: 0.8 }}
           transition={{ duration: 0.15 }}
         >
-          {locale.human}
+          {t("human")}
         </m.button>
 
         <span
@@ -72,7 +72,7 @@ export default function SeatLine({
           whileTap={{ scale: 0.8 }}
           transition={{ duration: 0.15 }}
         >
-          {locale.ai}
+          {t("ai")}
         </m.button>
       </div>
     </div>

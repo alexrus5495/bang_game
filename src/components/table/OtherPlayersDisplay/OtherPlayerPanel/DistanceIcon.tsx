@@ -1,12 +1,12 @@
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
 import React from "react";
-import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import Tooltip from "../../Tooltip/Tooltip";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { useDistanceInfo } from "./DistanceIcon.hooks";
 import { useIsDragging } from "../../../../stores/hooks/localStateStore.hooks";
 import { getImageComponent } from "../../../../lib/images";
 import { m } from "motion/react";
+import { useTranslation } from "../../../../hooks/useTranslation";
 
 const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
   const isDragging = useIsDragging();
@@ -19,7 +19,7 @@ const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
     handlersPinable,
     hasCardRef,
   } = useTooltip();
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const { distance, tooltipContent } = useDistanceInfo(playerId);
 
   return (
@@ -56,7 +56,7 @@ const DistanceIcon = React.memo(({ playerId }: { playerId: string }) => {
 
       {isVisible && tooltipContent.length > 0 && (
         <Tooltip
-          title={`${locale.distance} = ${distance}`}
+          title={`${t("distance")} = ${distance}`}
           content={tooltipContent}
           position={position}
           hasCardRef={hasCardRef(tooltipContent)}

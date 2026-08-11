@@ -1,8 +1,8 @@
-import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import { SocketEvents } from "../../lib/socketEvents";
 import type { LobbySeat } from "../../types";
 import { socket } from "../../lib/socket";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export default function SeatTypeSwitch({
   seat,
@@ -11,7 +11,7 @@ export default function SeatTypeSwitch({
   seat: LobbySeat;
   lobbyId: string;
 }) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
 
   const toggleSeatType = () => {
     socket.emit(SocketEvents.TOGGLE_SEAT_TYPE, seat.id, lobbyId);
@@ -29,7 +29,7 @@ export default function SeatTypeSwitch({
           color: seat.type === "human" ? "var(--BLACK)" : "var(--BEIGE)",
         }}
       >
-        {locale.human}
+        {t("human")}
       </div>
       <span className="w-[1.3%] h-[70%] bg-[var(--BLACK)]"></span>
       <div
@@ -37,7 +37,7 @@ export default function SeatTypeSwitch({
           color: seat.type !== "human" ? "var(--BLACK)" : "var(--BEIGE)",
         }}
       >
-        {locale.ai}
+        {t("ai")}
       </div>
     </button>
   );

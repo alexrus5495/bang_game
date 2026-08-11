@@ -4,13 +4,16 @@ import { useLocalStateStore } from "../../../../stores/localStateStore";
 import { useShallow } from "zustand/shallow";
 import { socket } from "../../../../lib/socket";
 import type { CardsMetaData, TooltipMessage } from "../../../../types";
-import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import { useCardsMetaDataState } from "../../../../stores/hooks/useCardsMetaDataState";
 import { useMemo } from "react";
+import {
+  useTranslation,
+  type TranslateFn,
+} from "../../../../hooks/useTranslation";
 
 export function useDistanceInfo(playerId: string) {
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
-  const locale = useSystemLocalization();
+  const t = useTranslation();
 
   const { ids, eliminatedMap, clientData, playerData } =
     usePreparePlayersData(playerId);
@@ -29,12 +32,12 @@ export function useDistanceInfo(playerId: string) {
 
     return applyDistanceBonuses({
       baseDistance,
-      locale,
+      t,
       clientData,
       cardsMeta,
       playerData,
     });
-  }, [cardsMeta, ids, locale, clientData, eliminatedMap, playerId, playerData]);
+  }, [cardsMeta, ids, t, clientData, eliminatedMap, playerId, playerData]);
 }
 
 function usePreparePlayersData(playerId: string) {
@@ -102,13 +105,13 @@ function calculateBaseDistance(
 
 function applyDistanceBonuses({
   baseDistance,
-  locale,
+  t,
   clientData,
   cardsMeta,
   playerData,
 }: {
   baseDistance: number;
-  locale: Record<string, string>;
+  t: TranslateFn;
   clientData: { char: string; equipment: string[] } | null;
   cardsMeta: CardsMetaData;
   playerData: { char: string; equipment: string[] } | null;
@@ -118,7 +121,7 @@ function applyDistanceBonuses({
     [
       {
         type: "plainText",
-        content: `${locale["tooltip_baseDistance"]}: ${distance}`,
+        content: `${t("tooltip_baseDistance")}: ${distance}`,
       },
     ],
   ];
@@ -133,7 +136,7 @@ function applyDistanceBonuses({
     if (mustangCard) {
       distance++;
       tooltipContent.push([
-        { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
+        { type: "plainText", content: `+1 ${t("tooltip_from")} ` },
         {
           type: "playingCardRef",
           content: cardsMeta.deckMeta[mustangCard],
@@ -145,7 +148,7 @@ function applyDistanceBonuses({
     if (playerData.char === "paul_regret") {
       distance++;
       tooltipContent.push([
-        { type: "plainText", content: `+1 ${locale["tooltip_from"]} ` },
+        { type: "plainText", content: `+1 ${t("tooltip_from")} ` },
         {
           type: "charCardRef",
           content: cardsMeta.charDeckMeta["paul_regret"],
@@ -164,7 +167,7 @@ function applyDistanceBonuses({
     if (scopeCard) {
       distance--;
       tooltipContent.push([
-        { type: "plainText", content: `-1 ${locale["tooltip_from"]} ` },
+        { type: "plainText", content: `-1 ${t("tooltip_from")} ` },
         { type: "playingCardRef", content: cardsMeta.deckMeta[scopeCard] },
       ]);
     }
@@ -173,7 +176,7 @@ function applyDistanceBonuses({
     if (clientData.char === "rose_doolan") {
       distance--;
       tooltipContent.push([
-        { type: "plainText", content: `-1 ${locale["tooltip_from"]} ` },
+        { type: "plainText", content: `-1 ${t("tooltip_from")} ` },
         {
           type: "charCardRef",
           content: cardsMeta.charDeckMeta["rose_doolan"],

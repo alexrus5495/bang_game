@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useCardLocalization } from "../../../stores/hooks/useCardLocalization";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import type {
   CharacterCardMeta,
@@ -8,6 +7,7 @@ import type {
 } from "../../../types";
 import { useTooltip } from "../../../hooks/useTooltip";
 import InspectCardTooltip from "./InspectCardTooltip";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 const TooltipMessageCardRef = React.memo(
   ({
@@ -17,7 +17,8 @@ const TooltipMessageCardRef = React.memo(
     meta: PlayingCardMeta | CharacterCardMeta | RoleCardMeta;
     type: "playingCardRef" | "charCardRef" | "roleCardRef";
   }) => {
-    const cardTitle = useCardLocalization(meta.pack, meta.cardTypeId).title;
+    const t = useTranslation();
+    const cardTitle = t.cardField(meta.pack, meta.cardTypeId, "title");
     const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
     const { isVisible, handlersNonPinable } = useTooltip();
 

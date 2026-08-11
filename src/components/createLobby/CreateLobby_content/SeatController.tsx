@@ -1,8 +1,8 @@
 import { PLAYER_COLORS } from "../../../config/player.colors";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { m } from "motion/react";
 import type { LobbyConfig, LobbySeat } from "../../../types";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export default function SeatController({
   lobbyConfig,
@@ -11,7 +11,7 @@ export default function SeatController({
   lobbyConfig: LobbyConfig;
   setLobbyConfig: React.Dispatch<React.SetStateAction<LobbyConfig>>;
 }) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
 
   const updateNumberOfSeats = (newNumber: number, newSeats: LobbySeat[]) => {
     const updatedPlayerConfig = {
@@ -59,7 +59,7 @@ export default function SeatController({
           fontSize: sizeAdaptive(20),
         }}
       >
-        {locale.seats}:
+        {t("seats")}:
       </h2>
 
       <div

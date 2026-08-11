@@ -1,4 +1,4 @@
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
+import { useTranslation } from "../../../hooks/useTranslation";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../lib/images";
 import { useMemo } from "react";
@@ -13,7 +13,7 @@ export default function CardSymbolDescription({
   symbol: string;
   cardIsWeapon: boolean;
 }) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
 
   const symbolIsRange = rangeSymbols.some((value) => value === symbol);
   const symbolIsDrawRange = drawRangeSymbols.some((value) => value === symbol);
@@ -58,11 +58,11 @@ export default function CardSymbolDescription({
       >
         {symbolIsRange
           ? cardIsWeapon
-            ? locale["cardSymbol_weaponRange"]
-            : locale["cardSymbol_range"]
+            ? t("cardSymbol_weaponRange")
+            : t("cardSymbol_range")
           : symbolIsDrawRange
-            ? locale["cardSymbol_drawRange"]
-            : locale[`cardSymbol_${symbol}`]}
+            ? t("cardSymbol_drawRange")
+            : t(`cardSymbol_${symbol}`)}
       </div>
     </div>
   );

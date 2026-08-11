@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import Button from "../shared/Button";
 import type { LobbyPublicData } from "../../types";
@@ -10,13 +9,14 @@ import { SocketEvents } from "../../lib/socketEvents";
 import { useCurrentPageState } from "../../stores/hooks/useCurrentPageState";
 import { socket } from "../../lib/socket";
 import { getImageComponent } from "../../lib/images";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export default function Lobby_content({
   setExitAnimationType,
 }: {
   setExitAnimationType: (type: "left" | "up") => void;
 }) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const [lobbyData, setLobbyData] = useState<LobbyPublicData | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
 
@@ -93,7 +93,7 @@ export default function Lobby_content({
       <div className="w-[60%] h-[80%] relative flex flex-col justify-between">
         <div className="flex justify-center items-center">
           <Button
-            text={locale.exit}
+            text={t("exit")}
             className={"absolute"}
             handler={handleExit}
             style={{ fontSize: sizeAdaptive(16), left: sizeAdaptive(18) }}
@@ -147,7 +147,7 @@ export default function Lobby_content({
             >
               {isLobbyOwner() && (
                 <Button
-                  text={editMode ? locale.done : locale.edit}
+                  text={editMode ? t("done") : t("edit")}
                   style={{
                     fontSize: sizeAdaptive(16),
                     left: sizeAdaptive(18),
@@ -168,7 +168,7 @@ export default function Lobby_content({
               {isLobbyOwner() &&
                 (arePlayersReady() ? (
                   <Button //NOTE: Add start function
-                    text={locale.start}
+                    text={t("start")}
                     style={{
                       fontSize: sizeAdaptive(16),
                       left: sizeAdaptive(18),
@@ -177,7 +177,7 @@ export default function Lobby_content({
                   />
                 ) : (
                   <div style={{ fontSize: sizeAdaptive(16) }}>
-                    {`${locale.ready}: ${getReadyCounter()?.ready}/${getReadyCounter()?.total}`}
+                    {`${t("ready")}: ${getReadyCounter()?.ready}/${getReadyCounter()?.total}`}
                   </div>
                 ))}
             </div>

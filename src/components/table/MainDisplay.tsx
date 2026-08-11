@@ -1,6 +1,5 @@
 import { AnimatePresence, m } from "motion/react";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import Carousel from "./MainDisplay/Carousel";
 import React from "react";
 import CurrentPlayerName from "./MainDisplay/CurrentPlayerName";
@@ -14,6 +13,7 @@ import {
   usePreviousPlayerId,
 } from "../../stores/hooks/localStateStore.hooks";
 import { getImageComponent } from "../../lib/images";
+import { useTranslation } from "../../hooks/useTranslation";
 
 const MainDisplay = React.memo(({ className }: { className?: string }) => {
   const isCurrent = useIsCurrentPlayer();
@@ -39,7 +39,7 @@ function Backdrop() {
 }
 
 function Content() {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const currentPlayerId = useCurrentPlayerId();
   const previousPlayerId = usePreviousPlayerId();
   const currentPlayer = currentPlayerId ?? previousPlayerId;
@@ -70,7 +70,7 @@ function Content() {
                 lineHeight: sizeAdaptive(12.6),
               }}
             >
-              {`${locale["current_turn"]}:`}
+              {`${t("current_turn")}:`}
             </div>
 
             <div className="w-full h-[25%]">

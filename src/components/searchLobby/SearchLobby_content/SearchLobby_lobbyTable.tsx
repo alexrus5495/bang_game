@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { LobbyPublicData } from "../../../types";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 type SortConfig = {
   key: keyof LobbyPublicData;
@@ -19,7 +19,7 @@ export default function SearchLobby_lobbyTable({
 }) {
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
 
-  const locale = useSystemLocalization();
+  const t = useTranslation();
 
   const sortedLobbies = useMemo(() => {
     if (!sortConfig) return lobbies;
@@ -75,7 +75,7 @@ export default function SearchLobby_lobbyTable({
                 className="w-[30%] text-start"
                 style={{ paddingLeft: sizeAdaptive(20) }}
               >
-                {locale["lobby_name"]}
+                {t("lobby_name")}
                 {sortConfig?.key === "name" &&
                   (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
@@ -83,7 +83,7 @@ export default function SearchLobby_lobbyTable({
                 onClick={() => handleSort("ownerName")}
                 className="w-[29%] text-start"
               >
-                {locale["lobby_owner"]}
+                {t("lobby_owner")}
                 {sortConfig?.key === "ownerName" &&
                   (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
@@ -91,7 +91,7 @@ export default function SearchLobby_lobbyTable({
                 onClick={() => handleSort("availableHumanSlots")}
                 className="w-[15%] text-start"
               >
-                {locale["lobby_seats"]}
+                {t("lobby_seats")}
                 {sortConfig?.key === "availableHumanSlots" &&
                   (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
@@ -100,7 +100,7 @@ export default function SearchLobby_lobbyTable({
                 onClick={() => handleSort("numberOfSeats")}
                 className="w-[10%] text-start"
               >
-                {locale["lobby_size"]}
+                {t("lobby_size")}
                 {sortConfig?.key === "numberOfSeats" &&
                   (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
@@ -108,7 +108,7 @@ export default function SearchLobby_lobbyTable({
                 onClick={() => handleSort("isPrivate")}
                 className="w-[16%] text-start"
               >
-                {locale["lobby_private"]}
+                {t("lobby_private")}
                 {sortConfig?.key === "isPrivate" &&
                   (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>

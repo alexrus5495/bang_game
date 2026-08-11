@@ -1,4 +1,3 @@
-import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
 import type { LobbyPublicData, LobbySeat } from "../../types";
 import KickOutButton from "./KickOutButton";
@@ -6,6 +5,7 @@ import ReadySwitch from "./ReadySwitch";
 import SeatTypeSwitch from "./SeatTypeSwitch";
 import { socket } from "../../lib/socket";
 import { getImageComponent } from "../../lib/images";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export default function SeatLine({
   index,
@@ -18,7 +18,7 @@ export default function SeatLine({
   lobbyData: LobbyPublicData;
   editMode: boolean;
 }) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const isLobbyOwner = () => {
     return lobbyData.ownerId === seat.playerId;
   };
@@ -46,8 +46,8 @@ export default function SeatLine({
           {seat.status !== "open"
             ? seat.type === "human"
               ? `${seat.playerName}`
-              : `${locale[seat.playerName as string]}`
-            : `-${locale["empty"]}-`}
+              : `${t(seat.playerName ?? "")}`
+            : `-${t("empty")}-`}
         </div>
         {isLobbyOwner() &&
           getImageComponent("sheriff_icon", {
@@ -69,7 +69,7 @@ export default function SeatLine({
               color: seat.isReady ? "var(--GREEN)" : "var(--RED)",
             }}
           >
-            {seat.isReady ? locale["lobby_ready"] : locale["lobby_notReady"]}
+            {seat.isReady ? t("lobby_ready") : t("lobby_notReady")}
           </div>
         ))}
 

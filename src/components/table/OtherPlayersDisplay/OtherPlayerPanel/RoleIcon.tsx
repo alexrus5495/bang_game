@@ -1,5 +1,4 @@
 import { useCardsMetaDataState } from "../../../../stores/hooks/useCardsMetaDataState";
-import { useSystemLocalization } from "../../../../stores/hooks/useSystemLocalization";
 import { useTooltip } from "../../../../hooks/useTooltip";
 import { sizeAdaptive } from "../../../../lib/css/cssFunctions";
 import { getImageComponent } from "../../../../lib/images";
@@ -7,11 +6,12 @@ import type { CardsMetaData, TooltipMessage } from "../../../../types";
 import Tooltip from "../../Tooltip/Tooltip";
 import { useMemo } from "react";
 import { useIsDragging } from "../../../../stores/hooks/localStateStore.hooks";
+import { useTranslation } from "../../../../hooks/useTranslation";
 
 export default function RoleIcon({ role }: { role: string }) {
   const { position, isVisible, handlersPinable, isPinned } = useTooltip();
   const isDragging = useIsDragging();
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const cardsMeta = useCardsMetaDataState()[0] as CardsMetaData;
 
   const roleIconElement = useMemo(() => {
@@ -39,7 +39,7 @@ export default function RoleIcon({ role }: { role: string }) {
 
       {isVisible && (
         <Tooltip
-          title={locale.role}
+          title={t("role")}
           content={tooltipContent}
           position={position}
           hasCardRef={true}

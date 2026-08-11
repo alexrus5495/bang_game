@@ -4,13 +4,14 @@ import { m } from "motion/react";
 import { SocketEvents } from "../../../lib/socketEvents";
 import RoleCard from "../../cards/RoleCard";
 import CharacterCard from "../../cards/CharacterCard";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import CardHighlight from "../shared/CardHighlight";
 import Button from "../../shared/Button";
 import RootPortal from "../../shared/RootPortal";
 import { useLocalStateStore } from "../../../stores/localStateStore";
 import { socket } from "../../../lib/socket";
 import ScreenDimmer from "../../shared/ScreenDimmer";
+import type { BroadcastedTimerData } from "../../../types";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 type CharOption = {
   id: string;
@@ -20,8 +21,7 @@ type CharOption = {
 type HighlightedOption = "a" | "b" | "none";
 
 const CharSelectPrompt = React.memo(() => {
-  const locale = useSystemLocalization();
-
+  const t = useTranslation();
   const [role, setRole] = useState<string>("");
   const [charOptions, setCharOptions] = useState<CharOption[]>([]);
   const [highlightedOption, setHighlightedOption] =
@@ -53,18 +53,21 @@ const CharSelectPrompt = React.memo(() => {
 
   return (
     <RootPortal portalId={"char-select-prompt"}>
-      <ScreenDimmer dimStrength={80}>
-        <div className="w-full h-[20%] border flex justify-center items-center">
+      <ScreenDimmer dimStrength={80} />
+
+      <div className="fixed inset-0 z-40 flex flex-col justify-start pointer-events-auto">
+        <div className="w-full h-[25%] flex justify-center items-center">
           <m.div
             initial={{ y: "-100%" }}
             animate={{ y: 0 }}
             className="text-stroke-black"
             style={{ fontSize: sizeAdaptive(10), color: "var(--RED)" }}
           >
-            {locale["charSelect_title"]}
+            {t("charSelect_title")}
           </m.div>
         </div>
-        <div className="w-full h-[65%] border flex justify-center">
+
+        <div className="w-full h-[65%] flex justify-center items-start">
           <div className="border h-[70%] flex justify-center relative">
             {charOptions.length > 0 && (
               <CharOption
@@ -99,17 +102,17 @@ const CharSelectPrompt = React.memo(() => {
             )}
           </div>
         </div>
-      </ScreenDimmer>
+      </div>
     </RootPortal>
   );
 });
 
 function Timer() {
-  const [remainingTime, setRemainingTime] = useState<number>(60);
+  const [timerData, setTimerData] = useState<null | BroadcastedTimerData>(null);
 
   useEffect(() => {
-    const onSendTimerUpdate = (data: number) => {
-      setRemainingTime(data);
+    const onSendTimerUpdate = (data: BroadcastedTimerData) => {
+      setTimerData(data);
     };
 
     socket.on(SocketEvents.SEND_TIMER_UPDATE, onSendTimerUpdate);
@@ -128,7 +131,7 @@ function Timer() {
         color: "var(--WHITE)",
       }}
     >
-      {remainingTime}
+      {timerData?.currentValue ?? ""}
     </div>
   );
 }

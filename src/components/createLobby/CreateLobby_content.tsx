@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { sizeAdaptive } from "../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../stores/hooks/useSystemLocalization";
 import Button from "../shared/Button";
 import SeatController from "./CreateLobby_content/SeatController";
 import CreateLobby_form from "./CreateLobby_content/CreateLobby_form";
@@ -11,10 +10,10 @@ import { SocketEvents } from "../../lib/socketEvents";
 import { useCurrentPageState } from "../../stores/hooks/useCurrentPageState";
 import { useCurrentLobbyState } from "../../stores/hooks/useCurrentLobbyState";
 import { socket } from "../../lib/socket";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export default function CreateLobby_content() {
-  const locale = useSystemLocalization();
-
+  const t = useTranslation();
   const [lobbyConfig, setLobbyConfig] = useState<LobbyConfig>(() => ({
     ...structuredClone(blankLobbyConfig),
   }));
@@ -46,7 +45,7 @@ export default function CreateLobby_content() {
       <div className="w-[60%] h-[80%] relative flex flex-col justify-between">
         <div className="flex justify-center items-center">
           <Button
-            text={locale.back}
+            text={t("back")}
             className={"absolute"}
             handler={() => setCurrentPage("mainMenu")}
             style={{ fontSize: sizeAdaptive(16), left: sizeAdaptive(18) }}
@@ -56,7 +55,7 @@ export default function CreateLobby_content() {
             className="custom-text-highlighted"
             style={{ fontSize: sizeAdaptive(13) }}
           >
-            {locale["create_lobby"]}
+            {t("create_lobby")}
           </h2>
         </div>
 
@@ -86,7 +85,7 @@ export default function CreateLobby_content() {
 
           <div className="full h-[15%]">
             <Button
-              text={locale.done}
+              text={t("done")}
               className="self-center"
               handler={handleSubmit}
               style={{

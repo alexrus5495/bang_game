@@ -1,12 +1,12 @@
 import { m } from "motion/react";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import Button from "../../shared/Button";
 import { SocketEvents } from "../../../lib/socketEvents";
 import { useState } from "react";
 import { useCurrentPageState } from "../../../stores/hooks/useCurrentPageState";
 import { useCurrentLobbyState } from "../../../stores/hooks/useCurrentLobbyState";
 import { socket } from "../../../lib/socket";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export default function Join_idForm({
   lobbyId,
@@ -21,7 +21,7 @@ export default function Join_idForm({
   setPlayerName: (name: string) => void;
   setCurrentForm: (form: "idForm" | "passwordForm") => void;
 }) {
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const [showNoLobbyMsg, setShowNoLobbyMsg] = useState<boolean>(false);
   const setCurrentPage = useCurrentPageState()[1];
   const setCurrentLobby = useCurrentLobbyState()[1];
@@ -82,7 +82,7 @@ export default function Join_idForm({
           outlineWidth: sizeAdaptive(150),
           outlineColor: "var(--BLACK)",
         }}
-        placeholder={`${locale["enter_lobby_id"]}...`}
+        placeholder={t("enter_lobby_id")}
         whileFocus={{ scale: 1.05 }}
         maxLength={20}
       />
@@ -97,13 +97,13 @@ export default function Join_idForm({
           outlineWidth: sizeAdaptive(150),
           outlineColor: "var(--BLACK)",
         }}
-        placeholder={`${locale["enter_as"]}...`}
+        placeholder={t("enter_as")}
         whileFocus={{ scale: 1.05 }}
         maxLength={15}
       />
 
       <Button
-        text={showNoLobbyMsg ? locale["lobby_noLobby"] : locale.join}
+        text={showNoLobbyMsg ? t("lobby_noLobby") : t("join")}
         style={{
           fontSize: sizeAdaptive(16),
           marginTop: "-5%",

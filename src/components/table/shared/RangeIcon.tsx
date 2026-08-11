@@ -7,9 +7,9 @@ import { useLocalStateStore } from "../../../stores/localStateStore";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/shallow";
 import { useRangeInfo } from "./RangeIcon.hooks";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { useIsDragging } from "../../../stores/hooks/localStateStore.hooks";
 import { getImageComponent } from "../../../lib/images";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export type PlayerSlice = {
   char: string;
@@ -47,7 +47,7 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
     hasCardRef,
   } = useTooltip();
 
-  const locale = useSystemLocalization();
+  const t = useTranslation();
   const isDragging = useIsDragging();
   const { range, tooltipContent } = useRangeInfo(player);
 
@@ -84,7 +84,7 @@ const RangeIconInner = React.memo(({ player }: { player: PlayerSlice }) => {
 
       {isVisible && tooltipContent.length > 0 && (
         <Tooltip
-          title={`${locale.range} = ${range}`}
+          title={`${t("range")} = ${range}`}
           content={tooltipContent}
           position={position}
           hasCardRef={hasCardRef(tooltipContent)}

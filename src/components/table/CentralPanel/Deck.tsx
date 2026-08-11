@@ -7,8 +7,10 @@ import AnimationAnchor from "../shared/AnimationAnchor";
 import PlayingCard from "../../cards/PlayingCard";
 import Tooltip from "../Tooltip/Tooltip";
 import type { AnchorId } from "../../../contexts/AnchorsContext";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 const Deck = React.memo(() => {
+  const t = useTranslation();
   const deckSize = useLocalStateStore((state) => state.deckCurrentSize);
   const { position, isVisible, handlersNonPinable } = useTooltip();
 
@@ -59,7 +61,7 @@ const Deck = React.memo(() => {
 
       {isVisible && (
         <Tooltip
-          title={"Deck"}
+          title={t("deck")}
           content={tooltipContent}
           position={position}
           hasCardRef={false}

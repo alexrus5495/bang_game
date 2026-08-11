@@ -1,4 +1,4 @@
-import { useCardLocalization } from "../../../stores/hooks/useCardLocalization";
+import { useTranslation } from "../../../hooks/useTranslation";
 import { getImageComponent } from "../../../lib/images";
 
 export function TextBlock({
@@ -8,8 +8,8 @@ export function TextBlock({
   textKey: string;
   packKey: string;
 }) {
-  const localizationData = useCardLocalization(packKey, textKey);
-  const text = localizationData.desc;
+  const t = useTranslation();
+  const text = t.cardField(packKey, textKey, "desc");
   return (
     <p
       className="

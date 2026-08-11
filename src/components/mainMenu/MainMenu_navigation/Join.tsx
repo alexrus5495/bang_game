@@ -1,23 +1,22 @@
 import { useState } from "react";
-import { useSystemLocalization } from "../../../stores/hooks/useSystemLocalization";
 import { sizeAdaptive } from "../../../lib/css/cssFunctions";
 import { m } from "motion/react";
 import Button from "../../shared/Button";
 import Join_idForm from "./Join_idForm";
 import Join_passwordForm from "./Join_passwordForm";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export default function MainMenu_navigation_Join({
   setMenuState,
 }: {
   setMenuState: (state: string) => void;
 }) {
+  const t = useTranslation();
   const [playerName, setPlayerName] = useState("");
   const [lobbyId, setLobbyId] = useState("");
   const [currentForm, setCurrentForm] = useState<"idForm" | "passwordForm">(
     "idForm",
   );
-
-  const locale = useSystemLocalization();
 
   return (
     <div className="h-full w-full">
@@ -25,7 +24,7 @@ export default function MainMenu_navigation_Join({
         style={{ fontSize: sizeAdaptive(13) }}
         className={"custom-text-highlighted h-[15%]"}
       >
-        {locale["join_lobby"]}
+        {t("join_lobby")}
       </h2>
 
       {currentForm === "idForm" && (
@@ -60,7 +59,7 @@ export default function MainMenu_navigation_Join({
 
       <Button
         className="h-[15%]"
-        text={locale.back}
+        text={t("back")}
         style={{
           fontSize: sizeAdaptive(16),
           marginTop: "10%",
