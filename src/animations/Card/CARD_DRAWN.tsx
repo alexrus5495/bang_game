@@ -1,7 +1,7 @@
-import type { EventType } from "../types";
 import OpponentCardDrawn from "./CARD_DRAWN/OpponentCardDrawn";
 import ClientCardDrawn from "./CARD_DRAWN/ClientCardDrawn";
-import { socket } from "../lib/socket";
+import type { EventType } from "../../types";
+import { socket } from "../../lib/socket";
 
 export default function CARD_DRAWN({
   data,

@@ -1,9 +1,9 @@
 import { m } from "motion/react";
-import type { EventType } from "../../types";
-import { useAnchors } from "../../contexts/AnchorsContext";
-import PlayingCard from "../../components/cards/PlayingCard";
-import { getAnimationScale } from "../../lib/utils/getAnimationScale";
-import { getAnimationPosition } from "../../lib/utils/getAnimationPosition";
+import type { EventType } from "../../../types";
+import { useAnchors } from "../../../contexts/AnchorsContext";
+import PlayingCard from "../../../components/cards/PlayingCard";
+import { getAnimationScale } from "../../../lib/utils/getAnimationScale";
+import { getAnimationPosition } from "../../../lib/utils/getAnimationPosition";
 
 export default function ClientCardDrawn({
   data,

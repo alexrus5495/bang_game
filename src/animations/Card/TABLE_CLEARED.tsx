@@ -1,11 +1,11 @@
 import { m } from "motion/react";
-import PlayingCard from "../components/cards/PlayingCard";
-import { getAnimationPosition } from "../lib/utils/getAnimationPosition";
-import { getCardTableTransform } from "../lib/utils/getCardTableTransform";
-import { getAnimationScale } from "../lib/utils/getAnimationScale";
+import PlayingCard from "../../components/cards/PlayingCard";
+import { getAnimationPosition } from "../../lib/utils/getAnimationPosition";
+import { getCardTableTransform } from "../../lib/utils/getCardTableTransform";
+import { getAnimationScale } from "../../lib/utils/getAnimationScale";
 import { useEffect } from "react";
-import { useAnchors } from "../contexts/AnchorsContext";
-import type { EventType } from "../types";
+import { useAnchors } from "../../contexts/AnchorsContext";
+import type { EventType } from "../../types";
 
 export default function TABLE_CLEARED({
   data,

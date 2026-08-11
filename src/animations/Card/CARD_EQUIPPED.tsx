@@ -1,5 +1,5 @@
-import { socket } from "../lib/socket";
-import type { EventType } from "../types";
+import { socket } from "../../lib/socket";
+import type { EventType } from "../../types";
 import ClientCardEquipped from "./CARD_EQUIPPED/ClientCardEquipped";
 import OpponentCardEquipped from "./CARD_EQUIPPED/OpponentCardEquipped";
 

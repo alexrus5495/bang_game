@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import type { EventType } from "../types";
-import { useAnchors } from "../contexts/AnchorsContext";
-import { getImageComponent } from "../lib/images";
-import FloatUpContainer from "./shared/FloatUpContainer";
+import type { EventType } from "../../types";
+import { useAnchors } from "../../contexts/AnchorsContext";
+import { getImageComponent } from "../../lib/images";
+import FloatUpContainer from "../shared/FloatUpContainer";
 
 export default function PLAYER_HEALED({
   data,

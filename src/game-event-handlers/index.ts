@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import type {
   EventHandler,
   HandlerResult,
@@ -23,27 +22,32 @@ function normalizeResult(raw: LooseHandlerResult): HandlerResult {
   };
 }
 
+const HANDLERS_REGISTRY: Record<
+  string,
+  (
+    data: GameEvent["data"],
+    stage: StateUpdaterStage,
+    eventId?: number,
+  ) => HandlerResult
+> = {};
+
+for (const [path, module] of Object.entries(handlerCreators)) {
+  if (typeof module.default !== "function") {
+    console.warn(
+      `[Handlers] Handler at ${path} is missing a default export function.`,
+    );
+    continue;
+  }
+
+  const fileName = path.split("/").pop()!;
+  const eventType = fileName.replace(/\.[^/.]+$/, "");
+
+  const rawHandler = module.default();
+
+  HANDLERS_REGISTRY[eventType] = (data, stage, eventId) =>
+    normalizeResult(rawHandler(data, stage, eventId));
+}
+
 export function useHandlers() {
-  return useMemo(() => {
-    const result: Record<
-      string,
-      (
-        data: GameEvent["data"],
-        stage: StateUpdaterStage,
-        eventId?: number,
-      ) => HandlerResult
-    > = {};
-
-    for (const [path, module] of Object.entries(handlerCreators)) {
-      const fileName = path.split("/").pop()!;
-      const eventType = fileName.replace(".ts", "");
-
-      const rawHandler = module.default();
-
-      result[eventType] = (data, stage, eventId) =>
-        normalizeResult(rawHandler(data, stage, eventId));
-    }
-
-    return result;
-  }, []);
+  return HANDLERS_REGISTRY;
 }

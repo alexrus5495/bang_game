@@ -1,4 +1,4 @@
-import type { EventType } from "../../types";
+import type { EventType } from "../../../types";
 
 export default function OpponentCardEquipped({
   id,

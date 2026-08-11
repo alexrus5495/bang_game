@@ -1,5 +1,5 @@
 import { m } from "motion/react";
-import type { EventType } from "../../types";
+import type { EventType } from "../../../types";
 
 export default function OpponentCardPlayed({
   data,
