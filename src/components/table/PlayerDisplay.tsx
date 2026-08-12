@@ -23,7 +23,10 @@ export default function PlayerDisplay({ playerId }: { playerId: string }) {
 
   return (
     <div className="flex h-full w-full items-center z-0">
-      <div className="w-full h-[70%] relative">
+      <div
+        className="w-full h-[70%] relative"
+        style={{ transform: "translateY(-15%)" }}
+      >
         <div
           className="h-[50%] w-full bg-[var(--WHITE)] absolute flex items-center"
           style={{

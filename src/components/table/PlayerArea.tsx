@@ -28,7 +28,7 @@ const PlayerArea = React.memo(({ className }: { className?: string }) => {
         <div className="h-[50%] w-full">
           <PlayerDisplay playerId={socket.id} />
         </div>
-        <div className="h-[30%] w-full flex justify-center">
+        <div className="h-[35%] w-full flex justify-center">
           <EquipmentCardsPanel playerId={socket.id} />
         </div>
       </div>

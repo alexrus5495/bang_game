@@ -21,7 +21,9 @@ export type AnchorId =
   | { type: "equipment-zero"; playerId: string }
   | { type: "play-area" }
   | { type: "play-area-card"; index: number }
-  | { type: "player-portrait"; playerId: string };
+  | { type: "player-portrait"; playerId: string }
+  | { type: "interaction-slot"; index: number }
+  | { type: "interaction-char"; playerId: string };
 
 type AnchorRegistry = Map<string, () => DOMRect | null>;
 
@@ -64,6 +66,10 @@ function serializeAnchor(id: AnchorId): string {
       return `play:area:card:${id.index}`;
     case "player-portrait":
       return `player:portrait:${id.playerId}`;
+    case "interaction-slot":
+      return `interaction:slot:${id.index}`;
+    case "interaction-char":
+      return `interaction:char:${id.playerId}`;
     default:
       return assertNever(id);
   }
@@ -129,6 +135,8 @@ export function useAnchorRef<T extends HTMLElement>(id: AnchorId) {
   const ref = useRef<T>(null);
   const context = use(AnchorsContext);
 
+  const key = serializeAnchor(id);
+
   useEffect(() => {
     if (!context) return;
 
@@ -139,12 +147,10 @@ export function useAnchorRef<T extends HTMLElement>(id: AnchorId) {
     return () => {
       context.unregister(id);
     };
-  }, [id, context]);
+  }, [key, context]);
 
   return ref;
-}
-
-// Hook to get the registry
+} // Hook to get the registry
 export function useAnchors() {
   const context = use(AnchorsContext);
 

@@ -31,7 +31,6 @@ const CardAuraEffect = React.memo(
             speed={1.5}
             seed={randomSeedRef.current}
           />
-
           <Neon
             shape={JSON.stringify({
               type: "roundedRectSDF",

@@ -1,23 +1,22 @@
 import { useCurrentLobbyState } from "../stores/hooks/useCurrentLobbyState";
 import OtherPlayersDisplay from "../components/table/OtherPlayersDisplay";
-import CharSelectPrompt from "../components/table/prompts/CharSelectPrompt";
 import CentralPanel from "../components/table/CentralPanel";
 import { useCardsMetaDataState } from "../stores/hooks/useCardsMetaDataState";
 import PlayerArea from "../components/table/PlayerArea";
 import { AnchorsProvider } from "../contexts/AnchorsContext";
 import { useTableSocketHandlers } from "../hooks/useTableSocketHandlers";
 import { EventProcessor } from "../components/table/EventProcessor";
-import { useGameEventsState } from "../stores/hooks/useGameEventsState";
 import DEV_CONTROLLER from "../DEV_CONTROLLER/DEV_CONTROLLER";
 import MainDisplay from "../components/table/MainDisplay";
 import { socket } from "../lib/socket";
 import type { ReactNode } from "react";
-import { useIsCharSelected } from "../stores/hooks/localStateStore.hooks";
+import Prompts from "../components/table/Prompts";
+import { useGameEventsStore } from "../stores/gameEventsStore";
 
 function TableContent() {
   const lobbyId = useCurrentLobbyState()[0];
   const setCardsMeta = useCardsMetaDataState()[1];
-  const setGameEvents = useGameEventsState()[1];
+  const setGameEvents = useGameEventsStore((s) => s.setEvents);
 
   //Setup Socket Events
   useTableSocketHandlers({
@@ -27,14 +26,12 @@ function TableContent() {
     setGameEvents,
   });
 
-  const charSelected = useIsCharSelected(socket.id ?? "");
   if (!socket.id) return null;
 
   return (
     <div className="absolute h-[100vh] w-[100vw] flex flex-row justify-center items-center ">
-      {!charSelected && <CharSelectPrompt />}
-
       <DEV_CONTROLLER />
+      <Prompts />
 
       <Letterbox>
         <MainDisplay
@@ -51,7 +48,7 @@ function TableContent() {
 function Letterbox({ children }: { children: ReactNode }) {
   return (
     <div
-      className="w-full absolute select-none flex flex-col justify-center items-center border border-white"
+      className="w-full absolute select-none flex flex-col justify-center items-center"
       style={{ height: "min(51vw, 100vh)", width: "min(100vw, 196vh)" }}
     >
       {children}

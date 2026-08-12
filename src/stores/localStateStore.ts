@@ -34,6 +34,17 @@ import {
 } from "./localStateStore/cardActionsController";
 
 export type TurnPhase = "IDLE" | "DRAWING" | "PLAYING" | "DISCARDING";
+
+export type PendingInteraction = GeneralStoreInteraction | null;
+
+export type GeneralStoreInteraction = {
+  type: "GENERAL_STORE";
+  cards: (null | string)[];
+  pickersOrder: string[]; // Ordered array of playerId's
+  currentPickerId: string;
+  finishedPickers: string[];
+};
+
 export type GameFlowPhase =
   | "PREPARATION"
   | "CLIENT_TURN"
@@ -72,6 +83,7 @@ export type LocalState = {
   gameFlowPhase: GameFlowPhase;
   interactionPhase: InteractionPhase;
   pendingCardIndex: number | null;
+  pendingInteraction: PendingInteraction;
   highlightedCardIndex: number | null;
   isOverPlayArea: boolean;
 
@@ -104,6 +116,7 @@ export const useLocalStateStore = create<LocalState>()((...args) => ({
   gameFlowPhase: "PREPARATION",
   interactionPhase: "IDLE",
   pendingCardIndex: null,
+  pendingInteraction: null,
   highlightedCardIndex: null,
   isOverPlayArea: false,
 

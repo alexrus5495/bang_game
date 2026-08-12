@@ -1,5 +1,9 @@
 import type { StateCreator } from "zustand";
-import type { InteractionPhase, LocalState } from "../localStateStore";
+import type {
+  InteractionPhase,
+  LocalState,
+  PendingInteraction,
+} from "../localStateStore";
 import { socket } from "../../lib/socket";
 
 export type UIController = {
@@ -15,6 +19,8 @@ export type UIController = {
   endDrag: () => void;
   setIsUiBlocked: (v: boolean) => void;
   setHighlightedOpponent: (v: null | string) => void;
+  setPendingInteraction: (v: Exclude<PendingInteraction, null>) => void;
+  resetPendingInteraction: () => void;
 };
 
 export const createUIController: StateCreator<
@@ -56,6 +62,10 @@ export const createUIController: StateCreator<
     set(() => ({
       pendingCardIndex: index,
     })),
+
+  setPendingInteraction: (v) => set(() => ({ pendingInteraction: v })),
+
+  resetPendingInteraction: () => set(() => ({ pendingInteraction: null })),
 
   startDrag: (index) => {
     set({

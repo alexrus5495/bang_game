@@ -15,7 +15,7 @@ export default function RankAndSuit({
     -bottom-[20px]
     -left-[13px]`;
   const rankClasses =
-    "font-gabriela text-[50px] leading-none text-stroke-white font-bold";
+    "font-gabriela text-[50px] leading-none text-stroke-white font-bold select-none";
   const suitClasses = "h-[46px] m-auto";
 
   return (

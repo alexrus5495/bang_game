@@ -111,7 +111,7 @@ export function useIsCardPlayable(index: number) {
 
   const handValidationData = useHandValidation();
 
-  if (!handValidationData) return;
+  if (!handValidationData) return false;
 
   const cardId = player.hand[index];
 

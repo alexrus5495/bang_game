@@ -127,9 +127,9 @@ const CardInHandInner = React.memo(() => {
           scale: isPending ? 1.2 : position.scale,
         }}
       >
-        <PlayingCard cardId={card.id} initialIsFaceDown={false} />
-
         <CardAuraEffect color={aura.color} isVisible={aura.isVisible} />
+
+        <PlayingCard cardId={card.id} initialIsFaceDown={false} />
 
         <AnimatePresence>
           {showTargetSelector && (

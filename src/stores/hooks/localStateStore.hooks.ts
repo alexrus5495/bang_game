@@ -89,6 +89,10 @@ export function usePendingCardIndex(): LocalState["pendingCardIndex"] {
   return useLocalStateStore((state) => state.pendingCardIndex);
 }
 
+export function usePendingInteraction(): LocalState["pendingInteraction"] {
+  return useLocalStateStore((state) => state.pendingInteraction);
+}
+
 export function useHighlightedCardIndex(): LocalState["highlightedCardIndex"] {
   return useLocalStateStore((state) => state.highlightedCardIndex);
 }
