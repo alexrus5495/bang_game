@@ -85,6 +85,6 @@
   "deck": "Deck",
   "general_store_title": "GENERAL STORE",
   "general_store_preparing": "Dealing cards...",
-  "general_store_picking": "{player} is picking cards",
+  "general_store_picking": "{player} is picking a card",
   "general_store_your_turn": "Your turn. Pick a card!"
 }
