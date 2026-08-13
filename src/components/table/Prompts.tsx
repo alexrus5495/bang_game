@@ -1,10 +1,6 @@
 import React from "react";
 import { AnimatePresence } from "motion/react";
-import {
-  useIsCharSelected,
-  usePendingInteraction,
-} from "../../stores/hooks/localStateStore.hooks";
-import { socket } from "../../lib/socket";
+import { usePendingInteraction } from "../../stores/hooks/localStateStore.hooks";
 import CharSelectPrompt from "./prompts/CharSelectPrompt";
 import StorePrompt from "./prompts/StorePrompt";
 
@@ -17,10 +13,9 @@ const Prompts = React.memo(() => {
 export default Prompts;
 
 const useActivePrompt = () => {
-  const charSelected = useIsCharSelected(socket.id ?? "");
   const pendingInteraction = usePendingInteraction();
 
-  if (!charSelected) {
+  if (pendingInteraction?.type === "CHAR_SELECTION") {
     return <CharSelectPrompt key="char-select-prompt" />;
   }
 

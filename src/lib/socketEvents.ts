@@ -42,11 +42,6 @@ export const SocketEvents = createEvents([
   "CREATE_GAME",
   "GAME_CREATED",
   "SEND_CARDS_META",
-  "REQUEST_ROLE",
-  "SEND_ROLE",
-  "REQUEST_CHAR_OPTIONS",
-  "SEND_CHAR_OPTIONS",
-  "SELECT_CHAR",
 
   // GAME EVENTS
   "BROADCAST_EVENTS",

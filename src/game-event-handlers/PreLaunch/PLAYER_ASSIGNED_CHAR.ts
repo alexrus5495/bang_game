@@ -1,4 +1,5 @@
 import type { StateUpdaterStage } from "../../hooks/useLocalStateUpdater";
+import { socket } from "../../lib/socket";
 import { useLocalStateStore } from "../../stores/localStateStore";
 import type { EventType } from "../../types";
 
@@ -10,6 +11,11 @@ export default function PLAYER_ASSIGNED_CHAR() {
     if (stage === "beforeAnimation") {
       const { playersController } = useLocalStateStore.getState();
       playersController.assignChar(data.playerId, data.char, data.health);
+
+      if (data.playerId === socket.id) {
+        const uiController = useLocalStateStore.getState().uiController;
+        uiController.resetPendingInteraction();
+      }
     }
   };
 }

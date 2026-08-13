@@ -36,7 +36,11 @@ const CharPortrait = React.memo(
     const isDragging = useIsDragging();
 
     const imageElement = useMemo(() => {
-      if (!playerData?.char) return null;
+      if (!playerData?.char)
+        return getImageComponent("icon-hourglass", {
+          className: "h-[55%]",
+          draggable: false,
+        });
       return getImageComponent(playerData.char, {
         className: "h-full w-full",
         draggable: false,
@@ -67,7 +71,7 @@ const CharPortrait = React.memo(
     return (
       <>
         <div
-          className="h-full aspect-square rounded-[35%] bg-paperTexture-stockalike relative outline overflow-hidden"
+          className="h-full aspect-square rounded-[35%] bg-paperTexture-stockalike relative outline overflow-hidden flex justify-center items-center"
           style={{
             cursor: isDragging || tooltipDisabled ? "default" : "pointer",
             borderColor: color,

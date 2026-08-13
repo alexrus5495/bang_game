@@ -7,11 +7,15 @@ import CharacterCard from "../../cards/CharacterCard";
 import CardHighlight from "../shared/CardHighlight";
 import Button from "../../shared/Button";
 import RootPortal from "../../shared/RootPortal";
-import { useLocalStateStore } from "../../../stores/localStateStore";
 import { socket } from "../../../lib/socket";
 import ScreenDimmer from "../../shared/ScreenDimmer";
 import type { BroadcastedTimerData } from "../../../types";
 import { useTranslation } from "../../../hooks/useTranslation";
+import {
+  usePendingInteraction,
+  usePlayersController,
+} from "../../../stores/hooks/localStateStore.hooks";
+import { sendResolveInteraction } from "../../../lib/utils/sendResolveInteraction";
 
 type CharOption = {
   id: string;
@@ -22,34 +26,20 @@ type HighlightedOption = "a" | "b" | "none";
 
 const CharSelectPrompt = React.memo(() => {
   const t = useTranslation();
-  const [role, setRole] = useState<string>("");
-  const [charOptions, setCharOptions] = useState<CharOption[]>([]);
+  const playersController = usePlayersController();
   const [highlightedOption, setHighlightedOption] =
     useState<HighlightedOption>("none");
   const [selectedOption, setSelectedOption] = useState<"a" | "b" | "none">(
     "none",
   );
 
-  useEffect(() => {
-    const onSendCharOptions = (data: CharOption[]) => {
-      setCharOptions(data);
-    };
+  const pending = usePendingInteraction();
+  if (!pending || pending.type !== "CHAR_SELECTION") return null;
 
-    const onSendRole = (role: string) => {
-      setRole(role);
-    };
+  const charOptions = pending.options;
 
-    socket.emit(SocketEvents.REQUEST_ROLE);
-    socket.emit(SocketEvents.REQUEST_CHAR_OPTIONS);
-
-    socket.on(SocketEvents.SEND_CHAR_OPTIONS, onSendCharOptions);
-    socket.on(SocketEvents.SEND_ROLE, onSendRole);
-
-    return () => {
-      socket.off(SocketEvents.SEND_CHAR_OPTIONS, onSendCharOptions);
-      socket.off(SocketEvents.SEND_ROLE, onSendRole);
-    };
-  }, []);
+  const role = playersController.getPlayerById(socket.id ?? "")?.role;
+  if (!role) return null;
 
   return (
     <RootPortal portalId={"char-select-prompt"}>
@@ -153,10 +143,12 @@ function CharOption({
   onMouseEnter: () => void;
   onMouseLeave: () => void;
 }) {
-  const gameId = useLocalStateStore((state) => state.gameId);
-
   const handleSelectChar = (option: 0 | 1) => {
-    socket.emit(SocketEvents.SELECT_CHAR, gameId, option);
+    sendResolveInteraction({
+      type: "CHAR_SELECTION",
+      playerId: socket.id ?? "",
+      optionIndex: option,
+    });
   };
 
   return (

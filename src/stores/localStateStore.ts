@@ -35,7 +35,12 @@ import {
 
 export type TurnPhase = "IDLE" | "DRAWING" | "PLAYING" | "DISCARDING";
 
-export type PendingInteraction = GeneralStoreInteraction | null;
+export type PendingInteraction = GeneralStoreInteraction | CharSelection | null;
+
+export type CharSelection = {
+  type: "CHAR_SELECTION";
+  options: { id: string; bullets: number }[];
+};
 
 export type GeneralStoreInteraction = {
   type: "GENERAL_STORE";
